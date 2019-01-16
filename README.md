@@ -1,9 +1,7 @@
 # StanFood
 
-```
- <img src="img/Image\ From\ IOS.jpg" alt="Rachel Hyon" title="Rachel Hyon" width="150">
+<img src="img/Image\ From\ IOS.jpg" width="150">
 
-```
 
 ## Project Synopsis
 An application to notify people of where free food events are happening on campus.
