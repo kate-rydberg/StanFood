@@ -1,7 +1,7 @@
 # StanFood
 
 ```
-TODO Insert team logo
+ <img src="img/Image\ From\ IOS.jpg" alt="Rachel Hyon" title="Rachel Hyon" width="150">
 
 ```
 
