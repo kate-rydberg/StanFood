@@ -1,6 +1,6 @@
 # StanFood
 
-<img src="img/Image\ from\ IOS.jpg" width="150">
+<img src="img/Image from iOS.jpg" width="150">
 
 
 ## Project Synopsis
