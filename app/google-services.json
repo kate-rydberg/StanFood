@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "367824683396",
+    "firebase_url": "https://stanfood-e7255.firebaseio.com",
+    "project_id": "stanfood-e7255",
+    "storage_bucket": "stanfood-e7255.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:367824683396:android:3ca268bf05b3bb76",
+        "android_client_info": {
+          "package_name": "stanford.cs194.stanfood"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "367824683396-um099h62tl5necafj9lpsnd0m0dcnmv8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "stanford.cs194.stanfood",
+            "certificate_hash": "d6bb109290931c1a981434315cf7eb2d3c7cf297"
+          }
+        },
+        {
+          "client_id": "367824683396-e096cli7qinna2v6bsv4852nv1o096ca.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAf7FAVuJFXAF7byEne5OkcNmw-toGjHWE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "367824683396-7e02ufep217814pseclr3hhe07lqca7v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
