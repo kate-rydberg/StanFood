@@ -1,8 +1,16 @@
 package stanford.cs194.stanfood;
 
+<<<<<<< HEAD
 import android.support.design.widget.BottomSheetBehavior;
+=======
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+>>>>>>> track current location
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 
@@ -26,11 +34,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     final private String dbPath = "https://stanfood-e7255.firebaseio.com/";
     private GoogleMap mMap;
+<<<<<<< HEAD
     private View bottomSheet;
     private BottomSheetBehavior<View> mBottomSheetBehavior;
     private Map<String, String> markers = new HashMap<>();
     private FirebaseDatabase database;
     private DatabaseReference dbRef;
+=======
+    private DatabaseReference database;
+>>>>>>> track current location
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +52,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+<<<<<<< HEAD
 
         bottomSheet = findViewById( R.id.bottom_sheet );
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
@@ -48,6 +61,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         database = FirebaseDatabase.getInstance(dbPath);
         dbRef = database.getReference();
+=======
+        database = FirebaseDatabase.getInstance().getReference();
+>>>>>>> track current location
     }
 
 
@@ -64,9 +80,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         Log.d("MapsActivity","Running");
         mMap = googleMap;
+        enableMyLocation();
+        mMap.moveCamera(CameraUpdateFactory.zoomIn());
 
         // Add a marker in Sydney and move the camera
         //LatLng sydney = new LatLng(-34, 151);
+
         LatLng home = new LatLng(37.4248955,-122.1768221);
         float zoom = 17;
         mMap.addMarker(new MarkerOptions().position(home).title("Lagunita Court").snippet("Dorm"));
@@ -116,5 +135,40 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setPadding(0, 0, 0, 1000);
         mMap.animateCamera(CameraUpdateFactory.newLatLng(location));
         return true;
+
+        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        //mMap.moveCamera(CameraUpdateFactory.zoomIn());
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        // Check if location permissions are granted and if so enable the
+        // location data layer.
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length > 0
+                        && grantResults[0]
+                        == PackageManager.PERMISSION_GRANTED) {
+                    enableMyLocation();
+                    break;
+                }
+        }
+    }
+
+    private void enableMyLocation() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]
+                            {Manifest.permission.ACCESS_FINE_LOCATION},
+                    1);
+        }
+    }
+
+
 }
