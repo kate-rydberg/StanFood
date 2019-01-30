@@ -31,4 +31,7 @@ public class User {
     public void setName(String name) {
         this.name = name;
     }
+
+    //TODO Need to implement
+    public void createEvent() {}
 }
