@@ -1,21 +1,33 @@
 package stanford.cs194.stanfood;
 
+import stanford.cs194.stanfood.Pin;
+import stanford.cs194.stanfood.CustomBottomSheetBehavior;
+
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, OnMarkerClickListener {
 
     private GoogleMap mMap;
+    private CustomBottomSheetBehavior mBottomSheetBehavior;
+    private Map<String, String> markers = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +37,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        View bottomSheet = findViewById( R.id.bottom_sheet );
+        mBottomSheetBehavior = (CustomBottomSheetBehavior) CustomBottomSheetBehavior.from(bottomSheet);
+        mBottomSheetBehavior.setHideable(true);
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
 
@@ -48,6 +65,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         float zoom = 17;
         mMap.addMarker(new MarkerOptions().position(home).title("Lagunita Court").snippet("Dorm"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(home, zoom));
+
+        googleMap.setOnMarkerClickListener(this);
+
+        // TEST, delete later
+        Pin pin = new Pin("id1", new LatLng(37.4243048,-122.1730309));
+        List<Pin> pins = new ArrayList<>();
+        pins.add(pin);
+        displayMarkers(googleMap, pins);
     }
 
 
@@ -56,14 +81,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      *
      * @param googleMap
      * @param pins
-     */
+//     */
     private void displayMarkers(GoogleMap googleMap, List<Pin> pins) {
         for (Pin pin:pins) {
-            LatLng coord = pin.locationCoordinate;
-            mMap.addMarker(new MarkerOptions()
-                            .position(coord)
-                            .title(pin.locationName)
-                            .snippet(pin.description));
+            LatLng coordinate = pin.getLocationCoordinate();
+            Marker markerObj = mMap.addMarker(new MarkerOptions()
+                            .position(coordinate)
+                            .title(pin.getLocationName()));
+            markers.put(markerObj.getId(), pin.getPinId());
         }
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        String pinId = markers.get(marker.getId());
+        if (mBottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        } else {
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        }
+        return true;
     }
 }
