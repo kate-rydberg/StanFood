@@ -12,8 +12,7 @@ public class Pin {
 
     public Pin() {}
 
-    public Pin(String pinId, LatLng locationCoordinate) {
-        this.pinId = pinId;
+    public Pin(LatLng locationCoordinate) {
         this.locationCoordinate = locationCoordinate;
     }
 
@@ -45,12 +44,9 @@ public class Pin {
         return numEvents;
     }
 
-    public void setNumEvents(int numEvents) {
-        this.numEvents = numEvents;
-    }
-
     /*
      * Returns list of events corresponding to pin's location.
+     * TODO: Need to implement
      */
     public ArrayList<Event> getEvents(String pinId) {
         ArrayList<Event> events = new ArrayList<>();

@@ -10,8 +10,10 @@ public class Event {
 
     public Event() {}
 
-    public Event(String eventId) {
-        this.eventId = eventId;
+    public Event(String description, String locationName, LocalDateTime time) {
+        this.description = description;
+        this.locationName = locationName;
+        this.time = time;
     }
 
     public String getEventId() {
@@ -48,9 +50,10 @@ public class Event {
 
     /*
      * Gets the food of the current event
+     * TODO: Need to implement
      */
     public Food getFood(String eventId) {
-        Food food = new Food();
+        Food food = new Food("testId", "testDescription");
         // Lookup food from database using eventId
         return food;
     }
