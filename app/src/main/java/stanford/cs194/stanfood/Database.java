@@ -28,19 +28,20 @@ public class Database {
     }
 
     // createEntry: creates an entry in Firebase table of Object obj
-    public void createEntry(String table, Object obj){
+    public String createEntry(String table, Object obj){
         DatabaseReference pushedTableRef = dbRef.child(table).push();
         pushedTableRef.setValue(obj);
+        return pushedTableRef.getKey();
     }
 
     // createUser: creates a new user in the users table
-    public void createUser(String email, String name){
-        createEntry("users", new User(email, name));
+    public String createUser(String email, String name){
+        return createEntry("users", new User(email, name));
     }
 
     // createPin: creates a new pin in the pins table
-    public void createPin(LatLng loc){
-        createEntry("pins", new Pin(loc));
+    public String createPin(LatLng loc){
+        return createEntry("pins", new Pin(loc));
     }
 
     // createEvent: creates a new event in the events table
@@ -55,16 +56,18 @@ public class Database {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     String pinId = null;
                     for(DataSnapshot ds : dataSnapshot.getChildren()){
-                        double lat = ds.child("latitude").getValue(double.class);
-                        double lng = ds.child("longitude").getValue(double.class);
-                        LatLng l = new LatLng(lat, lng);
-                        if(loc == l){
-                            pinId = ds.getKey();
-                            break;
+                        if(ds.hasChildren()) {
+                            double lat = ds.child("locationCoordinate/latitude").getValue(double.class);
+                            double lng = ds.child("locationCoordinate/longitude").getValue(double.class);
+                            LatLng l = new LatLng(lat, lng);
+                            if (loc == l) {
+                                pinId = ds.getKey();
+                                break;
+                            }
                         }
                     }
                     if(pinId == null)
-                        createPin(loc);
+                        pinId = createPin(loc);
                     createEntry("events", new Event(pinId, description, locationName, time));
                 }
 
