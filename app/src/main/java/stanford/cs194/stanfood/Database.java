@@ -3,6 +3,7 @@ package stanford.cs194.stanfood;
 import android.location.Address;
 import android.location.Geocoder;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
@@ -73,7 +74,7 @@ public class Database {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                    Log.d("ERROR", databaseError.toString());
                 }
             }
         );
