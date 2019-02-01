@@ -27,7 +27,7 @@ public class Database {
         dbRef = database.getReference();
     }
 
-    // createEntry: creates an entry in Firebase table of Object obj
+    // createEntry: creates an entry in Firebase table of Object obj. Returns object unique table key
     public String createEntry(String table, Object obj){
         DatabaseReference pushedTableRef = dbRef.child(table).push();
         pushedTableRef.setValue(obj);
