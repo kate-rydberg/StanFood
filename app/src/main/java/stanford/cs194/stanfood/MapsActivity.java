@@ -1,8 +1,5 @@
 package stanford.cs194.stanfood;
 
-import stanford.cs194.stanfood.Pin;
-import stanford.cs194.stanfood.CustomBottomSheetBehavior;
-
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -26,7 +23,7 @@ import java.util.Map;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, OnMarkerClickListener {
 
     private GoogleMap mMap;
-    private CustomBottomSheetBehavior mBottomSheetBehavior;
+    private BottomSheetBehavior<View> mBottomSheetBehavior;
     private Map<String, String> markers = new HashMap<>();
 
     @Override
@@ -39,7 +36,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         View bottomSheet = findViewById( R.id.bottom_sheet );
-        mBottomSheetBehavior = (CustomBottomSheetBehavior) CustomBottomSheetBehavior.from(bottomSheet);
+        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         mBottomSheetBehavior.setHideable(true);
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
@@ -69,20 +66,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         googleMap.setOnMarkerClickListener(this);
 
         // TEST, delete later
-        Pin pin = new Pin("id1", new LatLng(37.4243048,-122.1730309));
+        Pin pin = new Pin(new LatLng(37.4243048,-122.1730309));
         List<Pin> pins = new ArrayList<>();
         pins.add(pin);
-        displayMarkers(googleMap, pins);
+        displayMarkers(pins);
     }
 
 
     /**
      * Displays a list of pin markers on the map.
      *
-     * @param googleMap
      * @param pins
 //     */
-    private void displayMarkers(GoogleMap googleMap, List<Pin> pins) {
+    private void displayMarkers(List<Pin> pins) {
         for (Pin pin:pins) {
             LatLng coordinate = pin.getLocationCoordinate();
             Marker markerObj = mMap.addMarker(new MarkerOptions()

@@ -2,5 +2,6 @@
     <string name="app_name">StanFood</string>
     <string name="title_activity_maps">Map</string>
     <string name="CustomBottomSheetBehavior">stanford.cs194.stanfood.CustomBottomSheetBehavior</string>
-    <string name="test">Text</string>
+    <string name="bottom_sheet_peek">Bottom Sheet Peek!</string>
+    <string name="bottom_sheet_content">Bottom Sheet Content!</string>
 </resources>
