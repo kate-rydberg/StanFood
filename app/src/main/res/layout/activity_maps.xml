@@ -21,18 +21,19 @@
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="@dimen/bottom_sheet_expanded_height"
         android:background="@drawable/rounded_corners"
         android:clipToPadding="true"
+        app:behavior_hideable="false"
         app:behavior_peekHeight="@dimen/bottom_sheet_peek_height"
-        app:layout_behavior="@string/bottom_sheet_behavior">
+        app:layout_behavior="@string/bottom_sheet_behavior" >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:layout_gravity="top"
-            android:gravity="top">
+            android:gravity="top"
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"

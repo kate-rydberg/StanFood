@@ -14,6 +14,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,9 +24,13 @@ import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, OnMarkerClickListener {
 
+    final private String dbPath = "https://stanfood-e7255.firebaseio.com/";
     private GoogleMap mMap;
+    private View bottomSheet;
     private BottomSheetBehavior<View> mBottomSheetBehavior;
     private Map<String, String> markers = new HashMap<>();
+    private FirebaseDatabase database;
+    private DatabaseReference dbRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +41,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        View bottomSheet = findViewById( R.id.bottom_sheet );
+        bottomSheet = findViewById( R.id.bottom_sheet );
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         mBottomSheetBehavior.setHideable(true);
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
+        database = FirebaseDatabase.getInstance(dbPath);
+        dbRef = database.getReference();
     }
 
 
@@ -88,6 +97,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+
     /**
      * Expand bottom info window when a pin is clicked.
      *
@@ -96,14 +106,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public boolean onMarkerClick(Marker marker) {
+        LatLng location = marker.getPosition();
         String pinId = markers.get(marker.getId());
         // TODO: get text description or list of events to display
-        // TODO: Decide behavior for bottom sheet and implement
-        if (mBottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
-            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        } else {
-            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-        }
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        mBottomSheetBehavior.setHideable(false);
+
+        // center the marker in the map area above the bottom sheet
+        mMap.setPadding(0, 0, 0, 1000);
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(location));
         return true;
     }
 }
