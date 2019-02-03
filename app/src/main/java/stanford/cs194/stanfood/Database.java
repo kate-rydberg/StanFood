@@ -21,7 +21,7 @@ public class Database {
     final private String dbPath = "https://stanfood-e7255.firebaseio.com/";
     final private String stanfordLocSuffix = " Stanford, CA 94305";
     private FirebaseDatabase database;
-    private DatabaseReference dbRef;
+    public DatabaseReference dbRef;
 
     public Database(){
         database = FirebaseDatabase.getInstance(dbPath);
