@@ -4,7 +4,9 @@ package stanford.cs194.stanfood;
 import android.support.design.widget.BottomSheetBehavior;
 =======
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 >>>>>>> track current location
@@ -14,6 +16,8 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
@@ -22,6 +26,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -42,7 +47,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private DatabaseReference dbRef;
 =======
     private DatabaseReference database;
+<<<<<<< HEAD
 >>>>>>> track current location
+=======
+    private FusedLocationProviderClient mFusedLocationClient;
+
+>>>>>>> current location tracking
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,12 +86,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
+    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Log.d("MapsActivity","Running");
         mMap = googleMap;
+        //adds location marker
         enableMyLocation();
-        mMap.moveCamera(CameraUpdateFactory.zoomIn());
+
 
         // Add a marker in Sydney and move the camera
         //LatLng sydney = new LatLng(-34, 151);
@@ -139,6 +151,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         //mMap.moveCamera(CameraUpdateFactory.zoomIn());
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            LatLng current = new LatLng(location.getLatitude(),location.getLongitude());
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current,16));
+                        }
+                    }
+                });
+
+
     }
 
     @Override
