@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -20,14 +21,18 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private DatabaseReference database;
     private FusedLocationProviderClient mFusedLocationClient;
+    private float distanceRange = 10000;
 
 
     @Override
@@ -39,6 +44,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         database = FirebaseDatabase.getInstance().getReference();
+
     }
 
 
@@ -54,7 +60,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.d("MapsActivity","Running");
         mMap = googleMap;
         //adds location marker
         enableMyLocation();
@@ -67,6 +72,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if (location != null) {
                             LatLng current = new LatLng(location.getLatitude(),location.getLongitude());
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current,16));
+                            populatePins(location);
                         }
                     }
                 });
@@ -102,5 +108,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    public void populatePins(final Location cur){
+        Database db = new Database();
+        db.dbRef.child("pins").addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for(DataSnapshot ds : dataSnapshot.getChildren()){
+                            if(ds.hasChildren()){
+                                double lat = ds.child("locationCoordinate/latitude").getValue(double.class);
+                                double lng = ds.child("locationCoordinate/longitude").getValue(double.class);
+                                Location loc = new Location(LocationManager.GPS_PROVIDER);
+                                loc.setLatitude(lat);
+                                loc.setLongitude(lng);
+                                if(cur.distanceTo(loc) < distanceRange){
+                                    LatLng pin = new LatLng(loc.getLatitude(),loc.getLongitude());
+                                    mMap.addMarker(new MarkerOptions().position(pin));
+                                }
+                            }
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.d("ERROR",databaseError.toString());
+                    }
+                }
+        );
+    }
 
 }
