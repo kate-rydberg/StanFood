@@ -3,7 +3,7 @@ package stanford.cs194.stanfood;
 public class User {
 
     private String email;
-    private String id;
+    private String userId;
     private String name;
 
     public User(String email, String name) {
@@ -19,12 +19,12 @@ public class User {
         this.email = email;
     }
 
-    public String getId() {
-        return id;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -34,7 +34,4 @@ public class User {
     public void setName(String name) {
         this.name = name;
     }
-
-    //TODO Need to implement
-    public void createEvent() {}
 }

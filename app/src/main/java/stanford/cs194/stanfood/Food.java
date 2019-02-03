@@ -2,7 +2,7 @@ package stanford.cs194.stanfood;
 
 public class Food {
 
-    private String id;
+    private String foodId;
     private String eventId;
     private String description;
 
@@ -11,12 +11,12 @@ public class Food {
         this.description = description;
     }
 
-    public String getId() {
-        return id;
+    public String getFoodId() {
+        return foodId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setFoodId(String foodId) {
+        this.foodId = foodId;
     }
 
     public String getDescription() {
