@@ -2,8 +2,6 @@ package stanford.cs194.stanfood;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import java.util.ArrayList;
-
 public class Pin {
     private String pinId;
     private LatLng locationCoordinate;
@@ -14,6 +12,13 @@ public class Pin {
 
     public Pin(LatLng locationCoordinate) {
         this.locationCoordinate = locationCoordinate;
+        this.numEvents = 1;
+    }
+
+    public Pin(LatLng locationCoordinate, String locationName, int numEvents) {
+        this.locationCoordinate = locationCoordinate;
+        this.locationName = locationName;
+        this.numEvents = numEvents;
     }
 
     public String getPinId() {
@@ -42,16 +47,5 @@ public class Pin {
 
     public int getNumEvents() {
         return numEvents;
-    }
-
-    /*
-     * Returns list of events corresponding to pin's location.
-     * TODO: Need to implement
-     */
-    public ArrayList<Event> getEvents(String pinId) {
-        ArrayList<Event> events = new ArrayList<>();
-        // Lookup from database to get all events with same location using pinId
-        numEvents = events.size();
-        return events;
     }
 }

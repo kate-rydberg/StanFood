@@ -63,17 +63,7 @@ public class Event {
         this.time = time;
     }
 
-    /*
-     * Gets the food of the current event
-     * TODO: Need to implement
-     */
-    public Food getFood(String eventId) {
-        food = new Food("testId", "testDescription");
-        // Lookup food from database using eventId
-        return food;
-    }
+    public Food getFood() { return food; }
 
-    public void setFood(Food food) {
-        this.food = food;
-    }
+    public void setFood(Food food) { this.food = food; }
 }
