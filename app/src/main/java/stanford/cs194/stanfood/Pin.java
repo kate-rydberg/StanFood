@@ -12,6 +12,7 @@ public class Pin {
 
     public Pin(LatLng locationCoordinate) {
         this.locationCoordinate = locationCoordinate;
+        this.numEvents = 1;
     }
 
     public Pin(LatLng locationCoordinate, String locationName, int numEvents) {
