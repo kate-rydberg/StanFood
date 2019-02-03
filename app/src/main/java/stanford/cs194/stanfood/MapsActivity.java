@@ -65,7 +65,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         googleMap.setOnMarkerClickListener(this);
 
-        // TEST, delete later
+        // TEST: delete later
         Pin pin = new Pin(new LatLng(37.4243048,-122.1730309));
         List<Pin> pins = new ArrayList<>();
         pins.add(pin);
@@ -76,7 +76,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /**
      * Displays a list of pin markers on the map.
      *
-     * @param pins
+     * @param pins - list of Pin objects
 //     */
     private void displayMarkers(List<Pin> pins) {
         for (Pin pin:pins) {
@@ -88,9 +88,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    /**
+     * Expand bottom info window when a pin is clicked.
+     *
+     * @param marker - the pin that is clicked
+     * @return - true to indicate the action was successful
+     */
     @Override
     public boolean onMarkerClick(Marker marker) {
         String pinId = markers.get(marker.getId());
+        // TODO: get text description or list of events to display
+        // TODO: Decide behavior for bottom sheet and implement
         if (mBottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         } else {
