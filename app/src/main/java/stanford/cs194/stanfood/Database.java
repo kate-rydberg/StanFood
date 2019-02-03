@@ -60,7 +60,6 @@ public class Database {
                         if(ds.hasChildren()) {
                             double lat = ds.child("locationCoordinate/latitude").getValue(double.class);
                             double lng = ds.child("locationCoordinate/longitude").getValue(double.class);
-                            LatLng l = new LatLng(lat, lng);
                             if (loc.latitude == lat && loc.longitude == lng) {
                                 pinId = ds.getKey();
                                 int numEvents = ds.child("numEvents").getValue(int.class);
