@@ -1,8 +1,6 @@
 package stanford.cs194.stanfood;
 
-<<<<<<< HEAD
 import android.support.design.widget.BottomSheetBehavior;
-=======
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
@@ -10,7 +8,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
->>>>>>> track current location
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
