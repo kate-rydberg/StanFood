@@ -21,6 +21,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create Your Event!"
+            android:textSize="30sp" />
+
         <EditText
             android:id="@+id/eventName"
             android:layout_width="match_parent"
@@ -35,7 +42,23 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="Food Description"
-            android:inputType="textPersonName" />
+            android:inputType="textMultiLine" />
+
+        <EditText
+            android:id="@+id/eventLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Event Location"
+            android:inputType="textPostalAddress" />
+
+        <EditText
+            android:id="@+id/eventDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Event Description"
+            android:inputType="textMultiLine" />
 
         <Button
             android:id="@+id/createEvent"

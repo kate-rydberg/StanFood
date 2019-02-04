@@ -53,7 +53,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * TODO: Replace/transpose into Hamburger layout
      */
     public void sendCreateEventRequest(View view) {
-        System.out.println("Create Event Request Intent created!");
         Intent intent = new Intent(this, CreateEventActivity.class);
         startActivity(intent);
     }
