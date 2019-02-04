@@ -1,8 +1,10 @@
 package stanford.cs194.stanfood;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -44,5 +46,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
+    /**
+     * Button for testing CreateEventActivity transitions
+     * TODO: Replace/transpose into Hamburger layout
+     */
+    public void sendCreateEventRequest(View view) {
+        System.out.println("Create Event Request Intent created!");
+        Intent intent = new Intent(this, CreateEventActivity.class);
+        startActivity(intent);
     }
 }
