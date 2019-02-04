@@ -105,21 +105,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 });
 
-        //adds location marker
-        enableMyLocation();
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                // Got last known location. In some rare situations this can be null.
-                if (location != null) {
-                    LatLng current = new LatLng(location.getLatitude(),location.getLongitude());
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current,16));
-                    populatePins(location);
-                }
-            }
-        });
-
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMapClickListener(this);
         mMap.setOnCameraMoveStartedListener(this);
