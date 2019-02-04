@@ -27,8 +27,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -38,17 +36,14 @@ import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, OnMarkerClickListener {
 
-    final private String dbPath = "https://stanfood-e7255.firebaseio.com/";
     private GoogleMap mMap;
     private View bottomSheet;
     private BottomSheetBehavior<View> mBottomSheetBehavior;
     private Map<String, String> markers = new HashMap<>();
-    private FirebaseDatabase database;
-    private DatabaseReference dbRef;
-    private DatabaseReference database;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private float distanceRange = 10000;
+    private Database db;
 
 
     @Override
@@ -65,9 +60,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mBottomSheetBehavior.setHideable(true);
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
-        database = FirebaseDatabase.getInstance(dbPath);
-        dbRef = database.getReference();
-        database = FirebaseDatabase.getInstance().getReference();
+        db = new Database();
 
     }
 
@@ -87,23 +80,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         //adds location marker
         enableMyLocation();
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                // Got last known location. In some rare situations this can be null.
+                if (location != null) {
+                    LatLng current = new LatLng(location.getLatitude(),location.getLongitude());
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current,16));
+                    populatePins(location);
+                }
+            }
+        });
 
-
-        // Add a marker in Sydney and move the camera
-        //LatLng sydney = new LatLng(-34, 151);
-
-        LatLng home = new LatLng(37.4248955,-122.1768221);
-        float zoom = 17;
-        mMap.addMarker(new MarkerOptions().position(home).title("Lagunita Court").snippet("Dorm"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(home, zoom));
-
-        googleMap.setOnMarkerClickListener(this);
-
-        // TEST: delete later
-        Pin pin = new Pin(new LatLng(37.4243048,-122.1730309));
-        List<Pin> pins = new ArrayList<>();
-        pins.add(pin);
-        displayMarkers(pins);
+        mMap.setOnMarkerClickListener(this);
     }
 
 
@@ -132,33 +122,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public boolean onMarkerClick(Marker marker) {
         LatLng location = marker.getPosition();
-        String pinId = markers.get(marker.getId());
+        //String pinId = markers.get(marker.getId());
         // TODO: get text description or list of events to display
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         mBottomSheetBehavior.setHideable(false);
 
         // center the marker in the map area above the bottom sheet
+
         mMap.setPadding(0, 0, 0, 1000);
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(location));
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(location),500,null);
         return true;
-
-        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-        //mMap.moveCamera(CameraUpdateFactory.zoomIn());
-
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-                            LatLng current = new LatLng(location.getLatitude(),location.getLongitude());
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current,16));
-                            populatePins(location);
-                        }
-                    }
-                });
-
 
     }
 
@@ -192,7 +165,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void populatePins(final Location cur){
-        Database db = new Database();
         db.dbRef.child("pins").addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
@@ -213,7 +185,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d("ERROR",databaseError.toString());
+                        Log.d("ERROR", databaseError.toString());
                     }
                 }
         );
