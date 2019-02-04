@@ -149,7 +149,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onCameraMoveStarted(int i) {
         if (mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            // don't want to collapse bottom sheet when a marker is
+            // clicked and the app moves the camera automatically
+            if (i != REASON_DEVELOPER_ANIMATION) {
+                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
         }
     }
 
