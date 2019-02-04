@@ -21,7 +21,7 @@ public class Database {
     final private String dbPath = "https://stanfood-e7255.firebaseio.com/";
     final private String stanfordLocSuffix = " Stanford, CA 94305";
     private FirebaseDatabase database;
-    private DatabaseReference dbRef;
+    public DatabaseReference dbRef;
 
     public Database(){
         database = FirebaseDatabase.getInstance(dbPath);
@@ -60,9 +60,10 @@ public class Database {
                         if(ds.hasChildren()) {
                             double lat = ds.child("locationCoordinate/latitude").getValue(double.class);
                             double lng = ds.child("locationCoordinate/longitude").getValue(double.class);
-                            LatLng l = new LatLng(lat, lng);
-                            if (loc == l) {
+                            if (loc.latitude == lat && loc.longitude == lng) {
                                 pinId = ds.getKey();
+                                int numEvents = ds.child("numEvents").getValue(int.class);
+                                ds.getRef().child("numEvents").setValue(numEvents+1);
                                 break;
                             }
                         }
