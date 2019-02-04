@@ -75,23 +75,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                     }
                 });
-
     }
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-    }
-
-    /**
-     * Button for testing CreateEventActivity transitions
-     * TODO: Replace/transpose into Hamburger layout
-     */
-    public void sendCreateEventRequest(View view) {
-        Intent intent = new Intent(this, CreateEventActivity.class);
-        startActivity(intent);
-    }
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
@@ -146,6 +131,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 }
         );
+    }
+
+    /**
+     * Button for testing CreateEventActivity transitions
+     * TODO: Replace/transpose into Hamburger layout
+     */
+    public void sendCreateEventRequest(View view) {
+        Intent intent = new Intent(this, CreateEventActivity.class);
+        startActivity(intent);
     }
 
 }
