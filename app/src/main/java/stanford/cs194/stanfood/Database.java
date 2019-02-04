@@ -36,8 +36,12 @@ public class Database {
     }
 
     // createUser: creates a new user in the users table
-    public String createUser(String email, String name){
-        return createEntry("users", new User(email, name));
+    // Note: createUser signature differs from other create functions in that it takes in an
+    // existing uid we already generated from Firebase authentication
+    public String createUser(String uid, String email, String name){
+        User user = new User(email, name);
+        dbRef.child("users").child(uid).setValue(user);
+        return uid;
     }
 
     // createPin: creates a new pin in the pins table
