@@ -30,7 +30,6 @@ import com.google.firebase.database.ValueEventListener;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private DatabaseReference database;
     private FusedLocationProviderClient mFusedLocationClient;
     private float distanceRange = 10000;
 
@@ -43,8 +42,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        database = FirebaseDatabase.getInstance().getReference();
-
     }
 
 
