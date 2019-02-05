@@ -136,9 +136,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     @Override
     public void onMapClick(LatLng latLng) {
-        if (mBottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN) {
-            mBottomSheetBehavior.setHideable(true);
-            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        if (mBottomSheetBehavior.getState() != BottomSheetBehavior.STATE_COLLAPSED) {
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
     }
 
