@@ -37,6 +37,6 @@ public class GetNameFromCoordinates extends AsyncTask<Object, Void, String[]> {
         String pinId = result[0];
         String addressLine = result[1];
         Database db = new Database();
-        db.dbRef.child("pins/"+pinId+"/name").setValue(addressLine);
+        db.dbRef.child("pins/"+pinId+"/locationName").setValue(addressLine);
     }
 }
