@@ -272,8 +272,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 // sign-in flow using the back button. Otherwise check
                 // response.getError().getErrorCode() and handle the error.
                 // ...
-                Log.e("Authentication", "Log in failed with error code: "
-                        + response.getError().getErrorCode());
+                if (response == null) {
+                    Log.d("Authentication", "Sign in flow cancelled by user");
+                } else {
+                    Log.e("Authentication", "Log in failed with error: "
+                            + response.getError().getErrorCode());
+                }
             }
         }
     }
