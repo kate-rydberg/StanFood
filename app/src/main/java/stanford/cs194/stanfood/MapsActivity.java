@@ -18,6 +18,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -88,14 +89,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Set up listeners for the navigation menu
         addMenuIconListener();
         addNavigationListener();
-
-        if (auth.getCurrentUser() != null) {
-            // TODO hide log in option in menu
-            Log.d("Authentication","Logged in as: " + auth.getCurrentUser().getDisplayName());
-        } else {
-            // TODO hide log out option in menu
-            Log.d("Authentication","Not logged in");
-        }
+        setAuthenticationMenuOptions();
     }
 
     /**
@@ -255,6 +249,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     public void onComplete(@NonNull Task<Void> task) {
                         Log.d("Authentication", "User successfully logged out");
+                        setAuthenticationMenuOptions();
                     }
                 });
     }
@@ -271,6 +266,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.d("Authentication", "User successfully logged in as: "
                         + auth.getCurrentUser().getDisplayName());
                 auth.addCurrentUserToDatabase();
+                setAuthenticationMenuOptions();
             } else {
                 // Sign in failed. If response is null the user canceled the
                 // sign-in flow using the back button. Otherwise check
@@ -342,6 +338,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         return true;
                     }
                 });
+    }
+
+    /**
+     * Checks if user is logged in and displays the corresponding authentication option in menu
+     * - User is logged in -> display "Log Out"
+     * - User is not logged in -> display "Log In or Sign Up"
+     */
+    public void setAuthenticationMenuOptions() {
+        boolean isLoggedIn = auth.getCurrentUser() != null;
+        final Menu menu = ((NavigationView) findViewById(R.id.nav_view)).getMenu();
+        menu.findItem(R.id.login_signup).setVisible(!isLoggedIn);
+        menu.findItem(R.id.logout).setVisible(isLoggedIn);
     }
 
     /**
