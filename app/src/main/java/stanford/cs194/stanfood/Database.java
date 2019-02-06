@@ -68,8 +68,10 @@ public class Database {
                             }
                         }
                     }
-                    if(pinId == null)
+                    if(pinId == null) {
                         pinId = createPin(loc);
+                        new GetNameFromCoordinates().execute(pinId, loc);
+                    }
                     createEntry("events", new Event(pinId, description, locationName, time));
                 }
 
