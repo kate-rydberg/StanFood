@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">StanFood</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps"></string>
+    <string name="CustomBottomSheetBehavior">stanford.cs194.stanfood.CustomBottomSheetBehavior</string>
+    <string name="bottom_sheet_peek">Bottom Sheet Peek!</string>
+    <string name="bottom_sheet_content">Bottom Sheet Content!</string>
+    <string name="login">Login/Sign-up</string>
+    <string name="create_event">Create an Event</string>
 </resources>
