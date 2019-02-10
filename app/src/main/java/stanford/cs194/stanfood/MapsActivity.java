@@ -58,10 +58,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
 
         // Get the bottom sheet and hide it initially
+
         bottomSheet = findViewById( R.id.bottom_sheet );
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-        mBottomSheetBehavior.setHideable(true);
-        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        //mMap.setPadding(0, 0, 0, mBottomSheetBehavior.getPeekHeight());
+        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                mMap.setPadding(0, 0, 0, getResources().getDimension(R.dimen.bottom_sheet_expanded_height));
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                int gradient = (int)(getResources().getDimension(R.dimen.bottom_sheet_expanded_height)-mBottomSheetBehavior.getPeekHeight());
+                mMap.setPadding(0, 0, 0, (int)(slideOffset*gradient+mBottomSheetBehavior.getPeekHeight()));//android.);
+
+            }
+        });
+
 
         db = new Database();
 
@@ -93,13 +108,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //adds location marker
         enableMyLocation();
 
+
+        mMap.setPadding(0, 0, 0, mBottomSheetBehavior.getPeekHeight());
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
-                            LatLng current = new LatLng(location.getLatitude(),location.getLongitude());
+                            LatLng current = new LatLng(37.4254157, -122.1786136);//location.getLatitude(),location.getLongitude());
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current,16));
                             populatePins(location);
                         }
@@ -126,10 +144,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mBottomSheetBehavior.setHideable(false);
 
         // center the marker in the map area above the bottom sheet
-        mMap.setPadding(0, 0, 0, 1000);
+        //mMap.setPadding(0, 0, 0, 1000);
         mMap.animateCamera(CameraUpdateFactory.newLatLng(location),500,null);
         return true;
     }
+
+
 
     /**
      * Listen for when map is clicked and hide bottom sheet if it is expanded.
