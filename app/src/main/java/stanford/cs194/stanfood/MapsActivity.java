@@ -18,10 +18,13 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -32,10 +35,15 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, OnMarkerClickListener, GoogleMap.OnMapClickListener, GoogleMap.OnCameraMoveStartedListener {
 
@@ -47,6 +55,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FusedLocationProviderClient mFusedLocationClient;
     private float distanceRange = 10000;
     private Database db;
+    private Authentication auth = new Authentication();
+
+    private List<AuthUI.IdpConfig> providers = Arrays.asList(
+            new AuthUI.IdpConfig.EmailBuilder().build(),
+            new AuthUI.IdpConfig.GoogleBuilder().build());
+    private static final int RC_SIGN_IN = 123; // Arbitrary request code value
 
 
     @Override
@@ -59,7 +73,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
 
         // Get the bottom sheet and hide it initially
-        bottomSheet = findViewById( R.id.bottom_sheet );
+        bottomSheet = findViewById(R.id.bottom_sheet);
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         mBottomSheetBehavior.setHideable(true);
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -76,6 +90,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Set up listeners for the navigation menu
         addMenuIconListener();
         addNavigationListener();
+        setAuthenticationMenuOptions();
     }
 
     /**
@@ -194,14 +209,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for(DataSnapshot ds : dataSnapshot.getChildren()){
                             if(ds.hasChildren()){
-                                double lat = ds.child("locationCoordinate/latitude").getValue(double.class);
-                                double lng = ds.child("locationCoordinate/longitude").getValue(double.class);
+                                Pin curPin = ds.getValue(Pin.class);
+                                LatLng coordinate = curPin.getLocationCoordinate();
                                 Location loc = new Location(LocationManager.GPS_PROVIDER);
-                                loc.setLatitude(lat);
-                                loc.setLongitude(lng);
+                                loc.setLatitude(coordinate.latitude);
+                                loc.setLongitude(coordinate.longitude);
                                 if(cur.distanceTo(loc) < distanceRange){
-                                    LatLng pin = new LatLng(loc.getLatitude(),loc.getLongitude());
-                                    mMap.addMarker(new MarkerOptions().position(pin));
+                                    mMap.addMarker(new MarkerOptions().position(coordinate));
                                 }
                             }
                         }
@@ -212,6 +226,60 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 }
         );
+    }
+
+    /**
+     * Starts the intent for users to log in or sign up
+     */
+    public void loginSignup(View view) {
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(providers)
+                        .build(),
+                RC_SIGN_IN);
+    }
+
+    /**
+     * Logs out the user
+     */
+    public void logOut() {
+        AuthUI.getInstance()
+                .signOut(this)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Log.d("Authentication", "User successfully logged out");
+                        setAuthenticationMenuOptions();
+                    }
+                });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_SIGN_IN) {
+            IdpResponse response = IdpResponse.fromResultIntent(data);
+
+            if (resultCode == RESULT_OK) {
+                // Successfully signed in
+                Log.d("Authentication", "User successfully logged in as: "
+                        + auth.getCurrentUser().getDisplayName());
+                auth.addCurrentUserToDatabase();
+                setAuthenticationMenuOptions();
+            } else {
+                // Sign in failed. If response is null the user canceled the
+                // sign-in flow using the back button. Otherwise check
+                // response.getError().getErrorCode() and handle the error.
+                // ...
+                if (response == null) {
+                    Log.d("Authentication", "Sign in flow cancelled by user");
+                } else {
+                    Log.e("Authentication", "Log in failed with error: "
+                            + response.getError().getErrorCode());
+                }
+            }
+        }
     }
 
     /**
@@ -248,7 +316,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * Add listener for the list items in the navigation menu.
      */
     private void addNavigationListener() {
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        final NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -258,12 +326,34 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         // close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
 
-                        // Add code here to update the UI based on the item selected
-                        // For example, swap UI fragments here
+                        int itemId = menuItem.getItemId();
+                        switch (itemId) {
+                            case R.id.login_signup:
+                                loginSignup(navigationView);
+                                break;
+                            case R.id.logout:
+                                logOut();
+                                break;
+                            case R.id.create_event:
+                                //TODO
+                                break;
+                        }
 
                         return true;
                     }
                 });
+    }
+
+    /**
+     * Checks if user is logged in and displays the corresponding authentication option in menu
+     * - User is logged in -> display "Log Out"
+     * - User is not logged in -> display "Log In or Sign Up"
+     */
+    public void setAuthenticationMenuOptions() {
+        boolean isLoggedIn = auth.getCurrentUser() != null;
+        final Menu menu = ((NavigationView) findViewById(R.id.nav_view)).getMenu();
+        menu.findItem(R.id.login_signup).setVisible(!isLoggedIn);
+        menu.findItem(R.id.logout).setVisible(isLoggedIn);
     }
 
     /**
