@@ -64,16 +64,31 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         //mMap.setPadding(0, 0, 0, mBottomSheetBehavior.getPeekHeight());
         mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+
+            /**
+             * Changes padding of the map when the state of the bottom sheet is changed.
+             * e.g. by clicking a marker.
+             */
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                mMap.setPadding(0, 0, 0, getResources().getDimension(R.dimen.bottom_sheet_expanded_height));
+                if (newState == mBottomSheetBehavior.STATE_EXPANDED) {
+                    float expanded_height = getResources().getDimension(R.dimen.bottom_sheet_expanded_height);
+                    mMap.setPadding(0, 0, 0, (int)expanded_height);
+                } else if (newState == mBottomSheetBehavior.STATE_COLLAPSED) {
+                    int peek_height = mBottomSheetBehavior.getPeekHeight();
+                    mMap.setPadding(0, 0, 0, peek_height);
+                }
             }
 
+            /**
+             * Changes padding of the map when the user slides the bottom sheet.
+             */
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                int gradient = (int)(getResources().getDimension(R.dimen.bottom_sheet_expanded_height)-mBottomSheetBehavior.getPeekHeight());
-                mMap.setPadding(0, 0, 0, (int)(slideOffset*gradient+mBottomSheetBehavior.getPeekHeight()));//android.);
-
+                float expanded_height = getResources().getDimension(R.dimen.bottom_sheet_expanded_height);
+                int peek_height = mBottomSheetBehavior.getPeekHeight();
+                float padding = slideOffset * (expanded_height - peek_height) + peek_height;
+                mMap.setPadding(0, 0, 0, (int)padding);
             }
         });
 
@@ -143,9 +158,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         mBottomSheetBehavior.setHideable(false);
 
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(location),500,null);
+
         // center the marker in the map area above the bottom sheet
         //mMap.setPadding(0, 0, 0, 1000);
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(location),500,null);
+        //mMap.animateCamera(CameraUpdateFactory.newLatLng(location),500,null);
         return true;
     }
 
