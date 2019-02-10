@@ -4,18 +4,18 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class Pin {
     private String pinId;
-    private LatLng locationCoordinate;
+    private LatLngWrapper locationCoordinate;
     private String locationName;
     private int numEvents;
 
     public Pin() {}
 
-    public Pin(LatLng locationCoordinate) {
+    public Pin(LatLngWrapper locationCoordinate) {
         this.locationCoordinate = locationCoordinate;
         this.numEvents = 1;
     }
 
-    public Pin(LatLng locationCoordinate, String locationName, int numEvents) {
+    public Pin(LatLngWrapper locationCoordinate, String locationName, int numEvents) {
         this.locationCoordinate = locationCoordinate;
         this.locationName = locationName;
         this.numEvents = numEvents;
@@ -30,10 +30,10 @@ public class Pin {
     }
 
     public LatLng getLocationCoordinate() {
-        return locationCoordinate;
+        return locationCoordinate.getLatLng();
     }
 
-    public void setLocationCoordinate(LatLng locationCoordinate) {
+    public void setLocationCoordinate(LatLngWrapper locationCoordinate) {
         this.locationCoordinate = locationCoordinate;
     }
 

@@ -46,7 +46,8 @@ public class Database {
 
     // createPin: creates a new pin in the pins table
     public String createPin(LatLng loc){
-        return createEntry("pins", new Pin(loc));
+        LatLngWrapper locW = new LatLngWrapper(loc.latitude, loc.longitude);
+        return createEntry("pins", new Pin(locW));
     }
 
     // createEvent: creates a new event in the events table
@@ -62,18 +63,19 @@ public class Database {
                     String pinId = null;
                     for(DataSnapshot ds : dataSnapshot.getChildren()){
                         if(ds.hasChildren()) {
-                            double lat = ds.child("locationCoordinate/latitude").getValue(double.class);
-                            double lng = ds.child("locationCoordinate/longitude").getValue(double.class);
-                            if (loc.latitude == lat && loc.longitude == lng) {
+                            Pin curPin = ds.getValue(Pin.class);
+                            LatLng coordinate = curPin.getLocationCoordinate();
+                            if (loc.equals(coordinate)) {
                                 pinId = ds.getKey();
-                                int numEvents = ds.child("numEvents").getValue(int.class);
-                                ds.getRef().child("numEvents").setValue(numEvents+1);
+                                ds.getRef().child("numEvents").setValue(curPin.getNumEvents()+1);
                                 break;
                             }
                         }
                     }
-                    if(pinId == null)
+                    if(pinId == null) {
                         pinId = createPin(loc);
+                        new GetNameFromCoordinates().execute(pinId, loc);
+                    }
                     createEntry("events", new Event(pinId, description, locationName, time));
                 }
 

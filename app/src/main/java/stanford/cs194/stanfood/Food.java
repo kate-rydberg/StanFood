@@ -6,6 +6,8 @@ public class Food {
     private String eventId;
     private String description;
 
+    public Food() {}
+
     public Food(String eventId, String description) {
         this.eventId = eventId;
         this.description = description;
