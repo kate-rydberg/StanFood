@@ -1,15 +1,13 @@
 package stanford.cs194.stanfood;
 
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
 import java.time.LocalDateTime;
-
-import static java.time.LocalDateTime.now;
 
 public class CreateEventActivity extends AppCompatActivity {
     private Database db;
@@ -38,5 +36,6 @@ public class CreateEventActivity extends AppCompatActivity {
         String eventLocationStr = eventLocation.getText().toString();
         String eventDescriptionStr = eventDescription.getText().toString();
         db.createEvent(eventDescriptionStr, eventLocationStr, LocalDateTime.now());
+        finish();
     }
 }

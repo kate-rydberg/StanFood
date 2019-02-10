@@ -7,4 +7,10 @@
     <string name="login_signup">Log In or Sign Up</string>
     <string name="logout">Log Out</string>
     <string name="create_event">Create an Event</string>
+    <string name="createEventTitle">Create Your Event!</string>
+    <string name="event_name">Event Name</string>
+    <string name="food_description">Food Description</string>
+    <string name="event_location">Event Location</string>
+    <string name="event_description">Event Description</string>
+    <string name="createButtonText">Create</string>
 </resources>

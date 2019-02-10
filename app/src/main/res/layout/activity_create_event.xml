@@ -25,7 +25,7 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Create Your Event!"
+            android:text="@string/createEventTitle"
             android:textSize="30sp" />
 
         <EditText
@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Event Name"
+            android:hint="@string/event_name"
             android:inputType="textPersonName" />
 
         <EditText
@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Food Description"
+            android:hint="@string/food_description"
             android:inputType="textMultiLine" />
 
         <EditText
@@ -49,7 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Event Location"
+            android:hint="@string/event_location"
             android:inputType="textPostalAddress" />
 
         <EditText
@@ -57,7 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Event Description"
+            android:hint="@string/event_description"
             android:inputType="textMultiLine" />
 
         <Button
@@ -71,7 +71,7 @@
             android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
             android:onClick="createEvent"
-            android:text="Create"
+            android:text="@string/createButtonText"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
