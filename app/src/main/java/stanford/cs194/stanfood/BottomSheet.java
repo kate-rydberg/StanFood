@@ -45,10 +45,6 @@ public class BottomSheet {
                     mMap.setPadding(0, 0, 0, peek_height);
                 }
             }
-
-            /**
-             * Changes padding of the map when the user slides the bottom sheet.
-             */
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
                 float expanded_height = context.getResources().getDimension(R.dimen.bottom_sheet_expanded_height);
@@ -57,6 +53,7 @@ public class BottomSheet {
                 float padding = slideOffset * (expanded_height - peek_height) + peek_height;
                 mMap.setPadding(0, 0, 0, (int)padding);
             }
+
         });
     }
 

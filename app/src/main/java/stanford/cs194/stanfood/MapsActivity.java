@@ -135,12 +135,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //String pinId = markers.get(marker.getId());
         // TODO: get text description or list of events to display
         bottomSheet.expand();
+        mMap.setPadding(0, 0, 0, (int)getResources().getDimension(R.dimen.bottom_sheet_expanded_height));
         mMap.animateCamera(CameraUpdateFactory.newLatLng(location),500,null);
 
         return true;
     }
-
-
 
     /**
      * Listen for when map is clicked and hide bottom sheet if it is expanded.
