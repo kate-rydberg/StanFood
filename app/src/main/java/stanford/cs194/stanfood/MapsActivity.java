@@ -35,6 +35,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, OnMarkerClickListener, GoogleMap.OnMapClickListener, GoogleMap.OnCameraMoveStartedListener {
 
     private GoogleMap mMap;
@@ -192,14 +193,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for(DataSnapshot ds : dataSnapshot.getChildren()){
                             if(ds.hasChildren()){
-                                double lat = ds.child("locationCoordinate/latitude").getValue(double.class);
-                                double lng = ds.child("locationCoordinate/longitude").getValue(double.class);
+                                Pin curPin = ds.getValue(Pin.class);
+                                LatLng coordinate = curPin.getLocationCoordinate();
                                 Location loc = new Location(LocationManager.GPS_PROVIDER);
-                                loc.setLatitude(lat);
-                                loc.setLongitude(lng);
+                                loc.setLatitude(coordinate.latitude);
+                                loc.setLongitude(coordinate.longitude);
                                 if(cur.distanceTo(loc) < distanceRange){
-                                    LatLng pin = new LatLng(loc.getLatitude(),loc.getLongitude());
-                                    mMap.addMarker(new MarkerOptions().position(pin));
+                                    mMap.addMarker(new MarkerOptions().position(coordinate));
                                 }
                             }
                         }
