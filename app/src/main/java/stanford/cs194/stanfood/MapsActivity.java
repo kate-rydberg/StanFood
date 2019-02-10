@@ -100,16 +100,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //adds location marker
         enableMyLocation();
 
-
-        //mMap.setPadding(0, 0, 0, mBottomSheetBehavior.getPeekHeight());
-
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
-                            LatLng current = new LatLng(37.4254157, -122.1786136);//location.getLatitude(),location.getLongitude());
+                            LatLng current = new LatLng(location.getLatitude(),location.getLongitude());
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current,16));
                             populatePins(location);
                         }
@@ -138,13 +135,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //String pinId = markers.get(marker.getId());
         // TODO: get text description or list of events to display
         bottomSheet.expand();
-
-
         mMap.animateCamera(CameraUpdateFactory.newLatLng(location),500,null);
 
-        // center the marker in the map area above the bottom sheet
-        //mMap.setPadding(0, 0, 0, 1000);
-        //mMap.animateCamera(CameraUpdateFactory.newLatLng(location),500,null);
         return true;
     }
 

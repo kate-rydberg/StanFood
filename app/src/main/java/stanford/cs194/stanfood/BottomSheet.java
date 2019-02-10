@@ -22,7 +22,6 @@ public class BottomSheet {
         collapse();
         this.context = context;
         this.mMap = mMap;
-        Log.d("map", Boolean.toString(mMap==null));
     }
 
     public void setText() {
