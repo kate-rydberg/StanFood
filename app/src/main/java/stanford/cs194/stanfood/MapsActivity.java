@@ -1,7 +1,6 @@
 package stanford.cs194.stanfood;
 
 import android.content.Intent;
-import android.support.design.widget.BottomSheetBehavior;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
@@ -47,8 +46,7 @@ import java.util.List;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, OnMarkerClickListener, GoogleMap.OnMapClickListener, GoogleMap.OnCameraMoveStartedListener {
 
     private GoogleMap mMap;
-    private View bottomSheet;
-    private BottomSheetBehavior<View> mBottomSheetBehavior;
+    private BottomSheet bottomSheet;
     private DrawerLayout mDrawerLayout;
 
     private FusedLocationProviderClient mFusedLocationClient;
@@ -71,11 +69,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        // Get the bottom sheet and hide it initially
-        bottomSheet = findViewById(R.id.bottom_sheet);
-        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-        mBottomSheetBehavior.setHideable(true);
-        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        // Get the bottom sheet view
+        View bottomSheetView = findViewById(R.id.bottom_sheet);
+        bottomSheet = new BottomSheet(bottomSheetView);
 
         db = new Database();
 
@@ -137,8 +133,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         LatLng location = marker.getPosition();
         //String pinId = markers.get(marker.getId());
         // TODO: get text description or list of events to display
-        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        mBottomSheetBehavior.setHideable(false);
+        bottomSheet.expand();
 
         // center the marker in the map area above the bottom sheet
         mMap.setPadding(0, 0, 0, 1000);
@@ -152,8 +147,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     @Override
     public void onMapClick(LatLng latLng) {
-        if (mBottomSheetBehavior.getState() != BottomSheetBehavior.STATE_COLLAPSED) {
-            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        if (!bottomSheet.isCollapsed()) {
+            bottomSheet.collapse();
         }
     }
 
@@ -163,11 +158,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     @Override
     public void onCameraMoveStarted(int i) {
-        if (mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+        if (bottomSheet.isExpanded()) {
             // don't want to collapse bottom sheet when a marker is
             // clicked and the app moves the camera automatically
             if (i != REASON_DEVELOPER_ANIMATION) {
-                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                bottomSheet.collapse();
             }
         }
     }
