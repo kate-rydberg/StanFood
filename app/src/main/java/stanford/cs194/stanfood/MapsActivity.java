@@ -69,10 +69,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        // Get the bottom sheet view
-        View bottomSheetView = findViewById(R.id.bottom_sheet);
-        bottomSheet = new BottomSheet(bottomSheetView);
-
         db = new Database();
 
         // Get the transparent toolbar to insert the navigation menu icon
@@ -120,6 +116,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMapClickListener(this);
         mMap.setOnCameraMoveStartedListener(this);
+
+        // Get the bottom sheet view
+        View bottomSheetView = findViewById(R.id.bottom_sheet);
+        bottomSheet = new BottomSheet(bottomSheetView, bottomSheetView.getContext(), mMap);
+        bottomSheet.moveListener();
     }
 
     /**
@@ -134,10 +135,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //String pinId = markers.get(marker.getId());
         // TODO: get text description or list of events to display
         bottomSheet.expand();
-
-        // center the marker in the map area above the bottom sheet
-        mMap.setPadding(0, 0, 0, 1000);
+        mMap.setPadding(0, 0, 0, (int)getResources().getDimension(R.dimen.bottom_sheet_expanded_height));
         mMap.animateCamera(CameraUpdateFactory.newLatLng(location),500,null);
+
         return true;
     }
 
