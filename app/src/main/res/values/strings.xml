@@ -7,4 +7,6 @@
     <string name="login_signup">Log In or Sign Up</string>
     <string name="logout">Log Out</string>
     <string name="create_event">Create an Event</string>
+    <string name="channel_name">Channel Name</string>
+    <string name="channel_description">Channel Description</string>
 </resources>
