@@ -13,7 +13,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 
@@ -54,7 +53,8 @@ public class Database {
     // first searches to see if there is a pin at the associated location
     // if not, one is created. pinId is then retrieved, allowing the
     // event to be created
-    public void createEvent(final String description, final String locationName, final LocalDateTime time){
+    public void createEvent(final String description, final String locationName,
+                            final long timeStart, final long duration){
         final LatLng loc = getLocationFromName(locationName);
         dbRef.child("pins").addListenerForSingleValueEvent(
             new ValueEventListener() {
@@ -76,7 +76,8 @@ public class Database {
                         pinId = createPin(loc);
                         new GetNameFromCoordinates().execute(pinId, loc);
                     }
-                    createEntry("events", new Event(pinId, description, locationName, time));
+                    createEntry("events", new Event(pinId, description, locationName,
+                            timeStart, duration));
                 }
 
                 @Override
