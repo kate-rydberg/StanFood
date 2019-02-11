@@ -17,6 +17,16 @@
         android:supportsRtl="true"
         android:name="stanford.cs194.stanfood.App"
         android:theme="@style/AppThemeNoActionBar" >
+
+        <activity android:name=".SplashActivity" android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+
+            </intent-filter>
+
+        </activity>
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
