@@ -11,7 +11,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -47,7 +46,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private GoogleMap mMap;
     private BottomSheet bottomSheet;
-    private DrawerLayout mDrawerLayout;
+    private NavigationDrawer drawerLayout;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private float distanceRange = 10000;
@@ -74,15 +73,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         notif = new Notification(App.getContext());
 
         // Get the transparent toolbar to insert the navigation menu icon
-        mDrawerLayout = findViewById(R.id.drawer_layout);
+        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        drawerLayout = new NavigationDrawer(mDrawerLayout);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
-        // Set up listeners for the navigation menu
-        addMenuIconListener();
-        addNavigationListener();
+
+        // Set up the navigation menu
+        final NavigationView navigationView = findViewById(R.id.nav_view);
+        drawerLayout.addMenuIconListener();
+        drawerLayout.addNavigationListener(loginSignupRunnable(), logOutRunnable(), navigationView);
         setAuthenticationMenuOptions();
     }
 
@@ -224,32 +226,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         );
     }
 
-    /**
-     * Starts the intent for users to log in or sign up
-     */
-    public void loginSignup(View view) {
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
-                        .build(),
-                RC_SIGN_IN);
-    }
-
-    /**
-     * Logs out the user
-     */
-    public void logOut() {
-        AuthUI.getInstance()
-                .signOut(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Log.d("Authentication", "User successfully logged out");
-                        setAuthenticationMenuOptions();
-                    }
-                });
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -279,80 +255,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     * Add listener for events that occur when menu icon is interacted with
-     */
-    private void addMenuIconListener() {
-        mDrawerLayout.addDrawerListener(
-                new DrawerLayout.DrawerListener() {
-                    @Override
-                    public void onDrawerSlide(View drawerView, float slideOffset) {
-                        // Respond when the drawer's position changes
-                    }
-
-                    @Override
-                    public void onDrawerOpened(View drawerView) {
-                        // Respond when the drawer is opened
-                        // e.g. make map background darker
-                    }
-
-                    @Override
-                    public void onDrawerClosed(View drawerView) {
-                        // Respond when the drawer is closed
-                    }
-
-                    @Override
-                    public void onDrawerStateChanged(int newState) {
-                        // Respond when the drawer motion state changes
-                    }
-                }
-        );
-    }
-
-    /**
-     * Add listener for the list items in the navigation menu.
-     */
-    private void addNavigationListener() {
-        final NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // set item as selected to persist highlight
-                        menuItem.setChecked(true);
-                        // close drawer when item is tapped
-                        mDrawerLayout.closeDrawers();
-
-                        int itemId = menuItem.getItemId();
-                        switch (itemId) {
-                            case R.id.login_signup:
-                                loginSignup(navigationView);
-                                break;
-                            case R.id.logout:
-                                logOut();
-                                break;
-                            case R.id.create_event:
-                                //TODO
-                                break;
-                        }
-
-                        return true;
-                    }
-                });
-    }
-
-    /**
-     * Checks if user is logged in and displays the corresponding authentication option in menu
-     * - User is logged in -> display "Log Out"
-     * - User is not logged in -> display "Log In or Sign Up"
-     */
-    public void setAuthenticationMenuOptions() {
-        boolean isLoggedIn = auth.getCurrentUser() != null;
-        final Menu menu = ((NavigationView) findViewById(R.id.nav_view)).getMenu();
-        menu.findItem(R.id.login_signup).setVisible(!isLoggedIn);
-        menu.findItem(R.id.logout).setVisible(isLoggedIn);
-    }
-
-    /**
      * When the home (hamburger menu) icon is selected, opens the navigation menu.
      *
      * @param item - list item in the navigation menu
@@ -362,9 +264,59 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
+                drawerLayout.openDrawer();
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Starts the intent for users to log in or sign up.
+     * Returns a Runnable.
+     */
+    public Runnable loginSignupRunnable() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                startActivityForResult(
+                        AuthUI.getInstance()
+                                .createSignInIntentBuilder()
+                                .setAvailableProviders(providers)
+                                .build(),
+                        RC_SIGN_IN);
+            }
+        };
+    }
+
+    /**
+     * Logs out the user.
+     * Returns a Runnable.
+     */
+    public Runnable logOutRunnable() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                AuthUI.getInstance()
+                        .signOut(App.getContext())
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Log.d("Authentication", "User successfully logged out");
+                                setAuthenticationMenuOptions();
+                            }
+                        });
+            }
+        };
+    }
+
+    /**
+     * Checks if user is logged in and displays the corresponding authentication option in menu
+     * - User is logged in -> display "Log Out"
+     * - User is not logged in -> display "Log In or Sign Up"
+     */
+    public void setAuthenticationMenuOptions() {
+        boolean isLoggedIn = auth.getCurrentUser() != null;
+        final Menu menu = ((NavigationView)findViewById(R.id.nav_view)).getMenu();
+        menu.findItem(R.id.login_signup).setVisible(!isLoggedIn);
+        menu.findItem(R.id.logout).setVisible(isLoggedIn);
     }
 }
