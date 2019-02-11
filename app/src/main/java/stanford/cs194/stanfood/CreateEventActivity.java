@@ -81,8 +81,7 @@ public class CreateEventActivity extends AppCompatActivity {
         long minutesLong = Long.parseLong(minutesDuration.getText().toString());
         long durationMs = hoursLong * HOURS_TO_MS + minutesLong * MINUTES_TO_MS;
 
-        db.createEvent(completeEventStr, eventLocationStr, ldt, foodDescriptionStr);
-        //db.createEvent(completeEventStr, eventLocationStr, ms, foodDescriptionStr);
+        db.createEvent(completeEventStr, eventLocationStr, ms, durationMs, foodDescriptionStr);
 
         finish();
     }
