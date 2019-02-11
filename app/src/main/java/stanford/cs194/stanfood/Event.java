@@ -1,29 +1,34 @@
 package stanford.cs194.stanfood;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 public class Event {
     private String eventId;
     private String pinId;
     private String description;
     private String locationName;
-    private LocalDateTime time;
+    private long timeStart;
+    private long duration;
     private Food food;
 
     public Event() {}
 
-    public Event(String pinId, String description, String locationName, LocalDateTime time) {
+    public Event(String pinId, String description, String locationName, long timeStart,
+                 long duration) {
         this.pinId = pinId;
         this.description = description;
         this.locationName = locationName;
-        this.time = time;
+        this.timeStart = timeStart;
+        this.duration = duration;
     }
 
-    public Event(String pinId, String description, String locationName, LocalDateTime time, Food food) {
+    public Event(String pinId, String description, String locationName, long timeStart,
+                 long duration, Food food) {
         this.pinId = pinId;
         this.description = description;
         this.locationName = locationName;
-        this.time = time;
+        this.timeStart = timeStart;
+        this.duration = duration;
         this.food = food;
     }
 
@@ -55,12 +60,25 @@ public class Event {
         this.locationName = locationName;
     }
 
-    public LocalDateTime getTime() {
-        return time;
+    public long getTimeStart() {
+        return timeStart;
     }
 
-    public void setTime(LocalDateTime time) {
-        this.time = time;
+    public void setTimeStart(long timeStart) {
+        this.timeStart = timeStart;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public boolean eventExpired(){
+        Date timeExpire = new Date(timeStart + duration);
+        return timeExpire.before(new Date());
     }
 
     public Food getFood() { return food; }
