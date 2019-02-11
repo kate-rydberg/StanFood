@@ -10,7 +10,9 @@ import android.util.Log;
 
 public class Notification {
     final private String CHANNEL_ID = "123";
+    final private long DEFAULT_NOTIFICATION_TIMEOUT_MS = 3600000; // 1 hour
     final private Context context;
+    private NotificationManagerCompat notificationManagerCompat;
 
     public Notification(Context context) {
         this.context = context;
@@ -27,9 +29,17 @@ public class Notification {
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
+        notificationManagerCompat = NotificationManagerCompat.from(context);
     }
 
-
+    /**
+     * Creates and sends a new push notification to be displayed to the user
+     *
+     * @param title - title of the notification to be displayed to the user
+     * @param content - text content of the notification to be displayed to the user
+     * @param notificationId - unique id to interact with the notification in the future,
+     *                       e.g. cancel the notification
+     */
     public void sendNotification(String title, String content, int notificationId) {
         Log.d("Notification", "Sending notification with title: " + title
                 + ", content: " + content + ", notificationId: " + notificationId);
@@ -37,11 +47,10 @@ public class Notification {
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle(title)
                 .setContentText(content)
+                .setTimeoutAfter(DEFAULT_NOTIFICATION_TIMEOUT_MS)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-
         // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(notificationId, mBuilder.build());
+        notificationManagerCompat.notify(notificationId, mBuilder.build());
     }
 }
