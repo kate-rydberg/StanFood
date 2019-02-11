@@ -370,6 +370,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         return super.onOptionsItemSelected(item);
     }
+
     /**
      * Sends a request to create an event.
      */

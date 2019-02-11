@@ -25,6 +25,9 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:paddingTop="8sp"
+            android:paddingBottom="8sp"
             android:text="@string/createEventTitle"
             android:textSize="30sp" />
 
@@ -48,9 +51,90 @@
             android:id="@+id/eventLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
             android:hint="@string/event_location"
             android:inputType="textPostalAddress" />
+
+        <LinearLayout
+            android:id="@+id/dateLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/startDate"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="Event Starting Date"
+                android:inputType="date" />
+
+            <Button
+                android:id="@+id/selectDate"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:onClick="getDate"
+                android:text="Event Date" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/timeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/startTime"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="Event Starting Time"
+                android:inputType="time" />
+
+            <Button
+                android:id="@+id/selectTime"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:onClick="getTime"
+                android:text="Start Time" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/durationLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/durationDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="Event Duration:"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/hours"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="Hours"
+                android:inputType="number" />
+
+            <EditText
+                android:id="@+id/minutes"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="Minutes"
+                android:inputType="number" />
+
+        </LinearLayout>
 
         <EditText
             android:id="@+id/eventDescription"
