@@ -53,6 +53,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private float distanceRange = 10000;
     private Database db;
     private Authentication auth = new Authentication();
+    private Notification notif;
 
     private List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.EmailBuilder().build(),
@@ -70,6 +71,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
 
         db = new Database();
+        notif = new Notification(App.getContext());
 
         // Get the transparent toolbar to insert the navigation menu icon
         mDrawerLayout = findViewById(R.id.drawer_layout);
