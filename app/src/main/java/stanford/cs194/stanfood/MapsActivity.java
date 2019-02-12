@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -45,6 +46,7 @@ import java.util.List;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, OnMarkerClickListener, GoogleMap.OnMapClickListener, GoogleMap.OnCameraMoveStartedListener {
 
     private GoogleMap mMap;
+    private SupportMapFragment mapFragment;
     private BottomSheet bottomSheet;
     private NavigationDrawer drawerLayout;
 
@@ -65,23 +67,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         db = new Database();
         notif = new Notification(App.getContext());
 
-        // Get the transparent toolbar to insert the navigation menu icon
-        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        drawerLayout = new NavigationDrawer(mDrawerLayout);
-        setSupportActionBar(toolbar);
-        ActionBar actionbar = getSupportActionBar();
-        actionbar.setDisplayHomeAsUpEnabled(true);
-        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
-
         // Set up the navigation menu
+        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
+        drawerLayout = new NavigationDrawer(mDrawerLayout);
         final NavigationView navigationView = findViewById(R.id.nav_view);
         drawerLayout.addMenuIconListener();
         drawerLayout.addNavigationListener(loginSignupRunnable(), logOutRunnable(), navigationView);
@@ -125,6 +120,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         View bottomSheetView = findViewById(R.id.bottom_sheet);
         bottomSheet = new BottomSheet(bottomSheetView, bottomSheetView.getContext(), mMap);
         bottomSheet.moveListener();
+
+        createNavigationMenuListener();
     }
 
     /**
@@ -256,18 +253,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     /**
      * When the home (hamburger menu) icon is selected, opens the navigation menu.
-     *
-     * @param item - list item in the navigation menu
-     * @return
      */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
+    public void createNavigationMenuListener() {
+        View menu_view = findViewById(R.id.hamburger_menu);
+        menu_view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 drawerLayout.openDrawer();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
+            }
+        });
     }
 
     /**
