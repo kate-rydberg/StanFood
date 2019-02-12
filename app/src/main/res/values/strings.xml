@@ -9,4 +9,5 @@
     <string name="create_event">Create an Event</string>
     <string name="channel_name">Channel Name</string>
     <string name="channel_description">Channel Description</string>
+    <string name="title_activity_splash">SplashActivity</string>
 </resources>
