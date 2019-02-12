@@ -12,12 +12,9 @@ import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -72,15 +69,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
 
         db = new Database();
-        notif = new Notification(App.getContext());
 
-        // Set up the navigation menu
-        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
-        drawerLayout = new NavigationDrawer(mDrawerLayout);
-        final NavigationView navigationView = findViewById(R.id.nav_view);
-        drawerLayout.addMenuIconListener();
-        drawerLayout.addNavigationListener(loginSignupRunnable(), logOutRunnable(), navigationView);
-        setAuthenticationMenuOptions();
+        notif = new Notification(App.getContext());
     }
 
     /**
@@ -121,7 +111,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         bottomSheet = new BottomSheet(bottomSheetView, bottomSheetView.getContext(), mMap);
         bottomSheet.moveListener();
 
-        createNavigationMenuListener();
+        setupNavigationMenu();
     }
 
     /**
@@ -252,9 +242,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     * When the home (hamburger menu) icon is selected, opens the navigation menu.
+     * Creates the drawer layout and adds listeners.
      */
-    public void createNavigationMenuListener() {
+    private void setupNavigationMenu() {
+        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
+        drawerLayout = new NavigationDrawer(mDrawerLayout);
+        final NavigationView navigationView = findViewById(R.id.nav_view);
+        drawerLayout.addMenuIconListener();
+        drawerLayout.addNavigationListener(loginSignupRunnable(), logOutRunnable(), navigationView);
+        setAuthenticationMenuOptions();
+        //moveCompassPosition();
+        createNavigationMenuListener();
+    }
+
+    /**
+     * Adds a listener so that when the hamburger menu icon is clicked,
+     * the navigation menu opens.
+     */
+    private void createNavigationMenuListener() {
         View menu_view = findViewById(R.id.hamburger_menu);
         menu_view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -265,10 +270,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     * Starts the intent for users to log in or sign up.
-     * Returns a Runnable.
+     * Starts the intent for users to log in or sign up. Returns a Runnable.
      */
-    public Runnable loginSignupRunnable() {
+    private Runnable loginSignupRunnable() {
         return new Runnable() {
             @Override
             public void run() {
@@ -283,10 +287,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     * Logs out the user.
-     * Returns a Runnable.
+     * Logs out the user. Returns a Runnable.
      */
-    public Runnable logOutRunnable() {
+    private Runnable logOutRunnable() {
         return new Runnable() {
             @Override
             public void run() {
@@ -307,10 +310,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * - User is logged in -> display "Log Out"
      * - User is not logged in -> display "Log In or Sign Up"
      */
-    public void setAuthenticationMenuOptions() {
+    private void setAuthenticationMenuOptions() {
         boolean isLoggedIn = auth.getCurrentUser() != null;
         final Menu menu = ((NavigationView)findViewById(R.id.nav_view)).getMenu();
         menu.findItem(R.id.login_signup).setVisible(!isLoggedIn);
         menu.findItem(R.id.logout).setVisible(isLoggedIn);
+    }
+
+    /**
+     * Moves the compass position down, so that the hamburger menu does not cover it.
+     */
+    private void moveCompassPosition() {
+        View compassButton = mapFragment.getView().findViewWithTag("GoogleMapCompass");//this works for me
+        RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) compassButton.getLayoutParams();
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_START);
+        // TODO: find correct configuration of rules
+        rlp.topMargin = 50;
     }
 }
