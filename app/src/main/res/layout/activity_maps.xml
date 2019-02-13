@@ -28,11 +28,10 @@
         app:behavior_peekHeight="@dimen/bottom_sheet_peek_height"
         app:layout_behavior="@string/bottom_sheet_behavior" >
 
-        <view class="android.support.v7.app.AlertController$RecycleListView"
+        <ListView
             android:id="@+id/eventList"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </view>
+            android:layout_height="wrap_content"></ListView>
 
     </android.support.v4.widget.NestedScrollView>
 

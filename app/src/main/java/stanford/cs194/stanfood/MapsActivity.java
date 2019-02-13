@@ -140,7 +140,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         ListView eventList = findViewById(R.id.eventList);
         CreateList initRows = new CreateList(App.getContext(), db, marker,eventStorage);
-        Adapter rowCells = initRows.EVENTLIST;
+        ArrayList<String> eventNames = initRows.getEventNames();
+        ArrayList<Long> eventStartTimes = initRows.getEventStartTime();
+        ArrayList<String> eventDescription = initRows.getEventDescriptions();
+        Adapter rowCells = new EventAdapter(eventList.getContext(), eventNames, eventStartTimes, eventDescription);;
         eventList.setAdapter((ListAdapter) rowCells);
 
         return true;
