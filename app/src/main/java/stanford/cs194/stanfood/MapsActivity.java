@@ -321,7 +321,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * Moves the compass position down, so that the hamburger menu does not cover it.
      */
     private void moveCompassPosition() {
-        View compassButton = mapFragment.getView().findViewWithTag("GoogleMapCompass");//this works for me
+        View compassButton = mapFragment.getView().findViewWithTag("GoogleMapCompass");
         RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) compassButton.getLayoutParams();
         rlp.addRule(RelativeLayout.ALIGN_PARENT_START, 0);
         rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
