@@ -104,7 +104,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
-                            LatLng current = new LatLng(37.4272725, -122.1719077);//location.getLatitude(),location.getLongitude());
+                            LatLng current = new LatLng(location.getLatitude(),location.getLongitude());
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current,16));
                             populatePins(location);
                         }
