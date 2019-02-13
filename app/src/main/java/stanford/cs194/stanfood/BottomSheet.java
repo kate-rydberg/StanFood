@@ -1,9 +1,6 @@
 package stanford.cs194.stanfood;
 
-import android.content.ContentProvider;
 import android.content.Context;
-import android.content.res.Resources;
-import android.support.v4.content.ContextCompat;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.util.Log;

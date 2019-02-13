@@ -54,8 +54,9 @@ public class Database {
     // if not, one is created. pinId is then retrieved, allowing the
     // event to be created
     public void createEvent(final String description, final String locationName,
-                            final long timeStart, final long duration){
+                            final long timeStart, final long duration, final String foodDescription){
         final LatLng loc = getLocationFromName(locationName);
+        // TODO: Insert check for null location in case the corresponding location name doesn't exist
         dbRef.child("pins").addListenerForSingleValueEvent(
             new ValueEventListener() {
                 @Override
@@ -76,8 +77,9 @@ public class Database {
                         pinId = createPin(loc);
                         new GetNameFromCoordinates().execute(pinId, loc);
                     }
-                    createEntry("events", new Event(pinId, description, locationName,
+                    String eventId = createEntry("events", new Event(pinId, description, locationName,
                             timeStart, duration));
+                    createFood(eventId, foodDescription);
                 }
 
                 @Override
@@ -93,7 +95,12 @@ public class Database {
         createEntry("food", new Food(eventId, description));
     }
 
-    // getLocationFromName: uses Geocoder package to return coordinates from a locationName
+    /**
+     * getLocationFromName: uses Geocoder package to return coordinates from a locationName
+     * Currently only handles conversions of Stanford locations and building names
+     * @return null if the location name does not correspond to a recognizable Stanford location.
+     * Returns a LatLng object corresponding to the location if one exists.
+     */
     private LatLng getLocationFromName(String locationName){
         Geocoder geo = new Geocoder(App.getContext(), Locale.US);
         String fullAddress = locationName + stanfordLocSuffix;

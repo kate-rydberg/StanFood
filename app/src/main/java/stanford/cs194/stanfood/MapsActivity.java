@@ -1,15 +1,15 @@
 package stanford.cs194.stanfood;
 
-import android.content.Intent;
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -56,7 +56,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.EmailBuilder().build(),
             new AuthUI.IdpConfig.GoogleBuilder().build());
-    private static final int RC_SIGN_IN = 123; // Arbitrary request code value
+    private static final int RC_SIGN_IN = 123; // Arbitrary request code value for signing in
+    private static final int CREATE_EVENT = 124; // Arbitrary request code value for creating event
 
 
     @Override
@@ -238,6 +239,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             + response.getError().getErrorCode());
                 }
             }
+        } else if (requestCode == CREATE_EVENT) {
+            if (resultCode == RESULT_OK) {
+                // Successfully created event
+                Log.d("CreateEvent", "Event Creation succeeded.");
+                final NavigationView navigationView = findViewById(R.id.nav_view);
+                navigationView.setCheckedItem(R.id.blank_option);
+            } else {
+                // Event creation failed
+                Log.e("CreateEvent", "Event Creation failed.");
+            }
         }
     }
 
@@ -249,7 +260,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         drawerLayout = new NavigationDrawer(mDrawerLayout);
         final NavigationView navigationView = findViewById(R.id.nav_view);
         drawerLayout.addMenuIconListener();
-        drawerLayout.addNavigationListener(loginSignupRunnable(), logOutRunnable(), navigationView);
+        drawerLayout.addNavigationListener(loginSignupRunnable(), logOutRunnable(), createEventRunnable(), navigationView);
         setAuthenticationMenuOptions();
         moveCompassPosition();
         createNavigationMenuListener();
@@ -287,7 +298,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     * Logs out the user. Returns a Runnable.
+     * Starts the intent for users to log out. Returns a Runnable.
      */
     private Runnable logOutRunnable() {
         return new Runnable() {
@@ -301,6 +312,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 setAuthenticationMenuOptions();
                             }
                         });
+            }
+        };
+    }
+
+    /**
+     * Starts the intent for users to create an event. Returns a Runnable.
+     */
+    private Runnable createEventRunnable() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                boolean isLoggedIn = auth.getCurrentUser() != null;
+                if (isLoggedIn) {
+                    Intent intent = new Intent(MapsActivity.this, CreateEventActivity.class);
+                    startActivityForResult(intent, CREATE_EVENT);
+                } else {
+                    startActivityForResult(
+                            AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
+                                    .setAvailableProviders(providers)
+                                    .build(),
+                            RC_SIGN_IN);
+                }
             }
         };
     }
