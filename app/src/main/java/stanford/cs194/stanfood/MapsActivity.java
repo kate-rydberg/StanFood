@@ -17,6 +17,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Adapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -38,6 +41,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, OnMarkerClickListener, GoogleMap.OnMapClickListener, GoogleMap.OnCameraMoveStartedListener {
@@ -46,6 +50,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private SupportMapFragment mapFragment;
     private BottomSheet bottomSheet;
     private NavigationDrawer drawerLayout;
+    private HashMap<LatLng,String> eventStorage;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private float distanceRange = 10000;
@@ -72,6 +77,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         db = new Database();
 
         notif = new Notification(App.getContext());
+
+        eventStorage = new HashMap<>();
+        // Get the transparent toolbar to insert the navigation menu icon
     }
 
     /**
@@ -96,7 +104,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
-                            LatLng current = new LatLng(location.getLatitude(),location.getLongitude());
+                            LatLng current = new LatLng(37.4272725, -122.1719077);//location.getLatitude(),location.getLongitude());
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current,16));
                             populatePins(location);
                         }
@@ -129,6 +137,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         bottomSheet.expand();
         mMap.setPadding(0, 0, 0, (int)getResources().getDimension(R.dimen.bottom_sheet_expanded_height));
         mMap.animateCamera(CameraUpdateFactory.newLatLng(location),500,null);
+
+        ListView eventList = findViewById(R.id.eventList);
+        CreateList initRows = new CreateList(App.getContext(), db, marker,eventStorage);
+        Adapter rowCells = initRows.EVENTLIST;
+        eventList.setAdapter((ListAdapter) rowCells);
 
         return true;
     }
@@ -202,6 +215,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 loc.setLongitude(coordinate.longitude);
                                 if(cur.distanceTo(loc) < distanceRange){
                                     mMap.addMarker(new MarkerOptions().position(coordinate));
+                                    eventStorage.put(coordinate, ds.getKey());
                                 }
                             }
                         }
