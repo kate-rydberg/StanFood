@@ -251,7 +251,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         drawerLayout.addMenuIconListener();
         drawerLayout.addNavigationListener(loginSignupRunnable(), logOutRunnable(), navigationView);
         setAuthenticationMenuOptions();
-        //moveCompassPosition();
+        moveCompassPosition();
         createNavigationMenuListener();
     }
 
@@ -323,9 +323,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void moveCompassPosition() {
         View compassButton = mapFragment.getView().findViewWithTag("GoogleMapCompass");//this works for me
         RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) compassButton.getLayoutParams();
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_START);
-        // TODO: find correct configuration of rules
-        rlp.topMargin = 50;
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_START, 0);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_END, RelativeLayout.TRUE);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+        rlp.rightMargin = rlp.leftMargin;
+        rlp.bottomMargin = 25;
     }
 }
