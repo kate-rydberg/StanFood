@@ -16,4 +16,5 @@
     <string name="event_description">Event Description</string>
     <string name="createButtonText">Create</string>
     <string name="use_current_location">Use Current Location?</string>
+    <string name="title_activity_splash">SplashActivity</string>
 </resources>
