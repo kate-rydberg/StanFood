@@ -260,7 +260,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         drawerLayout = new NavigationDrawer(mDrawerLayout);
         final NavigationView navigationView = findViewById(R.id.nav_view);
         drawerLayout.addMenuIconListener();
-        drawerLayout.addNavigationListener(loginSignupRunnable(), logOutRunnable(), navigationView);
+        drawerLayout.addNavigationListener(loginSignupRunnable(), logOutRunnable(), createEventRunnable(), navigationView);
         setAuthenticationMenuOptions();
         moveCompassPosition();
         createNavigationMenuListener();
@@ -297,6 +297,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         };
     }
 
+    /**
+     * Starts the intent for users to log out. Returns a Runnable.
+     */
     private Runnable logOutRunnable() {
         return new Runnable() {
             @Override
@@ -309,6 +312,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 setAuthenticationMenuOptions();
                             }
                         });
+            }
+        };
+    }
+
+    /**
+     * Starts the intent for users to create an event. Returns a Runnable.
+     */
+    private Runnable createEventRunnable() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                boolean isLoggedIn = auth.getCurrentUser() != null;
+                if (isLoggedIn) {
+                    Intent intent = new Intent(MapsActivity.this, CreateEventActivity.class);
+                    startActivityForResult(intent, CREATE_EVENT);
+                } else {
+                    startActivityForResult(
+                            AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
+                                    .setAvailableProviders(providers)
+                                    .build(),
+                            RC_SIGN_IN);
+                }
             }
         };
     }
@@ -337,13 +363,5 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         rlp.rightMargin = rlp.leftMargin;
         rlp.bottomMargin = 25;
-    }
-
-    /**
-     * Sends a request to create an event.
-     */
-    public void sendCreateEventRequest() {
-        Intent intent = new Intent(this, CreateEventActivity.class);
-        startActivityForResult(intent, CREATE_EVENT);
     }
 }
