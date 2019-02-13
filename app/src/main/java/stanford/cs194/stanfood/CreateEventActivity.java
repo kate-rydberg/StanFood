@@ -34,39 +34,97 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     /**
-     * Creates event according to filled out information
-     * Contains event name, food description, location name, event description,
-     * start date and time, and duration.
+     * Extracts complete event description from the layout
+     * Complete event description is combination of event name and event description
+     * separated by a newline.
+     * Note: Event name required, but event description is not.
+     * @return "" (empty string) if no event name given.
+     */
+    private String getEventDescription() {
+        EditText eventName = findViewById(R.id.eventName);
+        EditText eventDescription = findViewById(R.id.eventDescription);
+        String eventNameStr = eventName.getText().toString().trim();
+
+        // Error checking for required field: Event Name
+        if (eventNameStr.equals("")) {
+            eventName.setError("Event name required.");
+            return "";
+        }
+
+        String eventDescriptionStr = eventDescription.getText().toString().trim();
+        return eventNameStr + "\n" + eventDescriptionStr;
+    }
+
+    /**
+     * Extracts food description from the layout
+     * Note: Food description required.
+     * @return "" (empty string) if no food description given.
+     */
+    private String getFood() {
+        EditText foodDescription = findViewById(R.id.foodDescription);
+        String foodDescriptionStr = foodDescription.getText().toString().trim();
+
+        // Error checking for required field: Food Description
+        if (foodDescriptionStr.equals("")) {
+            foodDescription.setError("Food description required.");
+        }
+        return foodDescriptionStr;
+    }
+
+    /**
+     * Extracts location name from the layout
+     * Note: Location name required.
+     * @return "" (empty string) if no location name given.
+     */
+    private String getLocationName() {
+        EditText eventLocation = findViewById(R.id.eventLocation);
+        String eventLocationStr = eventLocation.getText().toString().trim();
+
+        // Error checking for required field: Event Location
+        if (eventLocationStr.equals("")) {
+            eventLocation.setError("Event Location required.");
+        }
+        return eventLocationStr;
+    }
+
+    /**
+     * Extracts event starting date and time from the layout in the form of milliseconds
+     * Note: Event Date and Start Time both required.
+     * @return 0 milliseconds if event date or start time not chosen
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void createEvent(View view) {
-        // Extract event and food information
-        EditText eventName = findViewById(R.id.eventName);
-        EditText foodDescription = findViewById(R.id.foodDescription);
-        EditText eventDescription = findViewById(R.id.eventDescription);
-        String eventNameStr = eventName.getText().toString();
-        String foodDescriptionStr = foodDescription.getText().toString();
-        String eventDescriptionStr = eventDescription.getText().toString();
-        String completeEventStr = eventNameStr + "\n" + eventDescriptionStr;
-
-        // Get given location name
-        EditText eventLocation = findViewById(R.id.eventLocation);
-        String eventLocationStr = eventLocation.getText().toString();
-
-        // Process current time zone and convert inputted date and time to milliseconds
+    private long getStartTimeMS() {
         TextView startDate = findViewById(R.id.startDate);
         TextView startTime = findViewById(R.id.startTime);
-        String dateStr = startDate.getText().toString();
-        String timeStr = startTime.getText().toString();
+        String dateStr = startDate.getText().toString().trim();
+        String timeStr = startTime.getText().toString().trim();
+
+        // Error checking for required fields: Start time, Start date
+        if (dateStr.equals("")) {
+            startDate.requestFocus();
+            startDate.setError("Event Date required.");
+            return 0;
+        } else {
+            startDate.setError(null);
+        }
+        if (timeStr.equals("")) {
+            startTime.requestFocus();
+            startTime.setError("Start Time required.");
+            return 0;
+        } else {
+            startTime.setError(null);
+        }
+
+        // Convert inputted date and time to milliseconds
         String[] dates = dateStr.split("-");
         String[] times = timeStr.split(":");
         LocalDateTime ldt;
 
         // Fills LocalDateTime with inputted date and time if present, else current time
         if (dates.length == 3 && times.length == 2) {
-            int day = Integer.parseInt(dates[0]);
+            int year = Integer.parseInt(dates[0]);
             int month = Integer.parseInt(dates[1]);
-            int year = Integer.parseInt(dates[2]);
+            int day = Integer.parseInt(dates[2]);
             int hour = Integer.parseInt(times[0]);
             int minute = Integer.parseInt(times[1]);
             ldt = LocalDateTime.of(year, month, day, hour, minute);
@@ -75,16 +133,62 @@ public class CreateEventActivity extends AppCompatActivity {
         }
         ZoneId timeZone = TimeZone.getDefault().toZoneId();
         ZonedDateTime zdt = ldt.atZone(timeZone);
-        long ms = zdt.toInstant().toEpochMilli();
+        return zdt.toInstant().toEpochMilli();
+    }
 
-        // Process given duration by converting hours and minutes to milliseconds
+    /**
+     * Extracts event duration in milliseconds from the layout.
+     * Note: Some non-zero duration required, but hours and minutes don't both have to be filled.
+     * @return 0 if invalid or empty duration.
+     */
+    private long getDurationMS(){
         EditText hoursDuration = findViewById(R.id.hours);
         EditText minutesDuration = findViewById(R.id.minutes);
-        long hoursLong = Long.parseLong(hoursDuration.getText().toString());
-        long minutesLong = Long.parseLong(minutesDuration.getText().toString());
-        long durationMs = hoursLong * HOURS_TO_MS + minutesLong * MINUTES_TO_MS;
+        String hoursStr = hoursDuration.getText().toString().trim();
+        String minutesStr = minutesDuration.getText().toString().trim();
 
-        db.createEvent(completeEventStr, eventLocationStr, ms, durationMs, foodDescriptionStr);
+        long hoursLong = 0;
+        long minutesLong = 0;
+        if (!hoursStr.equals("")) {
+            hoursLong = Long.parseLong(hoursStr);
+        }
+        if (!minutesStr.equals("")) {
+            minutesLong = Long.parseLong(minutesStr);
+        }
+        // Converts given hours and minutes to milliseconds
+        long durationMS = hoursLong * HOURS_TO_MS + minutesLong * MINUTES_TO_MS;
+
+        // Error checking for required field: Duration
+        if (durationMS == 0) {
+            hoursDuration.setError("Non-zero duration needed.");
+            minutesDuration.setError("Non-zero duration needed.");
+        } else {
+            hoursDuration.setError(null);
+            minutesDuration.setError(null);
+        }
+        return durationMS;
+    }
+
+    /**
+     * Creates event according to filled out information
+     * Contains event name, food description, location name, event description,
+     * start date and time, and duration.
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void createEvent(View view) {
+        String eventDescription = getEventDescription();
+        String foodDescription = getFood();
+        String locationName = getLocationName();
+        long startTimeMS = getStartTimeMS();
+        long durationMS = getDurationMS();
+
+        // If any fields empty/invalid, return without attempting database event creation
+        if (eventDescription.equals("") || foodDescription.equals("") || locationName.equals("")
+            || startTimeMS == 0 || durationMS == 0) {
+            return;
+        }
+
+        db.createEvent(eventDescription, locationName, startTimeMS, durationMS, foodDescription);
 
         Intent intent = new Intent();
         setResult(RESULT_OK, intent);
