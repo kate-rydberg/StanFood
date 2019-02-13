@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class EventAdapter extends ArrayAdapter {
 
@@ -41,7 +42,7 @@ public class EventAdapter extends ArrayAdapter {
         if(!name.get(position).equals("")) eventName.setText(name.get(position));
         else  eventName.setText("N/A");
 
-        if(time.get(position)!=null) eventTimeStart.setText(Long.toString(time.get(position)));
+        if(time.get(position)!=null) eventTimeStart.setText(new Date(time.get(position)).toString());
         else eventTimeStart.setText("N/A");
 
         if(!description.get(position).equals("")) eventDescription.setText(description.get(position));
