@@ -2,6 +2,7 @@ package stanford.cs194.stanfood;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -9,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import java.time.LocalDateTime;
@@ -51,8 +53,8 @@ public class CreateEventActivity extends AppCompatActivity {
         String eventLocationStr = eventLocation.getText().toString();
 
         // Process current time zone and convert inputted date and time to milliseconds
-        EditText startDate = findViewById(R.id.startDate);
-        EditText startTime = findViewById(R.id.startTime);
+        TextView startDate = findViewById(R.id.startDate);
+        TextView startTime = findViewById(R.id.startTime);
         String dateStr = startDate.getText().toString();
         String timeStr = startTime.getText().toString();
         String[] dates = dateStr.split("-");
@@ -83,6 +85,8 @@ public class CreateEventActivity extends AppCompatActivity {
 
         db.createEvent(completeEventStr, eventLocationStr, ms, durationMs, foodDescriptionStr);
 
+        Intent intent = new Intent();
+        setResult(RESULT_OK, intent);
         finish();
     }
 
@@ -90,7 +94,7 @@ public class CreateEventActivity extends AppCompatActivity {
      * Displays a Date Picker dialog to get the user to choose a start date.
      */
     public void getDate(View v) {
-        final EditText dateText = findViewById(R.id.startDate);
+        final TextView dateText = findViewById(R.id.startDate);
 
         // Gets current date
         final Calendar c = Calendar.getInstance();
@@ -114,7 +118,7 @@ public class CreateEventActivity extends AppCompatActivity {
      * Displays a Time Picker dialog to get the user to choose a start time.
      */
     public void getTime(View v) {
-        final EditText timeText = findViewById(R.id.startTime);
+        final TextView timeText = findViewById(R.id.startTime);
 
         // Gets current time
         final Calendar c = Calendar.getInstance();

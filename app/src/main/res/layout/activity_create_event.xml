@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/event_name"
-            android:inputType="textPersonName" />
+            android:inputType="none" />
 
         <EditText
             android:id="@+id/foodDescription"
@@ -60,14 +60,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <EditText
+            <TextView
                 android:id="@+id/startDate"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:ems="10"
-                android:hint="Event Starting Date"
-                android:inputType="date" />
+                android:gravity="center_vertical"
+                android:text="Event Start Date"
+                android:textSize="18sp" />
 
             <Button
                 android:id="@+id/selectDate"
@@ -84,14 +84,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <EditText
+            <TextView
                 android:id="@+id/startTime"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:ems="10"
-                android:hint="Event Starting Time"
-                android:inputType="time" />
+                android:gravity="center_vertical"
+                android:text="Event Start Time"
+                android:textSize="18sp" />
 
             <Button
                 android:id="@+id/selectTime"

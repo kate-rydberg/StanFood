@@ -58,7 +58,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.EmailBuilder().build(),
             new AuthUI.IdpConfig.GoogleBuilder().build());
-    private static final int RC_SIGN_IN = 123; // Arbitrary request code value
+    private static final int RC_SIGN_IN = 123; // Arbitrary request code value for signing in
+    private static final int CREATE_EVENT = 124; // Arbitrary request code value for creating event
 
 
     @Override
@@ -275,6 +276,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             + response.getError().getErrorCode());
                 }
             }
+        } else if (requestCode == CREATE_EVENT) {
+            if (resultCode == RESULT_OK) {
+                // Successfully created event
+                Log.d("CreateEvent", "Event Creation succeeded.");
+                final NavigationView navigationView = findViewById(R.id.nav_view);
+                navigationView.setCheckedItem(R.id.blank_option);
+            } else {
+                // Event creation failed
+                Log.e("CreateEvent", "Event Creation failed.");
+            }
         }
     }
 
@@ -331,10 +342,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 logOut();
                                 break;
                             case R.id.create_event:
-                                sendCreateEventRequest();
+                                if (auth.getCurrentUser() == null) {
+                                    loginSignup(navigationView);
+                                } else {
+                                    sendCreateEventRequest();
+                                }
                                 break;
                         }
-
                         return true;
                     }
                 });
@@ -373,7 +387,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     public void sendCreateEventRequest() {
         Intent intent = new Intent(this, CreateEventActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, CREATE_EVENT);
     }
-
 }
