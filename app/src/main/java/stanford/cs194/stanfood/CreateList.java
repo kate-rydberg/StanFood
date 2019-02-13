@@ -6,7 +6,9 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -29,21 +31,19 @@ public class CreateList {
     private ArrayList<String> name;
     private ArrayList<Long> time;
     private ArrayList<String> description;
+    private ListView eventList;
 
-    public CreateList(Context context, Database db, Marker marker, HashMap<LatLng, String> eventStorage) {
+    public CreateList(Context context, Database db, Marker marker, HashMap<LatLng, String> eventStorage, ListView eventList) {
         this.context = context;
         this.db = db;
         this.markerlocation = marker.getPosition();
         this.eventStorage = eventStorage;
+        this.eventList = eventList;
         name = new ArrayList<>();
         time = new ArrayList<>();
         description = new ArrayList<>();
 
         createEventList();
-
-        name.add("Free Pizza!");
-        time.add((long)2132019);
-        description.add("Midpoint Demo");
     }
 
     private void createEventList(){
@@ -57,10 +57,12 @@ public class CreateList {
                                 if(event.getPinId().equals(eventStorage.get(markerlocation))){
                                     description.add(event.getDescription());
                                     time.add(event.getTimeStart());
-                                    name.add(ds.getKey());
+                                    name.add(event.getLocationName());
                                 }
                             }
                         }
+                        Adapter rowCells = new EventAdapter(eventList.getContext(), name, time, description);
+                        eventList.setAdapter((ListAdapter) rowCells);
                     }
 
                     @Override

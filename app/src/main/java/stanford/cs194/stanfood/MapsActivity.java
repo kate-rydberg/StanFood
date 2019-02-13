@@ -139,13 +139,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.animateCamera(CameraUpdateFactory.newLatLng(location),500,null);
 
         ListView eventList = findViewById(R.id.eventList);
-        CreateList initRows = new CreateList(App.getContext(), db, marker,eventStorage);
-        ArrayList<String> eventNames = initRows.getEventNames();
-        ArrayList<Long> eventStartTimes = initRows.getEventStartTime();
-        ArrayList<String> eventDescription = initRows.getEventDescriptions();
-        Adapter rowCells = new EventAdapter(eventList.getContext(), eventNames, eventStartTimes, eventDescription);;
-        eventList.setAdapter((ListAdapter) rowCells);
 
+        CreateList initRows = new CreateList(App.getContext(), db, marker, eventStorage, eventList);
         return true;
     }
 
