@@ -47,17 +47,17 @@ public class CreateList {
     }
 
     private void createEventList(){
-        db.dbRef.child("event").addListenerForSingleValueEvent(
+        db.dbRef.child("events").addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for(DataSnapshot ds : dataSnapshot.getChildren()){
                             if(ds.hasChildren()){
                                 Event event = ds.getValue(Event.class);
-                                if(event.getPinId() == eventStorage.get(markerlocation)){
+                                if(event.getPinId().equals(eventStorage.get(markerlocation))){
                                     description.add(event.getDescription());
                                     time.add(event.getTimeStart());
-                                    //name.add(event.getEventId());
+                                    name.add(ds.getKey());
                                 }
                             }
                         }
