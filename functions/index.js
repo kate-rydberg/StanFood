@@ -36,12 +36,12 @@ exports.checkPinEvents = functions.https.onRequest((req, res) => {
   		}
   		catch(err) {
   			console.log(err);
-  			res.redirect(404);
+			res.status(404).end();
   		}
   	})
   })
 
   //send back response
-  res.redirect(200);
+  res.status(200).end();
 
 });
