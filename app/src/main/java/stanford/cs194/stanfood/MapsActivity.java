@@ -264,8 +264,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (resultCode == RESULT_OK) {
                 // Successfully created event
                 Log.d("CreateEvent", "Event Creation succeeded.");
-                final NavigationView navigationView = findViewById(R.id.nav_view);
-                navigationView.setCheckedItem(R.id.blank_option);
                 String text = "Event successfully created!";
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();

@@ -43,7 +43,8 @@ public class NavigationDrawer {
 
                     @Override
                     public void onDrawerClosed(View drawerView) {
-                        // Respond when the drawer is closed
+                        final NavigationView navigationView = drawerView.findViewById(R.id.nav_view);
+                        navigationView.setCheckedItem(R.id.blank_option);
                     }
 
                     @Override
@@ -62,8 +63,6 @@ public class NavigationDrawer {
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // set item as selected to persist highlight
-                        menuItem.setChecked(true);
                         // close drawer when item is tapped
                         closeDrawer();
 
