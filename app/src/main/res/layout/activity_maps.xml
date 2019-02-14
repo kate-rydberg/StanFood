@@ -30,6 +30,7 @@
 
         <ListView
             android:id="@+id/eventList"
+            android:layout_marginTop="@dimen/bottom_sheet_peek_height"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"></ListView>
 
