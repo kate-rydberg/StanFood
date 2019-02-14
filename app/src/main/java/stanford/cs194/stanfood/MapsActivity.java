@@ -2,6 +2,7 @@ package stanford.cs194.stanfood;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -16,10 +17,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.widget.RelativeLayout;
-import android.widget.Adapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -230,6 +230,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        Context context = getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
+
         if (requestCode == RC_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
 
@@ -239,6 +242,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         + auth.getCurrentUser().getDisplayName());
                 auth.addCurrentUserToDatabase();
                 setAuthenticationMenuOptions();
+                String text = "Log-In successful!";
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
             } else {
                 // Sign in failed. If response is null the user canceled the
                 // sign-in flow using the back button. Otherwise check
@@ -249,6 +255,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 } else {
                     Log.e("Authentication", "Log in failed with error: "
                             + response.getError().getErrorCode());
+                    String text = "Log-In failed.";
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
                 }
             }
         } else if (requestCode == CREATE_EVENT) {
@@ -257,9 +266,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.d("CreateEvent", "Event Creation succeeded.");
                 final NavigationView navigationView = findViewById(R.id.nav_view);
                 navigationView.setCheckedItem(R.id.blank_option);
+                String text = "Event successfully created!";
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
             } else {
                 // Event creation failed
                 Log.e("CreateEvent", "Event Creation failed.");
+                String text = "Event creation failed.";
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
             }
         }
     }
