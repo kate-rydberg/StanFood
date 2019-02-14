@@ -335,6 +335,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             public void onComplete(@NonNull Task<Void> task) {
                                 Log.d("Authentication", "User successfully logged out");
                                 setAuthenticationMenuOptions();
+                                Context context = getApplicationContext();
+                                int duration = Toast.LENGTH_SHORT;
+                                String text = "Log-Out successful!";
+                                Toast toast = Toast.makeText(context, text, duration);
+                                toast.show();
                             }
                         });
             }
