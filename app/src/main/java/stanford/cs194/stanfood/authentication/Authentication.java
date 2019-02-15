@@ -1,7 +1,9 @@
-package stanford.cs194.stanfood;
+package stanford.cs194.stanfood.authentication;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import stanford.cs194.stanfood.database.Database;
 
 public class Authentication {
     FirebaseAuth auth = FirebaseAuth.getInstance();

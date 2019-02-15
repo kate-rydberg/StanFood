@@ -1,4 +1,4 @@
-package stanford.cs194.stanfood;
+package stanford.cs194.stanfood.models;
 
 import java.util.Date;
 

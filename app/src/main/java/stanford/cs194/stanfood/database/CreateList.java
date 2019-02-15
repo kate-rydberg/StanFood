@@ -1,4 +1,4 @@
-package stanford.cs194.stanfood;
+package stanford.cs194.stanfood.database;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import stanford.cs194.stanfood.adapters.EventAdapter;
+import stanford.cs194.stanfood.models.Event;
+
 public class CreateList {
 
     private Context context;
@@ -27,7 +30,8 @@ public class CreateList {
     private ArrayList<Event> events;
     private ListView eventListView;
 
-    public CreateList(Context context, Database db, Marker marker, HashMap<LatLng, String> eventStorage, ListView eventListView) {
+    public CreateList(Context context, Database db, Marker marker,
+                      HashMap<LatLng, String> eventStorage, ListView eventListView) {
         this.context = context;
         this.db = db;
         this.markerLocation = marker.getPosition();

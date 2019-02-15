@@ -1,4 +1,4 @@
-package stanford.cs194.stanfood;
+package stanford.cs194.stanfood.helpers;
 
 import com.google.android.gms.maps.model.LatLng;
 

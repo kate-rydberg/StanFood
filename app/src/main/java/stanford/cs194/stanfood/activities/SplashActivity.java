@@ -1,9 +1,11 @@
-package stanford.cs194.stanfood;
+package stanford.cs194.stanfood.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+
+import stanford.cs194.stanfood.activities.MapsActivity;
 
 public class SplashActivity extends AppCompatActivity {
 

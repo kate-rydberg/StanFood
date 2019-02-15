@@ -1,4 +1,4 @@
-package stanford.cs194.stanfood;
+package stanford.cs194.stanfood.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,6 +11,10 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import stanford.cs194.stanfood.R;
+import stanford.cs194.stanfood.models.Event;
+
 
 public class EventAdapter extends ArrayAdapter {
 
