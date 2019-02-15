@@ -2,7 +2,7 @@ package stanford.cs194.stanfood;
 
 import java.util.Date;
 
-public class Event {
+public class Event implements Comparable<Event> {
     private String eventId;
     private String pinId;
     private String description;
@@ -84,4 +84,9 @@ public class Event {
     public Food getFood() { return food; }
 
     public void setFood(Food food) { this.food = food; }
+
+    @Override
+    public int compareTo(Event o) {
+        return Long.valueOf(getTimeStart()).compareTo(Long.valueOf(o.getTimeStart()));
+    }
 }

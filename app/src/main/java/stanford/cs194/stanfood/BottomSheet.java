@@ -13,16 +13,29 @@ public class BottomSheet {
     private BottomSheetBehavior<View> mBottomSheetBehavior;
     private Context context;
     private GoogleMap mMap;
+    private final float BOTTOM_SHEET_EXPANDED_HEIGHT;
+    private final float BOTTOM_SHEET_PEEK_HEIGHT;
 
     public BottomSheet(View bottomSheet, Context context, final GoogleMap mMap) {
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         collapse();
         this.context = context;
         this.mMap = mMap;
+
+        BOTTOM_SHEET_EXPANDED_HEIGHT = context.getResources().getDimension(R.dimen.bottom_sheet_expanded_height);
+        BOTTOM_SHEET_PEEK_HEIGHT = mBottomSheetBehavior.getPeekHeight();
     }
 
     public void setText() {
         // TODO
+    }
+
+    public float getExpandedHeight() {
+        return BOTTOM_SHEET_EXPANDED_HEIGHT;
+    }
+
+    public float getPeekHeight() {
+        return BOTTOM_SHEET_PEEK_HEIGHT;
     }
 
     public void moveListener() {
@@ -35,8 +48,7 @@ public class BottomSheet {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == mBottomSheetBehavior.STATE_EXPANDED) {
-                    float expanded_height = context.getResources().getDimension(R.dimen.bottom_sheet_expanded_height);
-                    mMap.setPadding(0, 0, 0, (int)expanded_height);
+                    mMap.setPadding(0, 0, 0, (int)BOTTOM_SHEET_EXPANDED_HEIGHT);
                 } else if (newState == mBottomSheetBehavior.STATE_COLLAPSED) {
                     int peek_height = mBottomSheetBehavior.getPeekHeight();
                     mMap.setPadding(0, 0, 0, peek_height);
@@ -44,10 +56,7 @@ public class BottomSheet {
             }
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                float expanded_height = context.getResources().getDimension(R.dimen.bottom_sheet_expanded_height);
-                Log.d("context", Float.toString(expanded_height));
-                int peek_height = mBottomSheetBehavior.getPeekHeight();
-                float padding = slideOffset * (expanded_height - peek_height) + peek_height;
+                float padding = slideOffset * (BOTTOM_SHEET_EXPANDED_HEIGHT - BOTTOM_SHEET_PEEK_HEIGHT) + BOTTOM_SHEET_PEEK_HEIGHT;
                 mMap.setPadding(0, 0, 0, (int)padding);
             }
 
