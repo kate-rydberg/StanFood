@@ -51,6 +51,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private BottomSheet bottomSheet;
     private NavigationDrawer drawerLayout;
     private HashMap<LatLng,String> eventStorage;
+    private HashMap<LatLng,Marker> markerStorage;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private float distanceRange = 10000;
@@ -79,6 +80,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         notif = new Notification(App.getContext());
 
         eventStorage = new HashMap<>();
+        markerStorage = new HashMap<>();
         // Get the transparent toolbar to insert the navigation menu icon
     }
 
@@ -200,7 +202,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void populatePins(final Location cur){
-        db.dbRef.child("pins").addListenerForSingleValueEvent(
+        db.dbRef.child("pins").addValueEventListener(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -211,9 +213,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 Location loc = new Location(LocationManager.GPS_PROVIDER);
                                 loc.setLatitude(coordinate.latitude);
                                 loc.setLongitude(coordinate.longitude);
-                                if(cur.distanceTo(loc) < distanceRange){
-                                    mMap.addMarker(new MarkerOptions().position(coordinate));
+                                if(cur.distanceTo(loc) < distanceRange &&
+                                        !eventStorage.containsKey(coordinate)){
+                                    Marker m = mMap.addMarker(new MarkerOptions().position(coordinate));
+                                    markerStorage.put(coordinate, m);
                                     eventStorage.put(coordinate, ds.getKey());
+                                }
+                                if(curPin.getNumEvents() == 0){
+                                    Marker m = markerStorage.get(coordinate);
+                                    if(m != null) {
+                                        m.remove();
+                                        markerStorage.remove(coordinate);
+                                        eventStorage.remove(coordinate);
+                                    }
                                 }
                             }
                         }
