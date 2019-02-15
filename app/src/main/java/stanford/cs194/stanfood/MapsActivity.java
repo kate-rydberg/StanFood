@@ -119,6 +119,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         View bottomSheetView = findViewById(R.id.bottom_sheet);
         bottomSheet = new BottomSheet(bottomSheetView, bottomSheetView.getContext(), mMap);
         bottomSheet.moveListener();
+        mMap.setPadding(0, 0, 0, (int)bottomSheet.getPeekHeight());
 
         setupNavigationMenu();
     }
@@ -135,7 +136,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //String pinId = markers.get(marker.getId());
         // TODO: get text description or list of events to display
         bottomSheet.expand();
-        mMap.setPadding(0, 0, 0, (int)getResources().getDimension(R.dimen.bottom_sheet_expanded_height));
+        mMap.setPadding(0, 0, 0, (int)bottomSheet.getExpandedHeight());
         mMap.animateCamera(CameraUpdateFactory.newLatLng(location),500,null);
 
         ListView eventList = findViewById(R.id.eventList);
