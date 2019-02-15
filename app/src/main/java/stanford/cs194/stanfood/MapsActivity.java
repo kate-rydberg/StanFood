@@ -119,6 +119,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         View bottomSheetView = findViewById(R.id.bottom_sheet);
         bottomSheet = new BottomSheet(bottomSheetView, bottomSheetView.getContext(), mMap);
         bottomSheet.moveListener();
+        // Set padding to show Google logo in correct position
         mMap.setPadding(0, 0, 0, (int)bottomSheet.getPeekHeight());
 
         setupNavigationMenu();
@@ -133,8 +134,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onMarkerClick(Marker marker) {
         LatLng location = marker.getPosition();
-        //String pinId = markers.get(marker.getId());
-        // TODO: get text description or list of events to display
+
         bottomSheet.expand();
         mMap.setPadding(0, 0, 0, (int)bottomSheet.getExpandedHeight());
         mMap.animateCamera(CameraUpdateFactory.newLatLng(location),500,null);
@@ -142,6 +142,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         ListView eventList = findViewById(R.id.eventList);
 
         CreateList initRows = new CreateList(App.getContext(), db, marker, eventStorage, eventList);
+        initRows.createEventList();
         return true;
     }
 
@@ -158,14 +159,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     /**
      * Listen for when camera starts moving and collapse bottom sheet.
+     * Only want to collapse bottom sheet when user drags the map. Ignore marker clicks.
      * @param i - reason the camera motion started
      */
     @Override
     public void onCameraMoveStarted(int i) {
         if (bottomSheet.isExpanded()) {
-            // don't want to collapse bottom sheet when a marker is
-            // clicked and the app moves the camera automatically
-            if (i != REASON_DEVELOPER_ANIMATION) {
+            if (i == REASON_GESTURE) {
+                mMap.setPadding(0, 0, 0, (int)bottomSheet.getPeekHeight());
                 bottomSheet.collapse();
             }
         }
