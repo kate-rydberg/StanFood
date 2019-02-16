@@ -1,4 +1,4 @@
-package stanford.cs194.stanfood;
+package stanford.cs194.stanfood.fragments;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.maps.GoogleMap;
+
+import stanford.cs194.stanfood.R;
 
 
 public class BottomSheet {
@@ -24,10 +26,6 @@ public class BottomSheet {
 
         BOTTOM_SHEET_EXPANDED_HEIGHT = context.getResources().getDimension(R.dimen.bottom_sheet_expanded_height);
         BOTTOM_SHEET_PEEK_HEIGHT = mBottomSheetBehavior.getPeekHeight();
-    }
-
-    public void setText() {
-        // TODO
     }
 
     public float getExpandedHeight() {

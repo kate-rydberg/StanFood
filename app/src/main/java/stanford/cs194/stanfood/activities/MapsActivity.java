@@ -1,4 +1,4 @@
-package stanford.cs194.stanfood;
+package stanford.cs194.stanfood.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -43,6 +43,16 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
+import stanford.cs194.stanfood.App;
+import stanford.cs194.stanfood.R;
+import stanford.cs194.stanfood.authentication.Authentication;
+import stanford.cs194.stanfood.fragments.BottomSheet;
+import stanford.cs194.stanfood.database.CreateList;
+import stanford.cs194.stanfood.database.Database;
+import stanford.cs194.stanfood.fragments.NavigationDrawer;
+import stanford.cs194.stanfood.helpers.Notification;
+import stanford.cs194.stanfood.models.Pin;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, OnMarkerClickListener, GoogleMap.OnMapClickListener, GoogleMap.OnCameraMoveStartedListener {
 

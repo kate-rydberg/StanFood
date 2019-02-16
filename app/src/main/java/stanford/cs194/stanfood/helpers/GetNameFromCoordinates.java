@@ -1,4 +1,4 @@
-package stanford.cs194.stanfood;
+package stanford.cs194.stanfood.helpers;
 
 import android.location.Address;
 import android.location.Geocoder;
@@ -10,6 +10,9 @@ import com.google.android.gms.maps.model.LatLng;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+
+import stanford.cs194.stanfood.App;
+import stanford.cs194.stanfood.database.Database;
 
 public class GetNameFromCoordinates extends AsyncTask<Object, Void, String[]> {
     @Override

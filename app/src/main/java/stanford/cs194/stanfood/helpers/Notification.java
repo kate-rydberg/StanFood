@@ -1,4 +1,4 @@
-package stanford.cs194.stanfood;
+package stanford.cs194.stanfood.helpers;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -9,6 +9,9 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
+
+import stanford.cs194.stanfood.R;
+import stanford.cs194.stanfood.activities.MapsActivity;
 
 public class Notification {
     final private String CHANNEL_ID = "123";

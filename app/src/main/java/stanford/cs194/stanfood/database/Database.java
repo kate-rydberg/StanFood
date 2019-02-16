@@ -1,4 +1,4 @@
-package stanford.cs194.stanfood;
+package stanford.cs194.stanfood.database;
 
 import android.location.Address;
 import android.location.Geocoder;
@@ -15,6 +15,14 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+
+import stanford.cs194.stanfood.App;
+import stanford.cs194.stanfood.models.Event;
+import stanford.cs194.stanfood.models.Food;
+import stanford.cs194.stanfood.models.Pin;
+import stanford.cs194.stanfood.models.User;
+import stanford.cs194.stanfood.helpers.GetNameFromCoordinates;
+import stanford.cs194.stanfood.helpers.LatLngWrapper;
 
 public class Database {
     final private String dbPath = "https://stanfood-e7255.firebaseio.com/";
