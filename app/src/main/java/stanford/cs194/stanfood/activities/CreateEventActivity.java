@@ -191,6 +191,7 @@ public class CreateEventActivity extends AppCompatActivity {
         }
 
         db.createEvent(eventDescription, locationName, startTimeMS, durationMS, foodDescription);
+        finish();
     }
 
     /*
