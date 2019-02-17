@@ -1,4 +1,4 @@
-package stanford.cs194.stanfood;
+package stanford.cs194.stanfood.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +13,8 @@ import com.firebase.ui.auth.IdpResponse;
 
 import java.util.Arrays;
 import java.util.List;
+
+import stanford.cs194.stanfood.authentication.Authentication;
 
 public class LoginActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123; // Arbitrary request code value for signing in

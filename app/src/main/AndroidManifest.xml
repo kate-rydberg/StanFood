@@ -51,11 +51,7 @@
             android:parentActivityName=".activities.MapsActivity"></activity>
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".activities.LoginActivity"
             android:parentActivityName=".activities.MapsActivity"></activity>
-            android:name=".activities.CreateEventActivity"
-            android:parentActivityName=".activities.MapsActivity">
-        </activity>
     </application>
-
 </manifest>
