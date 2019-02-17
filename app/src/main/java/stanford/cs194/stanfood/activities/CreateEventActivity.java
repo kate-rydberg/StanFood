@@ -2,15 +2,18 @@ package stanford.cs194.stanfood.activities;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -191,6 +194,12 @@ public class CreateEventActivity extends AppCompatActivity {
         }
 
         db.createEvent(eventDescription, locationName, startTimeMS, durationMS, foodDescription);
+        Context context = getApplicationContext();
+        String text = "Log-Out successful!";
+        Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
+        final int BOTTOM_SHEET_PEEK_HEIGHT = (int)context.getResources().getDimension(R.dimen.bottom_sheet_peek_height);
+        toast.setGravity(Gravity.BOTTOM, 0, BOTTOM_SHEET_PEEK_HEIGHT);
+        toast.show();
         finish();
     }
 

@@ -8,14 +8,17 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ListView;
@@ -41,6 +44,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 import stanford.cs194.stanfood.App;
 import stanford.cs194.stanfood.R;
@@ -66,6 +70,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Notification notif;
     private SharedPreferences prefs;
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +78,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        Objects.requireNonNull(mapFragment).getMapAsync(this);
 
         db = new Database();
 
@@ -220,7 +225,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         for(DataSnapshot ds : dataSnapshot.getChildren()){
                             if(ds.hasChildren()){
                                 Pin curPin = ds.getValue(Pin.class);
-                                LatLng coordinate = curPin.getLocationCoordinate();
+                                LatLng coordinate = Objects.requireNonNull(curPin).getLocationCoordinate();
                                 Location loc = new Location(LocationManager.GPS_PROVIDER);
                                 loc.setLatitude(coordinate.latitude);
                                 loc.setLongitude(coordinate.longitude);
@@ -304,9 +309,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             public void onComplete(@NonNull Task<Void> task) {
                                 Log.d("Authentication", "User successfully logged out");
                                 Context context = getApplicationContext();
-                                int duration = Toast.LENGTH_SHORT;
                                 String text = "Log-Out successful!";
-                                Toast toast = Toast.makeText(context, text, duration);
+                                Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
+                                final int BOTTOM_SHEET_PEEK_HEIGHT = (int)context.getResources().getDimension(R.dimen.bottom_sheet_peek_height);
+                                toast.setGravity(Gravity.BOTTOM, 0, BOTTOM_SHEET_PEEK_HEIGHT);
                                 toast.show();
 
 
@@ -359,7 +365,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * Moves the compass position down, so that the hamburger menu does not cover it.
      */
     private void moveCompassPosition() {
-        View compassButton = mapFragment.getView().findViewWithTag("GoogleMapCompass");
+        View compassButton = Objects.requireNonNull(mapFragment.getView()).findViewWithTag("GoogleMapCompass");
         RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) compassButton.getLayoutParams();
         rlp.addRule(RelativeLayout.ALIGN_PARENT_START, 0);
         rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
