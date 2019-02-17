@@ -1,10 +1,12 @@
-package stanford.cs194.stanfood;
+package stanford.cs194.stanfood.fragments;
 
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.view.View;
+
+import stanford.cs194.stanfood.R;
 
 
 public class NavigationDrawer {
@@ -16,18 +18,18 @@ public class NavigationDrawer {
         mDrawerLayout = drawerLayout;
     }
 
-    void openDrawer() {
+    public void openDrawer() {
         mDrawerLayout.openDrawer(GravityCompat.START);
     }
 
-    void closeDrawer() {
+    public void closeDrawer() {
         mDrawerLayout.closeDrawers();
     }
 
     /**
      * Add listener for events that occur when menu icon is interacted with
      */
-    void addMenuIconListener() {
+    public void addMenuIconListener() {
         mDrawerLayout.addDrawerListener(
                 new DrawerLayout.DrawerListener() {
                     @Override
@@ -58,7 +60,8 @@ public class NavigationDrawer {
     /**
      * Add listener for the list items in the navigation menu.
      */
-    void addNavigationListener(final Runnable loginSignup, final Runnable logOut, final Runnable createEvent, final NavigationView navigationView) {
+    public void addNavigationListener(final Runnable loginSignup, final Runnable logOut,
+                                      final Runnable createEvent, final NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override

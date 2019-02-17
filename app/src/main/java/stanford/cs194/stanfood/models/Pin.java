@@ -1,6 +1,8 @@
-package stanford.cs194.stanfood;
+package stanford.cs194.stanfood.models;
 
 import com.google.android.gms.maps.model.LatLng;
+
+import stanford.cs194.stanfood.helpers.LatLngWrapper;
 
 public class Pin {
     private String pinId;

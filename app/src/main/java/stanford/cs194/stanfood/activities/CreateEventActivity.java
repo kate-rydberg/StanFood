@@ -1,4 +1,4 @@
-package stanford.cs194.stanfood;
+package stanford.cs194.stanfood.activities;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -18,6 +18,9 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.TimeZone;
+
+import stanford.cs194.stanfood.R;
+import stanford.cs194.stanfood.database.Database;
 
 public class CreateEventActivity extends AppCompatActivity {
     public static final long HOURS_TO_MS = 3600000;
