@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -22,7 +23,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -40,9 +40,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, OnMarkerClickListener, GoogleMap.OnMapClickListener, GoogleMap.OnCameraMoveStartedListener {
 
@@ -56,15 +54,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FusedLocationProviderClient mFusedLocationClient;
     private float distanceRange = 10000;
     private Database db;
-    private Authentication auth = new Authentication();
     private Notification notif;
-
-    private List<AuthUI.IdpConfig> providers = Arrays.asList(
-            new AuthUI.IdpConfig.EmailBuilder().build(),
-            new AuthUI.IdpConfig.GoogleBuilder().build());
-    private static final int RC_SIGN_IN = 123; // Arbitrary request code value for signing in
-    private static final int CREATE_EVENT = 124; // Arbitrary request code value for creating event
-
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +73,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         eventStorage = new HashMap<>();
         markerStorage = new HashMap<>();
         // Get the transparent toolbar to insert the navigation menu icon
+
+        // Get SharedPreferences for current logged in status.
+        prefs = getSharedPreferences("loginStatus", MODE_PRIVATE);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setAuthenticationMenuOptions();
     }
 
     /**
@@ -240,57 +240,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         );
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        Context context = getApplicationContext();
-        int duration = Toast.LENGTH_SHORT;
-
-        if (requestCode == RC_SIGN_IN) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
-
-            if (resultCode == RESULT_OK) {
-                // Successfully signed in
-                Log.d("Authentication", "User successfully logged in as: "
-                        + auth.getCurrentUser().getDisplayName());
-                auth.addCurrentUserToDatabase();
-                setAuthenticationMenuOptions();
-                String text = "Log-In successful!";
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();
-            } else {
-                // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back button. Otherwise check
-                // response.getError().getErrorCode() and handle the error.
-                // ...
-                if (response == null) {
-                    Log.d("Authentication", "Sign in flow cancelled by user");
-                } else {
-                    Log.e("Authentication", "Log in failed with error: "
-                            + response.getError().getErrorCode());
-                    String text = "Log-In failed.";
-                    Toast toast = Toast.makeText(context, text, duration);
-                    toast.show();
-                }
-            }
-        } else if (requestCode == CREATE_EVENT) {
-            if (resultCode == RESULT_OK) {
-                // Successfully created event
-                Log.d("CreateEvent", "Event Creation succeeded.");
-                String text = "Event successfully created!";
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();
-            } else {
-                // Event creation failed
-                Log.e("CreateEvent", "Event Creation failed.");
-                String text = "Event creation failed.";
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();
-            }
-        }
-    }
-
     /**
      * Creates the drawer layout and adds listeners.
      */
@@ -326,12 +275,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return new Runnable() {
             @Override
             public void run() {
-                startActivityForResult(
-                        AuthUI.getInstance()
-                                .createSignInIntentBuilder()
-                                .setAvailableProviders(providers)
-                                .build(),
-                        RC_SIGN_IN);
+                Intent intent = new Intent(MapsActivity.this, LoginActivity.class);
+                intent.putExtra("createEvent", false);
+                startActivity(intent);
             }
         };
     }
@@ -348,12 +294,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             public void onComplete(@NonNull Task<Void> task) {
                                 Log.d("Authentication", "User successfully logged out");
-                                setAuthenticationMenuOptions();
                                 Context context = getApplicationContext();
                                 int duration = Toast.LENGTH_SHORT;
                                 String text = "Log-Out successful!";
                                 Toast toast = Toast.makeText(context, text, duration);
                                 toast.show();
+
+
+                                SharedPreferences.Editor editor = prefs.edit();
+                                editor.putBoolean("isLoggedIn", false);
+                                editor.commit();
+                                setAuthenticationMenuOptions();
                             }
                         });
             }
@@ -362,23 +313,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     /**
      * Starts the intent for users to create an event. Returns a Runnable.
+     * If the user is logged in, goes straight to creating an event.
+     * If the user is not logged in, starts the LoginActivity with the intention
+     * to create an event immediately afterwards if the login succeeds.
      */
     private Runnable createEventRunnable() {
         return new Runnable() {
             @Override
             public void run() {
-                boolean isLoggedIn = auth.getCurrentUser() != null;
+                boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
+                Intent intent;
                 if (isLoggedIn) {
-                    Intent intent = new Intent(MapsActivity.this, CreateEventActivity.class);
-                    startActivityForResult(intent, CREATE_EVENT);
+                    intent = new Intent(MapsActivity.this, CreateEventActivity.class);
                 } else {
-                    startActivityForResult(
-                            AuthUI.getInstance()
-                                    .createSignInIntentBuilder()
-                                    .setAvailableProviders(providers)
-                                    .build(),
-                            RC_SIGN_IN);
+                    intent = new Intent(MapsActivity.this, LoginActivity.class);
+                    intent.putExtra("createEvent", true);
                 }
+                startActivity(intent);
             }
         };
     }
@@ -389,7 +340,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * - User is not logged in -> display "Log In or Sign Up"
      */
     private void setAuthenticationMenuOptions() {
-        boolean isLoggedIn = auth.getCurrentUser() != null;
+        boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
         final Menu menu = ((NavigationView)findViewById(R.id.nav_view)).getMenu();
         menu.findItem(R.id.login_signup).setVisible(!isLoggedIn);
         menu.findItem(R.id.logout).setVisible(isLoggedIn);

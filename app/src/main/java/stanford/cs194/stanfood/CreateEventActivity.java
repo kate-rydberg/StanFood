@@ -2,7 +2,6 @@ package stanford.cs194.stanfood;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -189,10 +188,6 @@ public class CreateEventActivity extends AppCompatActivity {
         }
 
         db.createEvent(eventDescription, locationName, startTimeMS, durationMS, foodDescription);
-
-        Intent intent = new Intent();
-        setResult(RESULT_OK, intent);
-        finish();
     }
 
     /*
