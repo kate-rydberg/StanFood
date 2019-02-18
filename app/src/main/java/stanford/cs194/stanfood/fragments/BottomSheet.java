@@ -13,7 +13,6 @@ import com.google.android.gms.maps.GoogleMap;
 
 import stanford.cs194.stanfood.R;
 
-
 public class BottomSheet{
     private BottomSheetBehavior<NestedScrollView> mBottomSheetBehavior;
     private Context context;
