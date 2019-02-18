@@ -13,28 +13,31 @@ public class Event implements Comparable<Event> {
     private String locationName;
     private long timeStart;
     private long duration;
+    private String userID;
     private Food food;
 
     public Event() {}
 
     public Event(String pinId, String name, String description, String locationName, long timeStart,
-                 long duration) {
+                 long duration, String userID) {
         this.pinId = pinId;
         this.name = name;
         this.description = description;
         this.locationName = locationName;
         this.timeStart = timeStart;
         this.duration = duration;
+        this.userID = userID;
     }
 
     public Event(String pinId, String name, String description, String locationName, long timeStart,
-                 long duration, Food food) {
+                 long duration, String userID, Food food) {
         this.pinId = pinId;
         this.name = name;
         this.description = description;
         this.locationName = locationName;
         this.timeStart = timeStart;
         this.duration = duration;
+        this.userID = userID;
         this.food = food;
     }
 
@@ -98,6 +101,10 @@ public class Event implements Comparable<Event> {
     public Food getFood() { return food; }
 
     public void setFood(Food food) { this.food = food; }
+
+    public String getUserID() {
+        return userID;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
