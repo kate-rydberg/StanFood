@@ -71,7 +71,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private NavigationDrawer drawerLayout;
     private HashMap<LatLng,String> eventStorage;
     private HashMap<LatLng,Marker> markerStorage;
-   // private ListView eventList;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private float distanceRange = 10000;
@@ -126,7 +125,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
-                            LatLng current = new LatLng(37.4274745,-122.1719077);//location.getLatitude(),location.getLongitude());
+                            LatLng current = new LatLng(location.getLatitude(),location.getLongitude());
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current,16));
                             populatePins(location);
                         }
