@@ -201,8 +201,8 @@ public class CreateEventActivity extends AppCompatActivity {
         }
 
         // Get User ID to link to event
-        String userID = getIntent().getStringExtra("userID");
-        db.createEvent(eventName, eventDescription, locationName, startTimeMS, durationMS, foodDescription, userID);
+        String userId = getIntent().getStringExtra("userId");
+        db.createEvent(eventName, eventDescription, locationName, startTimeMS, durationMS, foodDescription, userId);
 
         Intent intent = new Intent();
         setResult(RESULT_OK, intent);
