@@ -9,13 +9,21 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.NestedScrollingChild;
+import android.support.v4.view.NestedScrollingParent;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -52,6 +60,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private NavigationDrawer drawerLayout;
     private HashMap<LatLng,String> eventStorage;
     private HashMap<LatLng,Marker> markerStorage;
+   // private ListView eventList;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private float distanceRange = 10000;
@@ -106,7 +115,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
-                            LatLng current = new LatLng(location.getLatitude(),location.getLongitude());
+                            LatLng current = new LatLng(37.4274745,-122.1719077);//location.getLatitude(),location.getLongitude());
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current,16));
                             populatePins(location);
                         }
@@ -118,8 +127,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setOnCameraMoveStartedListener(this);
 
         // Get the bottom sheet view
-        View bottomSheetView = findViewById(R.id.bottom_sheet);
-        bottomSheet = new BottomSheet(bottomSheetView, bottomSheetView.getContext(), mMap);
+        NestedScrollView bottomSheetView = findViewById(R.id.bottom_sheet);
+        bottomSheet = new BottomSheet(bottomSheetView.getContext(), bottomSheetView, mMap);
         bottomSheet.moveListener();
         // Set padding to show Google logo in correct position
         mMap.setPadding(0, 0, 0, (int)bottomSheet.getPeekHeight());
@@ -141,10 +150,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setPadding(0, 0, 0, (int)bottomSheet.getExpandedHeight());
         mMap.animateCamera(CameraUpdateFactory.newLatLng(location),500,null);
 
-        ListView eventList = findViewById(R.id.eventList);
+        BottomSheetListView eventList = findViewById(R.id.eventList);
 
+        ViewCompat.setNestedScrollingEnabled(eventList, true);
         CreateList initRows = new CreateList(App.getContext(), db, marker, eventStorage, eventList);
         initRows.createEventList();
+
         return true;
     }
 
