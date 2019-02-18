@@ -1,10 +1,14 @@
 package stanford.cs194.stanfood.models;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+
 import java.util.Date;
 
 public class Event implements Comparable<Event> {
     private String eventId;
     private String pinId;
+    private String name;
     private String description;
     private String locationName;
     private long timeStart;
@@ -13,18 +17,20 @@ public class Event implements Comparable<Event> {
 
     public Event() {}
 
-    public Event(String pinId, String description, String locationName, long timeStart,
+    public Event(String pinId, String name, String description, String locationName, long timeStart,
                  long duration) {
         this.pinId = pinId;
+        this.name = name;
         this.description = description;
         this.locationName = locationName;
         this.timeStart = timeStart;
         this.duration = duration;
     }
 
-    public Event(String pinId, String description, String locationName, long timeStart,
+    public Event(String pinId, String name, String description, String locationName, long timeStart,
                  long duration, Food food) {
         this.pinId = pinId;
+        this.name = name;
         this.description = description;
         this.locationName = locationName;
         this.timeStart = timeStart;
@@ -43,6 +49,14 @@ public class Event implements Comparable<Event> {
     public String getPinId() { return pinId; }
 
     public void setPinId(String pinId) { this.pinId = pinId; }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getDescription() {
         return description;
@@ -85,8 +99,9 @@ public class Event implements Comparable<Event> {
 
     public void setFood(Food food) { this.food = food; }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public int compareTo(Event o) {
-        return Long.valueOf(getTimeStart()).compareTo(Long.valueOf(o.getTimeStart()));
+        return Long.compare(getTimeStart(), o.getTimeStart());
     }
 }

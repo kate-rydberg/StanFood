@@ -37,25 +37,29 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     /**
-     * Extracts complete event description from the layout
-     * Complete event description is combination of event name and event description
-     * separated by a newline.
-     * Note: Event name required, but event description is not.
+     * Extracts event name from the layout.
+     * Note: Event name required
      * @return "" (empty string) if no event name given.
      */
-    private String getEventDescription() {
+    private String getEventName() {
         EditText eventName = findViewById(R.id.eventName);
-        EditText eventDescription = findViewById(R.id.eventDescription);
         String eventNameStr = eventName.getText().toString().trim();
 
         // Error checking for required field: Event Name
         if (eventNameStr.equals("")) {
             eventName.setError("Event name required.");
-            return "";
         }
+        return eventNameStr;
+    }
 
-        String eventDescriptionStr = eventDescription.getText().toString().trim();
-        return eventNameStr + "\n" + eventDescriptionStr;
+    /**
+     * Extracts event description from the layout.
+     * Note: not required for event creation
+     * @return Event description
+     */
+    private String getEventDescription() {
+        EditText eventDescription = findViewById(R.id.eventDescription);
+        return eventDescription.getText().toString().trim();
     }
 
     /**
@@ -103,19 +107,23 @@ public class CreateEventActivity extends AppCompatActivity {
         String timeStr = startTime.getText().toString().trim();
 
         // Error checking for required fields: Start time, Start date
+        boolean missingStartTime = false;
         if (dateStr.equals("")) {
             startDate.requestFocus();
             startDate.setError("Event Date required.");
-            return 0;
+            missingStartTime = true;
         } else {
             startDate.setError(null);
         }
         if (timeStr.equals("")) {
             startTime.requestFocus();
             startTime.setError("Start Time required.");
-            return 0;
+            missingStartTime = true;
         } else {
             startTime.setError(null);
+        }
+        if (missingStartTime) {
+            return 0;
         }
 
         // Convert inputted date and time to milliseconds
@@ -179,6 +187,7 @@ public class CreateEventActivity extends AppCompatActivity {
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void createEvent(View view) {
+        String eventName = getEventName();
         String eventDescription = getEventDescription();
         String foodDescription = getFood();
         String locationName = getLocationName();
@@ -186,12 +195,12 @@ public class CreateEventActivity extends AppCompatActivity {
         long durationMS = getDurationMS();
 
         // If any fields empty/invalid, return without attempting database event creation
-        if (eventDescription.equals("") || foodDescription.equals("") || locationName.equals("")
+        if (eventName.equals("") || foodDescription.equals("") || locationName.equals("")
             || startTimeMS == 0 || durationMS == 0) {
             return;
         }
 
-        db.createEvent(eventDescription, locationName, startTimeMS, durationMS, foodDescription);
+        db.createEvent(eventName, eventDescription, locationName, startTimeMS, durationMS, foodDescription);
 
         Intent intent = new Intent();
         setResult(RESULT_OK, intent);
