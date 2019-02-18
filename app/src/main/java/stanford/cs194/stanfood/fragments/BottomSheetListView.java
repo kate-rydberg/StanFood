@@ -1,4 +1,4 @@
-package stanford.cs194.stanfood;
+package stanford.cs194.stanfood.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -39,7 +39,6 @@ public class BottomSheetListView extends ListView {
      * Checks for whether the listview is at top or if all of the items
      * are available in the view.
      */
-    /
     public boolean canScrollVertically (AbsListView view) {
         boolean canScroll = false;
 

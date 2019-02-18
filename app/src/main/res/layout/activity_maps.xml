@@ -28,7 +28,7 @@
         app:behavior_peekHeight="@dimen/bottom_sheet_peek_height"
         app:layout_behavior="@string/bottom_sheet_behavior">
 
-        <stanford.cs194.stanfood.BottomSheetListView
+        <stanford.cs194.stanfood.fragments.BottomSheetListView
             android:id="@+id/eventList"
             android:layout_marginTop="@dimen/bottom_sheet_peek_height"
             android:layout_width="match_parent"
