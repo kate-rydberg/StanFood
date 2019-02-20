@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -14,24 +15,26 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import stanford.cs194.stanfood.R;
+import stanford.cs194.stanfood.helpers.ViewGroupUtils;
 import stanford.cs194.stanfood.models.Event;
 
 
 public class EventAdapter extends ArrayAdapter {
 
     private ArrayList<Event> events;
-
     private Context context;
+    private ListView eventListView;
 
-    public EventAdapter(Context context, ArrayList<Event> events) {
+    public EventAdapter(Context context, ArrayList<Event> events, ListView eventListView) {
         super(context, R.layout.list_view, events);
         this.context = context;
         this.events = events;
+        this.eventListView = eventListView;
     }
 
     @NonNull
     public View getView(int position, View view, @NonNull ViewGroup parent) {
-        LayoutInflater inflater = LayoutInflater.from(context);
+        final LayoutInflater inflater = LayoutInflater.from(context);
         View rowView = inflater.inflate(R.layout.list_view, null, true);
 
         // gets references to objects in the list_view.xml file
@@ -55,6 +58,19 @@ public class EventAdapter extends ArrayAdapter {
 
         if(!description.equals("")) eventDescription.setText(description);
         else eventDescription.setText("N/A");
+
+        rowView.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                LayoutInflater viewInflater = LayoutInflater.from(context);
+                View infoView = viewInflater.inflate(R.layout.event_info, null, true);
+                TextView infoEventName = infoView.findViewById(R.id.infoEventName);
+                infoEventName.setText("Hello");
+
+                ViewGroupUtils viewGroupUtils = new ViewGroupUtils();
+                viewGroupUtils.replaceView(eventListView, infoView);
+            }
+        });
 
         return rowView;
     }

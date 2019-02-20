@@ -155,10 +155,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setPadding(0, 0, 0, (int)bottomSheet.getExpandedHeight());
         mMap.animateCamera(CameraUpdateFactory.newLatLng(location),500,null);
 
-        BottomSheetListView eventList = findViewById(R.id.eventList);
-
-        ViewCompat.setNestedScrollingEnabled(eventList, true);
-        CreateList initRows = new CreateList(App.getContext(), db, marker, eventStorage, eventList);
+        BottomSheetListView eventListView = findViewById(R.id.eventList);
+        ViewCompat.setNestedScrollingEnabled(eventListView, true);
+        CreateList initRows = new CreateList(App.getContext(), db, marker, eventStorage, eventListView);
         initRows.createEventList();
 
         return true;

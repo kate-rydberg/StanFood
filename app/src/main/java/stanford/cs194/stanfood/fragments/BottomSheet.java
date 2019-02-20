@@ -12,7 +12,6 @@ import stanford.cs194.stanfood.R;
 
 public class BottomSheet{
     private BottomSheetBehavior<NestedScrollView> mBottomSheetBehavior;
-    private Context context;
     private GoogleMap mMap;
     private final float BOTTOM_SHEET_EXPANDED_HEIGHT;
     private final float BOTTOM_SHEET_PEEK_HEIGHT;
@@ -20,7 +19,6 @@ public class BottomSheet{
     public BottomSheet(Context context, NestedScrollView bottomSheet, final GoogleMap mMap) {
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         collapse();
-        this.context = context;
         this.mMap = mMap;
 
         BOTTOM_SHEET_EXPANDED_HEIGHT = context.getResources().getDimension(R.dimen.bottom_sheet_expanded_height);
@@ -64,6 +62,7 @@ public class BottomSheet{
         mMap.setPadding(0, 0, 0, mBottomSheetBehavior.getPeekHeight());
     }
 
+    // expand: expands the bottom sheet
     // expand: expands the bottom sheet
     public void expand() {
         if (mBottomSheetBehavior.isHideable()) {

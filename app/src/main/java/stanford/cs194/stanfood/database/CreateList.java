@@ -54,7 +54,7 @@ public class CreateList {
                             }
                         }
                         Collections.sort(events);
-                        Adapter rowCells = new EventAdapter(eventListView.getContext(), events);
+                        Adapter rowCells = new EventAdapter(eventListView.getContext(), events, eventListView);
                         eventListView.setAdapter((ListAdapter) rowCells);
                     }
 
