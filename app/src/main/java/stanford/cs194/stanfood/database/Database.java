@@ -61,8 +61,9 @@ public class Database {
     // first searches to see if there is a pin at the associated location
     // if not, one is created. pinId is then retrieved, allowing the
     // event to be created
-    public void createEvent(final String description, final String locationName,
-                            final long timeStart, final long duration, final String foodDescription){
+    public void createEvent(final String name, final String description, final String locationName,
+                            final long timeStart, final long duration, final String foodDescription,
+                            final String userId){
         final LatLng loc = getLocationFromName(locationName);
         // TODO: Insert check for null location in case the corresponding location name doesn't exist
         dbRef.child("pins").addListenerForSingleValueEvent(
@@ -85,8 +86,8 @@ public class Database {
                         pinId = createPin(loc);
                         new GetNameFromCoordinates().execute(pinId, loc);
                     }
-                    String eventId = createEntry("events", new Event(pinId, description, locationName,
-                            timeStart, duration));
+                    String eventId = createEntry("events", new Event(pinId, name, description,
+                            locationName, timeStart, duration, userId));
                     createFood(eventId, foodDescription);
                 }
 

@@ -380,6 +380,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 boolean isLoggedIn = auth.getCurrentUser() != null;
                 if (isLoggedIn) {
                     Intent intent = new Intent(MapsActivity.this, CreateEventActivity.class);
+                    intent.putExtra("userId", auth.getCurrentUser().getUid());
                     startActivityForResult(intent, CREATE_EVENT);
                 } else {
                     startActivityForResult(
