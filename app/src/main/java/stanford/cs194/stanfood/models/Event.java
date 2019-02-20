@@ -1,8 +1,5 @@
 package stanford.cs194.stanfood.models;
 
-import android.os.Build;
-import android.support.annotation.RequiresApi;
-
 import java.util.Date;
 
 public class Event implements Comparable<Event> {
@@ -106,9 +103,8 @@ public class Event implements Comparable<Event> {
         return userId;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public int compareTo(Event o) {
-        return Long.compare(getTimeStart(), o.getTimeStart());
+        return Long.valueOf(getTimeStart()).compareTo(Long.valueOf(o.getTimeStart()));
     }
 }
