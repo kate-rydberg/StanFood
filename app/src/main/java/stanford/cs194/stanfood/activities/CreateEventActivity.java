@@ -2,23 +2,22 @@ package stanford.cs194.stanfood.activities;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Intent;
-import android.os.Build;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.TimeZone;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import stanford.cs194.stanfood.R;
 import stanford.cs194.stanfood.database.Database;
@@ -28,12 +27,14 @@ public class CreateEventActivity extends AppCompatActivity {
     public static final long MINUTES_TO_MS = 60000;
 
     private Database db;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
         db = new Database();
+        prefs = getSharedPreferences("loginData", MODE_PRIVATE);
     }
 
     /**
@@ -99,7 +100,6 @@ public class CreateEventActivity extends AppCompatActivity {
      * Note: Event Date and Start Time both required.
      * @return 0 milliseconds if event date or start time not chosen
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private long getStartTimeMS() {
         TextView startDate = findViewById(R.id.startDate);
         TextView startTime = findViewById(R.id.startTime);
@@ -129,22 +129,20 @@ public class CreateEventActivity extends AppCompatActivity {
         // Convert inputted date and time to milliseconds
         String[] dates = dateStr.split("-");
         String[] times = timeStr.split(":");
-        LocalDateTime ldt;
+        Calendar cal;
 
-        // Fills LocalDateTime with inputted date and time if present, else current time
+        // Fills Calendar with inputted date and time if present, else current time
         if (dates.length == 3 && times.length == 2) {
             int year = Integer.parseInt(dates[0]);
             int month = Integer.parseInt(dates[1]);
             int day = Integer.parseInt(dates[2]);
             int hour = Integer.parseInt(times[0]);
             int minute = Integer.parseInt(times[1]);
-            ldt = LocalDateTime.of(year, month, day, hour, minute);
+            cal = new GregorianCalendar(year, month - 1, day, hour, minute);
         } else {
-            ldt = LocalDateTime.now();
+            cal = Calendar.getInstance();
         }
-        ZoneId timeZone = TimeZone.getDefault().toZoneId();
-        ZonedDateTime zdt = ldt.atZone(timeZone);
-        return zdt.toInstant().toEpochMilli();
+        return cal.getTimeInMillis();
     }
 
     /**
@@ -185,7 +183,6 @@ public class CreateEventActivity extends AppCompatActivity {
      * Contains event name, food description, location name, event description,
      * start date and time, and duration.
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public void createEvent(View view) {
         String eventName = getEventName();
         String eventDescription = getEventDescription();
@@ -194,42 +191,48 @@ public class CreateEventActivity extends AppCompatActivity {
         long startTimeMS = getStartTimeMS();
         long durationMS = getDurationMS();
 
+        // Get User ID to link to event
+        String userId = prefs.getString("userId", "");
+
         // If any fields empty/invalid, return without attempting database event creation
         if (eventName.equals("") || foodDescription.equals("") || locationName.equals("")
-            || startTimeMS == 0 || durationMS == 0) {
+            || startTimeMS == 0 || durationMS == 0 || userId.equals("")) {
             return;
         }
 
-        // Get User ID to link to event
-        String userId = getIntent().getStringExtra("userId");
         db.createEvent(eventName, eventDescription, locationName, startTimeMS, durationMS, foodDescription, userId);
 
-        Intent intent = new Intent();
-        setResult(RESULT_OK, intent);
+        Context context = getApplicationContext();
+        String text = "Event creation successful!";
+        Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
+        final int BOTTOM_SHEET_PEEK_HEIGHT = (int)context.getResources().getDimension(R.dimen.bottom_sheet_peek_height);
+        toast.setGravity(Gravity.BOTTOM, 0, BOTTOM_SHEET_PEEK_HEIGHT);
+        toast.show();
         finish();
     }
 
     /*
      * Displays a Date Picker dialog to get the user to choose a start date.
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public void getDate(View v) {
         final TextView dateText = findViewById(R.id.startDate);
 
         // Gets current date
-        final ZonedDateTime zdt = ZonedDateTime.now();
-        int year = zdt.getYear();
-        int month = zdt.getMonthValue() - 1;
-        int day = zdt.getDayOfMonth();
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
 
         // Show DatePicker dialog
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
             new DatePickerDialog.OnDateSetListener() {
-                @RequiresApi(api = Build.VERSION_CODES.O)
                 @Override
                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                    LocalDate localDate = LocalDate.of(year, monthOfYear + 1, dayOfMonth);
-                    dateText.setText(localDate.toString());
+                    Calendar dateCal = new GregorianCalendar(year, monthOfYear, dayOfMonth);
+                    Date date = dateCal.getTime();
+                    String datePattern = "yyyy-MM-dd";
+                    SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
+                    dateText.setText(sdf.format(date));
                 }
             }, year, month, day);
         datePickerDialog.show();
@@ -238,23 +241,26 @@ public class CreateEventActivity extends AppCompatActivity {
     /*
      * Displays a Time Picker dialog to get the user to choose a start time.
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public void getTime(View v) {
         final TextView timeText = findViewById(R.id.startTime);
 
         // Gets current time
-        final ZonedDateTime zdt = ZonedDateTime.now();
-        int hour = zdt.getHour();
-        int minute = zdt.getMinute();
+        Calendar cal = Calendar.getInstance();
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+        int minute = cal.get(Calendar.MINUTE);
 
         // Show TimePicker dialog
         TimePickerDialog timePickerDialog = new TimePickerDialog(this,
             new TimePickerDialog.OnTimeSetListener() {
-                @RequiresApi(api = Build.VERSION_CODES.O)
                 @Override
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    LocalTime localTime = LocalTime.of(hourOfDay, minute);
-                    timeText.setText(localTime.toString());
+                    Calendar timeCal = new GregorianCalendar();
+                    timeCal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    timeCal.set(Calendar.MINUTE, minute);
+                    Date time = timeCal.getTime();
+                    String timePattern = "H:mm";
+                    SimpleDateFormat sdf = new SimpleDateFormat(timePattern);
+                    timeText.setText(sdf.format(time));
                 }
             }, hour, minute, false);
         timePickerDialog.show();
