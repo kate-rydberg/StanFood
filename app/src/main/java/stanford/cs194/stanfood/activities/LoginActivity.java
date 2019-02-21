@@ -4,9 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -17,7 +15,6 @@ import com.firebase.ui.auth.IdpResponse;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import stanford.cs194.stanfood.R;
 import stanford.cs194.stanfood.authentication.Authentication;
@@ -47,7 +44,6 @@ public class LoginActivity extends AppCompatActivity {
                 RC_SIGN_IN);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -83,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d("Authentication", "Sign in flow cancelled by user");
             } else {
                 Log.e("Authentication", "Log in failed with error: "
-                        + Objects.requireNonNull(response.getError()).getErrorCode());
+                        + response.getError().getErrorCode());
                 String text = "Log-In failed.";
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.setGravity(Gravity.BOTTOM, 0, BOTTOM_SHEET_PEEK_HEIGHT);
@@ -94,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /*
-     * Saves whether the user is logged in or not in preferences
+     * Saves login data about the user in shared preferences.
      */
     @SuppressLint("ApplySharedPref")
     private void setLoggedInData() {

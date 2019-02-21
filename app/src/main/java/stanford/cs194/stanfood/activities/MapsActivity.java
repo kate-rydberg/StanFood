@@ -312,11 +312,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 toast.setGravity(Gravity.BOTTOM, 0, BOTTOM_SHEET_PEEK_HEIGHT);
                                 toast.show();
 
-
-                                SharedPreferences.Editor editor = prefs.edit();
-                                editor.putBoolean("isLoggedIn", false);
-                                editor.putString("userId", "");
-                                editor.commit();
+                                setLogOutPrefs();
                                 setAuthenticationMenuOptions();
                             }
                         });
@@ -345,6 +341,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 startActivity(intent);
             }
         };
+    }
+
+    /**
+     * Saves the result of logging out in preferences since we log out
+     * without starting LoginActivity.
+     */
+    @SuppressLint("ApplySharedPref")
+    private void setLogOutPrefs() {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("isLoggedIn", false);
+        editor.putString("userId", "");
+        editor.commit();
     }
 
     /**
