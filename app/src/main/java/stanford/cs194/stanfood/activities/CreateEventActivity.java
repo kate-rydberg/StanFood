@@ -3,6 +3,7 @@ package stanford.cs194.stanfood.activities;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -30,12 +31,14 @@ public class CreateEventActivity extends AppCompatActivity {
     public static final long MINUTES_TO_MS = 60000;
 
     private Database db;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
         db = new Database();
+        prefs = getSharedPreferences("loginData", MODE_PRIVATE);
     }
 
     /**
@@ -196,21 +199,19 @@ public class CreateEventActivity extends AppCompatActivity {
         long startTimeMS = getStartTimeMS();
         long durationMS = getDurationMS();
 
+        // Get User ID to link to event
+        String userId = prefs.getString("userId", "");
+
         // If any fields empty/invalid, return without attempting database event creation
         if (eventName.equals("") || foodDescription.equals("") || locationName.equals("")
-            || startTimeMS == 0 || durationMS == 0) {
+            || startTimeMS == 0 || durationMS == 0 || userId.equals("")) {
             return;
         }
 
-        // Get User ID to link to event
-        String userId = getIntent().getStringExtra("userId");
         db.createEvent(eventName, eventDescription, locationName, startTimeMS, durationMS, foodDescription, userId);
 
-        Intent intent = new Intent();
-        setResult(RESULT_OK, intent);
-        db.createEvent(eventDescription, locationName, startTimeMS, durationMS, foodDescription);
         Context context = getApplicationContext();
-        String text = "Log-Out successful!";
+        String text = "Event creation successful!";
         Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
         final int BOTTOM_SHEET_PEEK_HEIGHT = (int)context.getResources().getDimension(R.dimen.bottom_sheet_peek_height);
         toast.setGravity(Gravity.BOTTOM, 0, BOTTOM_SHEET_PEEK_HEIGHT);

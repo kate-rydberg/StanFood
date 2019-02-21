@@ -8,10 +8,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -44,7 +42,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 import stanford.cs194.stanfood.App;
 import stanford.cs194.stanfood.R;
@@ -88,8 +85,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         markerStorage = new HashMap<>();
         // Get the transparent toolbar to insert the navigation menu icon
 
-        // Get SharedPreferences for current logged in status.
-        prefs = getSharedPreferences("loginStatus", MODE_PRIVATE);
+        // Get SharedPreferences for login data
+        prefs = getSharedPreferences("loginData", MODE_PRIVATE);
     }
 
     @Override
@@ -318,6 +315,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                                 SharedPreferences.Editor editor = prefs.edit();
                                 editor.putBoolean("isLoggedIn", false);
+                                editor.putString("userId", "");
                                 editor.commit();
                                 setAuthenticationMenuOptions();
                             }
@@ -339,9 +337,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
                 Intent intent;
                 if (isLoggedIn) {
-                    Intent intent = new Intent(MapsActivity.this, CreateEventActivity.class);
-                    intent.putExtra("userId", auth.getCurrentUser().getUid());
-                    startActivityForResult(intent, CREATE_EVENT);
                     intent = new Intent(MapsActivity.this, CreateEventActivity.class);
                 } else {
                     intent = new Intent(MapsActivity.this, LoginActivity.class);

@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
             Log.d("Authentication", "User successfully logged in as: "
                     + auth.getCurrentUser().getDisplayName());
             auth.addCurrentUserToDatabase();
-            setLoggedInState();
+            setLoggedInData();
             String text = "Log-In successful!";
             Toast toast = Toast.makeText(context, text, duration);
             toast.setGravity(Gravity.BOTTOM, 0, BOTTOM_SHEET_PEEK_HEIGHT);
@@ -97,11 +97,12 @@ public class LoginActivity extends AppCompatActivity {
      * Saves whether the user is logged in or not in preferences
      */
     @SuppressLint("ApplySharedPref")
-    private void setLoggedInState() {
+    private void setLoggedInData() {
         boolean isLoggedIn = auth.getCurrentUser() != null;
-        SharedPreferences prefs = getSharedPreferences("loginStatus", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("loginData", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean("isLoggedIn", isLoggedIn);
+        editor.putString("userId", auth.getCurrentUser().getUid());
         editor.commit();
     }
 }
