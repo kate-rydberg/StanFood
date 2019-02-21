@@ -54,6 +54,16 @@
             android:hint="@string/event_location"
             android:inputType="textPostalAddress|textCapWords" />
 
+        <AutoCompleteTextView
+            android:id="@+id/eventAutoLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:hint="Event Location"
+            android:completionThreshold="4"
+            android:ems="10"
+            android:text="" />
+
         <LinearLayout
             android:id="@+id/dateLayout"
             android:layout_width="match_parent"

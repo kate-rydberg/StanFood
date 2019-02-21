@@ -5,9 +5,15 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -19,8 +25,25 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.AutocompletePrediction;
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
+import com.google.android.libraries.places.api.model.RectangularBounds;
+import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
+import com.google.android.libraries.places.api.net.PlacesClient;
+
+import java.util.ArrayList;
+
+import stanford.cs194.stanfood.App;
 import stanford.cs194.stanfood.R;
 import stanford.cs194.stanfood.database.Database;
+
+import static com.google.android.libraries.places.api.Places.createClient;
 
 public class CreateEventActivity extends AppCompatActivity {
     public static final long HOURS_TO_MS = 3600000;
@@ -28,6 +51,9 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private Database db;
     private SharedPreferences prefs;
+    private PlacesClient placesClient;
+    private AutocompleteSessionToken token;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +61,28 @@ public class CreateEventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_event);
         db = new Database();
         prefs = getSharedPreferences("loginData", MODE_PRIVATE);
+        token = AutocompleteSessionToken.newInstance();
+        Places.initialize(getApplicationContext(),
+                getResources().getString(R.string.google_maps_key));
+        placesClient = createClient(this);
+        AutoCompleteTextView textView = findViewById(R.id.eventAutoLocation);
+        textView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(count > 3)
+                    autocomplete(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     /**
@@ -264,5 +312,41 @@ public class CreateEventActivity extends AppCompatActivity {
                 }
             }, hour, minute, false);
         timePickerDialog.show();
+    }
+
+    public void autocomplete(String query){
+        RectangularBounds bounds = RectangularBounds.newInstance(
+                new LatLng(37.418814, -122.159055),
+                new LatLng(37.449061, -122.192363)
+        );
+        FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
+                // Call either setLocationBias() OR setLocationRestriction().
+                //.setLocationBias(bounds)
+                .setLocationRestriction(bounds)
+                .setTypeFilter(TypeFilter.GEOCODE)
+                .setSessionToken(token)
+                .setQuery(query)
+                .build();
+
+        final ArrayList<String> suggestions = new ArrayList<String>();
+        placesClient.findAutocompletePredictions(request).addOnSuccessListener(
+                new OnSuccessListener<FindAutocompletePredictionsResponse>() {
+            @Override
+            public void onSuccess(FindAutocompletePredictionsResponse response) {
+                for(AutocompletePrediction prediction : response.getAutocompletePredictions()){
+                    suggestions.add(prediction.getPrimaryText(null).toString());
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("CONSOLE", e.toString());
+            }
+        });
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>
+                (this, android.R.layout.simple_list_item_1, suggestions);
+        AutoCompleteTextView actv = (AutoCompleteTextView) findViewById(R.id.eventAutoLocation);
+        actv.setAdapter(adapter);//setting the adapter data into the AutoCompleteTextView
+        actv.setTextColor(Color.RED);
     }
 }
