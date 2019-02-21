@@ -70,7 +70,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Notification notif;
     private SharedPreferences prefs;
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +78,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        Objects.requireNonNull(mapFragment).getMapAsync(this);
+        mapFragment.getMapAsync(this);
 
         db = new Database();
 
@@ -225,7 +225,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         for(DataSnapshot ds : dataSnapshot.getChildren()){
                             if(ds.hasChildren()){
                                 Pin curPin = ds.getValue(Pin.class);
-                                LatLng coordinate = Objects.requireNonNull(curPin).getLocationCoordinate();
+                                LatLng coordinate = curPin.getLocationCoordinate();
                                 Location loc = new Location(LocationManager.GPS_PROVIDER);
                                 loc.setLatitude(coordinate.latitude);
                                 loc.setLongitude(coordinate.longitude);
@@ -339,6 +339,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
                 Intent intent;
                 if (isLoggedIn) {
+                    Intent intent = new Intent(MapsActivity.this, CreateEventActivity.class);
+                    intent.putExtra("userId", auth.getCurrentUser().getUid());
+                    startActivityForResult(intent, CREATE_EVENT);
                     intent = new Intent(MapsActivity.this, CreateEventActivity.class);
                 } else {
                     intent = new Intent(MapsActivity.this, LoginActivity.class);
@@ -365,7 +368,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * Moves the compass position down, so that the hamburger menu does not cover it.
      */
     private void moveCompassPosition() {
-        View compassButton = Objects.requireNonNull(mapFragment.getView()).findViewWithTag("GoogleMapCompass");
+        View compassButton = mapFragment.getView().findViewWithTag("GoogleMapCompass");
         RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) compassButton.getLayoutParams();
         rlp.addRule(RelativeLayout.ALIGN_PARENT_START, 0);
         rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
