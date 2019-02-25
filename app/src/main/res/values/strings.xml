@@ -17,4 +17,21 @@
     <string name="createButtonText">Create</string>
     <string name="use_current_location">Use Current Location?</string>
     <string name="title_activity_splash">SplashActivity</string>
+    <string-array name="location_list">
+        <item>Adelfa</item>
+        <item>Cubberley Auditorium</item>
+        <item>East FloMo</item>
+        <item>Eucalipto</item>
+        <item>Florence Moore Hall</item>
+        <item>Gates Computer Science</item>
+        <item>Granada</item>
+        <item>Jordan Hall</item>
+        <item>Li Ka Shing Learning and Knowledge Center</item>
+        <item>Meier Hall</item>
+        <item>Norcliffe</item>
+        <item>Roble Hall</item>
+        <item>Tresidder Memorial Union</item>
+        <item>Ujamaa</item>
+        <item>West FloMo</item>
+    </string-array>
 </resources>
