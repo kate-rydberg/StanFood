@@ -60,9 +60,18 @@ public class EventAdapter extends ArrayAdapter {
         else eventDescription.setText("N/A");
 
         rowView.setOnClickListener(new View.OnClickListener(){
+            /**
+             * When list item is clicked on, display the event information.
+             * @param listItemView
+             */
             @Override
-            public void onClick(View v) {
+            public void onClick(View listItemView) {
                 LayoutInflater viewInflater = LayoutInflater.from(context);
+                // we want to somehow get the database id, so that we can pull more details from the db
+                String clickedEventName = ((TextView)listItemView.findViewById(R.id.eventName)).getText().toString();
+                String clickedTimeStart = ((TextView)listItemView.findViewById(R.id.eventTimeStart)).getText().toString();
+                String clickedEventDescription = ((TextView)listItemView.findViewById(R.id.eventDescription)).getText().toString();
+
                 View infoView = viewInflater.inflate(R.layout.event_info, null, true);
                 TextView infoEventName = infoView.findViewById(R.id.infoEventName);
                 infoEventName.setText("Hello");
