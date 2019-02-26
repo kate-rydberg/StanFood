@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import stanford.cs194.stanfood.adapters.EventAdapter;
+import stanford.cs194.stanfood.fragments.BottomSheetListView;
 import stanford.cs194.stanfood.models.Event;
 
 public class CreateList {
@@ -29,11 +30,11 @@ public class CreateList {
     private HashMap<LatLng,String> eventStorage;
 
     private ArrayList<Event> events;
-    private ListView eventListView;
+    private BottomSheetListView eventListView;
     private ViewGroup bottomSheetView;
 
     public CreateList(Context context, Database db, Marker marker,
-                      HashMap<LatLng, String> eventStorage, ListView eventListView,
+                      HashMap<LatLng, String> eventStorage, BottomSheetListView eventListView,
                       ViewGroup bottomSheetView) {
         this.context = context;
         this.db = db;
@@ -58,7 +59,12 @@ public class CreateList {
                             }
                         }
                         Collections.sort(events);
-                        Adapter rowCells = new EventAdapter(eventListView.getContext(), events, eventListView, bottomSheetView);
+                        Adapter rowCells = new EventAdapter(
+                                eventListView.getContext(),
+                                events,
+                                eventListView,
+                                bottomSheetView
+                        );
                         eventListView.setAdapter((ListAdapter) rowCells);
                     }
 

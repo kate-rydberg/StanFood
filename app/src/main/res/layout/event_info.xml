@@ -10,13 +10,6 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/infoEventName"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/bottom_sheet_peek_height"
-            android:textSize="@dimen/text_size" />
-
-        <TextView
             android:id="@+id/infoEventDescription"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

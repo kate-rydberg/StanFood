@@ -23,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -154,6 +155,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onMarkerClick(Marker marker) {
         LatLng location = marker.getPosition();
 
+        bottomSheet.initExpandedHeight();
         bottomSheet.expand();
         mMap.setPadding(0, 0, 0, (int)bottomSheet.getExpandedHeight());
         mMap.animateCamera(CameraUpdateFactory.newLatLng(location),500,null);
@@ -164,7 +166,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             LayoutInflater viewInflater = LayoutInflater.from(App.getContext());
             eventListView = (BottomSheetListView) viewInflater.inflate(R.layout.list_info, null, true);
             ViewGroupUtils viewGroupUtils = new ViewGroupUtils();
-            viewGroupUtils.replaceOnlyChild(eventListView, bottomSheetView);
+            Log.d("parent_is_null", "onMarkerClick: " + bottomSheetView);
+            ViewGroup bottomSheetContents = bottomSheetView.findViewById(R.id.bottom_sheet_contents);
+            viewGroupUtils.replaceViewById(eventListView, bottomSheetContents, 1);
         }
         ViewCompat.setNestedScrollingEnabled(eventListView, true);
 

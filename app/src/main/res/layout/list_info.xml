@@ -2,6 +2,5 @@
 <stanford.cs194.stanfood.fragments.BottomSheetListView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/eventList"
-    android:layout_marginTop="@dimen/bottom_sheet_peek_height"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+    android:layout_height="wrap_content"/>

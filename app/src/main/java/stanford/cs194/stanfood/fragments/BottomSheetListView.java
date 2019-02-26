@@ -9,6 +9,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.AbsListView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 public class BottomSheetListView extends ListView {
@@ -19,7 +20,7 @@ public class BottomSheetListView extends ListView {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        NestedScrollView parent = (NestedScrollView) getParent();
+        LinearLayout parent = (LinearLayout) getParent();
         if (canScrollVertically(this)) {
             ViewCompat.setNestedScrollingEnabled(parent, false);
         }
@@ -31,7 +32,7 @@ public class BottomSheetListView extends ListView {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        NestedScrollView parent = (NestedScrollView) getParent();
+        LinearLayout parent = (LinearLayout) getParent();
         if (canScrollVertically(this)) {
             ViewCompat.setNestedScrollingEnabled(parent, false);
         }

@@ -29,7 +29,8 @@ public class ViewGroupUtils {
         }
     }
 
-    public static void replaceView(View currentView, View newView, ViewGroup parent) {
+    public static void replaceView(View currentView, View newView) {
+        ViewGroup parent = getParent(currentView);
         if (parent == null) {
             parent = getParent(currentView);
             if(parent == null) return;
@@ -43,6 +44,12 @@ public class ViewGroupUtils {
         if(parent == null) return;
         parent.removeViewAt(0);
         parent.addView(newView, 0);
+    }
+
+    public static void replaceViewById(View newView, ViewGroup parent, int index) {
+        if(parent == null) return;
+        parent.removeViewAt(index);
+        parent.addView(newView, index);
     }
 
     public static void softReplaceView(View currentView, View newView, ViewGroup parent) {
