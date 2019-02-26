@@ -19,8 +19,10 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -53,6 +55,7 @@ import stanford.cs194.stanfood.fragments.BottomSheetListView;
 import stanford.cs194.stanfood.fragments.BottomSheet;
 import stanford.cs194.stanfood.fragments.NavigationDrawer;
 import stanford.cs194.stanfood.helpers.Notification;
+import stanford.cs194.stanfood.helpers.ViewGroupUtils;
 import stanford.cs194.stanfood.models.Pin;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, OnMarkerClickListener, GoogleMap.OnMapClickListener, GoogleMap.OnCameraMoveStartedListener {
@@ -156,8 +159,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.animateCamera(CameraUpdateFactory.newLatLng(location),500,null);
 
         BottomSheetListView eventListView = findViewById(R.id.eventList);
+        ViewGroup bottomSheetView = findViewById(R.id.bottom_sheet);
+        if (eventListView == null) {
+            LayoutInflater viewInflater = LayoutInflater.from(App.getContext());
+            eventListView = (BottomSheetListView) viewInflater.inflate(R.layout.list_info, null, true);
+            ViewGroupUtils viewGroupUtils = new ViewGroupUtils();
+            viewGroupUtils.replaceOnlyChild(eventListView, bottomSheetView);
+        }
         ViewCompat.setNestedScrollingEnabled(eventListView, true);
-        CreateList initRows = new CreateList(App.getContext(), db, marker, eventStorage, eventListView);
+
+        CreateList initRows = new CreateList(
+                App.getContext(),
+                db,
+                marker,
+                eventStorage,
+                eventListView,
+                bottomSheetView
+        );
         initRows.createEventList();
 
         return true;

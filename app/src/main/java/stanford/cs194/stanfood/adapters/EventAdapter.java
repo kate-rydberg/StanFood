@@ -24,12 +24,14 @@ public class EventAdapter extends ArrayAdapter {
     private ArrayList<Event> events;
     private Context context;
     private ListView eventListView;
+    private ViewGroup bottomSheetView;
 
-    public EventAdapter(Context context, ArrayList<Event> events, ListView eventListView) {
+    public EventAdapter(Context context, ArrayList<Event> events, ListView eventListView, ViewGroup bottomSheetView) {
         super(context, R.layout.list_view, events);
         this.context = context;
         this.events = events;
         this.eventListView = eventListView;
+        this.bottomSheetView = bottomSheetView;
     }
 
     @NonNull
@@ -74,10 +76,13 @@ public class EventAdapter extends ArrayAdapter {
 
                 View infoView = viewInflater.inflate(R.layout.event_info, null, true);
                 TextView infoEventName = infoView.findViewById(R.id.infoEventName);
-                infoEventName.setText("Hello");
+                infoEventName.setText(clickedEventName);
+                TextView infoEventDescription = infoView.findViewById(R.id.infoEventDescription);
+                String descriptionHeader = infoEventDescription.getText().toString();
+                infoEventDescription.setText(descriptionHeader + clickedEventDescription);
 
                 ViewGroupUtils viewGroupUtils = new ViewGroupUtils();
-                viewGroupUtils.replaceView(eventListView, infoView);
+                viewGroupUtils.replaceView(eventListView, infoView, bottomSheetView);
             }
         });
 
