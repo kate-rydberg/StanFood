@@ -57,12 +57,6 @@ public class BottomSheet{
         });
     }
 
-
-    public void setPeakHeightPadding(final GoogleMap mMap ){
-        mMap.setPadding(0, 0, 0, mBottomSheetBehavior.getPeekHeight());
-    }
-
-    // expand: expands the bottom sheet
     // expand: expands the bottom sheet
     public void expand() {
         if (mBottomSheetBehavior.isHideable()) {
