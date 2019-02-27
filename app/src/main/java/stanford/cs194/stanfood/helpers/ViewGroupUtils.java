@@ -17,18 +17,6 @@ public class ViewGroupUtils {
         parent.removeView(view);
     }
 
-    public static void hideView(View view) {
-        if(view != null) {
-            view.setVisibility(View.GONE);
-        }
-    }
-
-    public static void revealView(View view) {
-        if(view != null) {
-            view.setVisibility(View.VISIBLE);
-        }
-    }
-
     public static void replaceView(View currentView, View newView) {
         ViewGroup parent = getParent(currentView);
         if (parent == null) {
@@ -39,25 +27,9 @@ public class ViewGroupUtils {
         removeView(currentView, parent);
         parent.addView(newView, index);
     }
-
-    public static void replaceOnlyChild(View newView, ViewGroup parent) {
-        if(parent == null) return;
-        parent.removeViewAt(0);
-        parent.addView(newView, 0);
-    }
-
     public static void replaceViewById(View newView, ViewGroup parent, int index) {
         if(parent == null) return;
         parent.removeViewAt(index);
-        parent.addView(newView, index);
-    }
-
-    public static void softReplaceView(View currentView, View newView, ViewGroup parent) {
-        if(parent == null) {
-            return;
-        }
-        final int index = parent.indexOfChild(currentView);
-        hideView(currentView);;
         parent.addView(newView, index);
     }
 }

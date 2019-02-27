@@ -83,13 +83,18 @@ public class EventAdapter extends ArrayAdapter {
                 LayoutInflater viewInflater = LayoutInflater.from(context);
                 // we want to somehow get the database id, so that we can pull more details from the db
                 String clickedEventName = ((TextView)listItemView.findViewById(R.id.eventName)).getText().toString();
-                String clickedTimeStart = ((TextView)listItemView.findViewById(R.id.eventTimeStart)).getText().toString();
+                String clickedTimeRange = ((TextView)listItemView.findViewById(R.id.eventTimeStart)).getText().toString();
                 String clickedEventDescription = ((TextView)listItemView.findViewById(R.id.eventDescription)).getText().toString();
 
                 View infoView = viewInflater.inflate(R.layout.event_info, null, true);
+
                 TextView infoEventName = bottomSheetView.findViewById(R.id.bottom_sheet_header);
-                infoEventName.setText(clickedEventName);
+                TextView infoEventTime = infoView.findViewById(R.id.infoEventTime);
                 TextView infoEventDescription = infoView.findViewById(R.id.infoEventDescription);
+
+                infoEventName.setText(clickedEventName);
+                String timeHeader = infoEventTime.getText().toString();
+                infoEventTime.setText(timeHeader + clickedTimeRange);
                 String descriptionHeader = infoEventDescription.getText().toString();
                 infoEventDescription.setText(descriptionHeader + clickedEventDescription);
 

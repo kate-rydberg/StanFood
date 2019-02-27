@@ -15,6 +15,7 @@
     <string name="event_location">Event Location</string>
     <string name="event_description">Event Description</string>
     <string name="event_description_header">Event Description:&#160;</string>
+    <string name="event_time_header">Time:&#160;</string>
     <string name="createButtonText">Create</string>
     <string name="use_current_location">Use Current Location?</string>
     <string name="title_activity_splash">SplashActivity</string>

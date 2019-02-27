@@ -12,9 +12,19 @@
         <TextView
             android:id="@+id/infoEventDescription"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/bottom_sheet_padding"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/bottom_sheet_padding"
+            android:paddingRight="@dimen/bottom_sheet_padding"
             android:text="@string/event_description_header"
+            android:textSize="@dimen/text_size" />
+
+        <TextView
+            android:id="@+id/infoEventTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/bottom_sheet_padding"
+            android:paddingRight="@dimen/bottom_sheet_padding"
+            android:text="@string/event_time_header"
             android:textSize="@dimen/text_size" />
 
     </LinearLayout>
