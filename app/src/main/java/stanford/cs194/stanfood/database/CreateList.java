@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.ListAdapter;
-import android.widget.ListView;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
