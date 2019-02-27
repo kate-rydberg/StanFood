@@ -3,7 +3,6 @@ package stanford.cs194.stanfood.fragments;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.v4.widget.NestedScrollView;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -13,13 +12,13 @@ import stanford.cs194.stanfood.R;
 
 public class BottomSheet{
     private View bottomSheetView;
-    private BottomSheetBehavior<NestedScrollView> mBottomSheetBehavior;
+    private BottomSheetBehavior<View> mBottomSheetBehavior;
     private Context context;
     private GoogleMap mMap;
     private float BOTTOM_SHEET_EXPANDED_HEIGHT;
     private final float BOTTOM_SHEET_PEEK_HEIGHT;
 
-    public BottomSheet(Context context, NestedScrollView bottomSheet, final GoogleMap mMap) {
+    public BottomSheet(Context context, View bottomSheet, final GoogleMap mMap) {
         this.bottomSheetView = bottomSheet;
         this.mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         collapse();

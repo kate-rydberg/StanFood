@@ -15,7 +15,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -134,7 +133,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setOnCameraMoveStartedListener(this);
 
         // Get the bottom sheet view
-        NestedScrollView bottomSheetView = findViewById(R.id.bottom_sheet);
+        View bottomSheetView = findViewById(R.id.bottom_sheet);
         bottomSheet = new BottomSheet(bottomSheetView.getContext(), bottomSheetView, mMap);
         bottomSheet.moveListener();
         // Set padding to show Google logo in correct position
