@@ -1,6 +1,5 @@
 package stanford.cs194.stanfood.database;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.ViewGroup;
@@ -24,24 +23,23 @@ import stanford.cs194.stanfood.models.Event;
 
 public class CreateList {
 
-    private Context context;
     private Database db;
     private LatLng markerLocation;
     private HashMap<LatLng,String> eventStorage;
 
     private ArrayList<Event> events;
     private BottomSheetListView eventListView;
-    private ViewGroup bottomSheetView;
+    private ViewGroup bottomSheetContentsView;
 
-    public CreateList(Context context, Database db, Marker marker,
+
+    public CreateList(Database db, Marker marker,
                       HashMap<LatLng, String> eventStorage, BottomSheetListView eventListView,
-                      ViewGroup bottomSheetView) {
-        this.context = context;
+                      ViewGroup bottomSheetContentsView) {
         this.db = db;
         this.markerLocation = marker.getPosition();
         this.eventStorage = eventStorage;
         this.eventListView = eventListView;
-        this.bottomSheetView = bottomSheetView;
+        this.bottomSheetContentsView = bottomSheetContentsView;
         this.events = new ArrayList<>();
     }
 
@@ -63,7 +61,7 @@ public class CreateList {
                                 eventListView.getContext(),
                                 events,
                                 eventListView,
-                                bottomSheetView
+                                bottomSheetContentsView
                         );
                         eventListView.setAdapter((ListAdapter) rowCells);
                     }

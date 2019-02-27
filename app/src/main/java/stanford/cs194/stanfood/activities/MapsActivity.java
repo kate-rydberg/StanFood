@@ -161,24 +161,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.animateCamera(CameraUpdateFactory.newLatLng(location),500,null);
 
         BottomSheetListView eventListView = findViewById(R.id.eventList);
-        ViewGroup bottomSheetView = findViewById(R.id.bottom_sheet);
+        ViewGroup bottomSheetContents = findViewById(R.id.bottom_sheet_contents);
         if (eventListView == null) {
             LayoutInflater viewInflater = LayoutInflater.from(App.getContext());
             eventListView = (BottomSheetListView) viewInflater.inflate(R.layout.list_info, null, true);
             ViewGroupUtils viewGroupUtils = new ViewGroupUtils();
-            Log.d("parent_is_null", "onMarkerClick: " + bottomSheetView);
-            ViewGroup bottomSheetContents = bottomSheetView.findViewById(R.id.bottom_sheet_contents);
             viewGroupUtils.replaceViewById(eventListView, bottomSheetContents, 1);
         }
         ViewCompat.setNestedScrollingEnabled(eventListView, true);
 
         CreateList initRows = new CreateList(
-                App.getContext(),
                 db,
                 marker,
                 eventStorage,
                 eventListView,
-                bottomSheetView
+                bottomSheetContents
         );
         initRows.createEventList();
 

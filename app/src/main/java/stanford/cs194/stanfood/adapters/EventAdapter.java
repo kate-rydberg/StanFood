@@ -7,16 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 import stanford.cs194.stanfood.R;
+import stanford.cs194.stanfood.fragments.BottomSheetListView;
 import stanford.cs194.stanfood.helpers.ViewGroupUtils;
 import stanford.cs194.stanfood.models.Event;
 
@@ -25,20 +24,21 @@ public class EventAdapter extends ArrayAdapter {
 
     private ArrayList<Event> events;
     private Context context;
-    private ListView eventListView;
-    private ViewGroup bottomSheetView;
+
+    private BottomSheetListView eventListView;
+    private ViewGroup bottomSheetContentsView;
 
     public EventAdapter(
             Context context,
             ArrayList<Event> events,
-            ListView eventListView,
-            ViewGroup bottomSheetView
+            BottomSheetListView eventListView,
+            ViewGroup bottomSheetContentsView
     ) {
         super(context, R.layout.list_view, events);
         this.context = context;
         this.events = events;
         this.eventListView = eventListView;
-        this.bottomSheetView = bottomSheetView;
+        this.bottomSheetContentsView = bottomSheetContentsView;
     }
 
     @NonNull
@@ -47,14 +47,14 @@ public class EventAdapter extends ArrayAdapter {
         View rowView = inflater.inflate(R.layout.list_view, null, true);
 
         // gets references to objects in the list_view.xml file
-        TextView eventLocation = bottomSheetView.findViewById(R.id.bottom_sheet_header);
+        TextView eventLocation = bottomSheetContentsView.findViewById(R.id.bottom_sheet_header);
         TextView eventName = rowView.findViewById(R.id.eventName);
         TextView eventTimeStart = rowView.findViewById(R.id.eventTimeStart);
         TextView eventDescription = rowView.findViewById(R.id.eventDescription);
 
         Event event = events.get(position);
         String name = event.getName();
-        String locationName = event.getLocationName();
+        final String locationName = event.getLocationName();
         long time = event.getTimeStart();
         long duration = event.getDuration();
         String description = event.getDescription();
@@ -88,19 +88,21 @@ public class EventAdapter extends ArrayAdapter {
 
                 View infoView = viewInflater.inflate(R.layout.event_info, null, true);
 
-                TextView infoEventName = bottomSheetView.findViewById(R.id.bottom_sheet_header);
+                TextView infoHeader = bottomSheetContentsView.findViewById(R.id.bottom_sheet_header);
+                String clickedLocationName = infoHeader.getText().toString();
+                TextView infoLocationName = infoView.findViewById(R.id.infoLocationName);
                 TextView infoEventTime = infoView.findViewById(R.id.infoEventTime);
                 TextView infoEventDescription = infoView.findViewById(R.id.infoEventDescription);
 
-                infoEventName.setText(clickedEventName);
-                String timeHeader = infoEventTime.getText().toString();
-                infoEventTime.setText(timeHeader + clickedTimeRange);
-                String descriptionHeader = infoEventDescription.getText().toString();
-                infoEventDescription.setText(descriptionHeader + clickedEventDescription);
+                infoHeader.setText(clickedEventName);
+                String locationText = infoLocationName.getText().toString() + clickedLocationName;
+                infoLocationName.setText(locationText);
+                String timeText = infoEventTime.getText().toString() + clickedTimeRange;
+                infoEventTime.setText(timeText);
+                infoEventDescription.setText(clickedEventDescription);
 
-                ViewGroup bottomSheetContents = bottomSheetView.findViewById(R.id.bottom_sheet_contents);
                 ViewGroupUtils viewGroupUtils = new ViewGroupUtils();
-                viewGroupUtils.replaceViewById(infoView, bottomSheetContents, 1);
+                viewGroupUtils.replaceViewById(infoView, bottomSheetContentsView, 1);
             }
         });
 
@@ -121,8 +123,8 @@ public class EventAdapter extends ArrayAdapter {
         Calendar endTime = Calendar.getInstance();
         endTime.setTimeInMillis(startTimeInMillis + durationInMillis);
 
-        SimpleDateFormat startFormat = new SimpleDateFormat("E MMM dd, hh:mma");
-        SimpleDateFormat endFormat = new SimpleDateFormat("hh:mma");
+        SimpleDateFormat startFormat = new SimpleDateFormat("E MMM dd, hh:mma", Locale.US);
+        SimpleDateFormat endFormat = new SimpleDateFormat("hh:mma", Locale.US);
         String startTimeStr = startFormat.format(startTime.getTime());
         String endTimeStr = endFormat.format(endTime.getTime());
         return startTimeStr + " - " + endTimeStr;
