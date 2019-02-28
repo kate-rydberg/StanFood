@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import stanford.cs194.stanfood.R;
+import android.support.v7.app.AppCompatActivity;
 import stanford.cs194.stanfood.database.Database;
 
 public class CreateEventActivity extends AppCompatActivity {
