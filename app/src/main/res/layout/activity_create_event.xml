@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/event_name"
-            android:inputType="textCapSentences"/>
+            android:inputType="textCapSentences" />
 
         <EditText
             android:id="@+id/foodDescription"
@@ -45,12 +45,15 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/food_description"
-            android:inputType="textMultiLine|textCapSentences" />
+            android:inputType="textMultiLine|textCapSentences"/>
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/eventLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:completionThreshold="1"
+            android:ems="10"
             android:hint="@string/event_location"
             android:inputType="textPostalAddress|textCapWords" />
 

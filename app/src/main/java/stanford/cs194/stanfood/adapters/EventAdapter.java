@@ -30,7 +30,7 @@ public class EventAdapter extends ArrayAdapter {
     }
 
     @NonNull
-    public View getView(int position, View view, ViewGroup parent) {
+    public View getView(int position, View view, @NonNull ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View rowView = inflater.inflate(R.layout.list_view, null, true);
 
@@ -40,13 +40,14 @@ public class EventAdapter extends ArrayAdapter {
         TextView eventDescription = rowView.findViewById(R.id.eventDescription);
 
         Event event = events.get(position);
-        String name = event.getLocationName();
-        Long time = event.getTimeStart();
-        Long duration = event.getDuration();
+        String name = event.getName();
+        long time = event.getTimeStart();
+        long duration = event.getDuration();
         String description = event.getDescription();
 
         // sets the values of the objects to the value from the current event
-        if(!name.equals("")) eventName.setText(name);
+        // TODO: Temporary null check until we clear out data since some events don't have explicit name fields
+        if(name != null && !name.equals("")) eventName.setText(name);
         else  eventName.setText("N/A");
 
         if(time != 0) eventTimeStart.setText(getEventTimeRange(time, duration));
@@ -64,7 +65,7 @@ public class EventAdapter extends ArrayAdapter {
      * E.g. given [Mon Jan 15, 4:30PM] and duration [90 min] in milliseconds,
      * return the string "Mon Jan 15, 4:30PM - 6:00PM"
      */
-    private String getEventTimeRange(Long startTimeInMillis, Long durationInMillis) {
+    private String getEventTimeRange(long startTimeInMillis, long durationInMillis) {
         // set start time
         Calendar startTime = Calendar.getInstance();
         startTime.setTimeInMillis(startTimeInMillis);

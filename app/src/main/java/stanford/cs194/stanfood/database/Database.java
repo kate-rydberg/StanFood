@@ -52,17 +52,18 @@ public class Database {
     }
 
     // createPin: creates a new pin in the pins table
-    public String createPin(LatLng loc){
+    public String createPin(LatLng loc, String locationName){
         LatLngWrapper locW = new LatLngWrapper(loc.latitude, loc.longitude);
-        return createEntry("pins", new Pin(locW));
+        return createEntry("pins", new Pin(locW, locationName));
     }
 
     // createEvent: creates a new event in the events table
     // first searches to see if there is a pin at the associated location
     // if not, one is created. pinId is then retrieved, allowing the
     // event to be created
-    public void createEvent(final String description, final String locationName,
-                            final long timeStart, final long duration, final String foodDescription){
+    public void createEvent(final String name, final String description, final String locationName,
+                            final long timeStart, final long duration, final String foodDescription,
+                            final String userId){
         final LatLng loc = getLocationFromName(locationName);
         // TODO: Insert check for null location in case the corresponding location name doesn't exist
         dbRef.child("pins").addListenerForSingleValueEvent(
@@ -82,11 +83,10 @@ public class Database {
                         }
                     }
                     if(pinId == null) {
-                        pinId = createPin(loc);
-                        new GetNameFromCoordinates().execute(pinId, loc);
+                        pinId = createPin(loc, locationName);
                     }
-                    String eventId = createEntry("events", new Event(pinId, description, locationName,
-                            timeStart, duration));
+                    String eventId = createEntry("events", new Event(pinId, name, description,
+                            locationName, timeStart, duration, userId));
                     createFood(eventId, foodDescription);
                 }
 

@@ -12,8 +12,9 @@ public class Pin {
 
     public Pin() {}
 
-    public Pin(LatLngWrapper locationCoordinate) {
+    public Pin(LatLngWrapper locationCoordinate, String locationName) {
         this.locationCoordinate = locationCoordinate;
+        this.locationName = locationName;
         this.numEvents = 1;
     }
 

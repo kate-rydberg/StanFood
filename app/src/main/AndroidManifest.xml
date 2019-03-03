@@ -23,7 +23,6 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
 
         <!--
@@ -43,12 +42,16 @@
             android:label="@string/title_activity_maps">
         </activity>
 
-        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
 
         <activity
             android:name=".activities.CreateEventActivity"
-            android:parentActivityName=".activities.MapsActivity">
-        </activity>
-    </application>
+            android:parentActivityName=".activities.MapsActivity"></activity>
 
+        <activity
+            android:name=".activities.LoginActivity"
+            android:parentActivityName=".activities.MapsActivity"></activity>
+    </application>
 </manifest>
