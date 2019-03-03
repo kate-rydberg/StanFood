@@ -19,18 +19,24 @@ public class BottomSheetListView extends ListView {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        NestedScrollView parent = (NestedScrollView) getParent();
         if (canScrollVertically(this)) {
-            NestedScrollView parent = (NestedScrollView) getParent();
             ViewCompat.setNestedScrollingEnabled(parent, false);
+        }
+        else{
+            ViewCompat.setNestedScrollingEnabled(parent, true);
         }
         return super.onInterceptTouchEvent(ev);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        NestedScrollView parent = (NestedScrollView) getParent();
         if (canScrollVertically(this)) {
-            NestedScrollView parent = (NestedScrollView) getParent();
             ViewCompat.setNestedScrollingEnabled(parent, false);
+        }
+        else{
+            ViewCompat.setNestedScrollingEnabled(parent, true);
         }
         return super.onTouchEvent(ev);
     }
@@ -44,10 +50,9 @@ public class BottomSheetListView extends ListView {
 
         if (view != null && view.getChildCount() > 0) {
 
-            boolean isOnTop = view.getFirstVisiblePosition() != 0 || view.getChildAt(0).getTop() != 0;
-            boolean isAllItemsVisible = isOnTop && getLastVisiblePosition() == view.getChildCount();
+            boolean isNotOnTop = view.getFirstVisiblePosition() != 0 || view.getChildAt(0).getTop() != 0;
 
-            if (isOnTop || isAllItemsVisible)  canScroll = true;
+            if (isNotOnTop)  canScroll = true;
         }
 
         return canScroll;
