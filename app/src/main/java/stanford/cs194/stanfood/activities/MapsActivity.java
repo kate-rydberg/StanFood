@@ -13,7 +13,9 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -47,6 +49,7 @@ import stanford.cs194.stanfood.App;
 import stanford.cs194.stanfood.R;
 import stanford.cs194.stanfood.database.CreateList;
 import stanford.cs194.stanfood.database.Database;
+import stanford.cs194.stanfood.fragments.BottomSheetListView;
 import stanford.cs194.stanfood.fragments.BottomSheet;
 import stanford.cs194.stanfood.fragments.NavigationDrawer;
 import stanford.cs194.stanfood.helpers.Notification;
@@ -129,8 +132,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setOnCameraMoveStartedListener(this);
 
         // Get the bottom sheet view
-        View bottomSheetView = findViewById(R.id.bottom_sheet);
-        bottomSheet = new BottomSheet(bottomSheetView, bottomSheetView.getContext(), mMap);
+        NestedScrollView bottomSheetView = findViewById(R.id.bottom_sheet);
+        bottomSheet = new BottomSheet(bottomSheetView.getContext(), bottomSheetView, mMap);
         bottomSheet.moveListener();
         // Set padding to show Google logo in correct position
         mMap.setPadding(0, 0, 0, (int)bottomSheet.getPeekHeight());
@@ -152,10 +155,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setPadding(0, 0, 0, (int)bottomSheet.getExpandedHeight());
         mMap.animateCamera(CameraUpdateFactory.newLatLng(location),500,null);
 
-        ListView eventList = findViewById(R.id.eventList);
+        BottomSheetListView eventList = findViewById(R.id.eventList);
 
+        ViewCompat.setNestedScrollingEnabled(eventList, true);
         CreateList initRows = new CreateList(App.getContext(), db, marker, eventStorage, eventList);
         initRows.createEventList();
+
         return true;
     }
 

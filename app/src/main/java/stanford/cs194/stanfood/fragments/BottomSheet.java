@@ -3,22 +3,21 @@ package stanford.cs194.stanfood.fragments;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
-import android.util.Log;
+import android.support.v4.widget.NestedScrollView;
 import android.view.View;
 
 import com.google.android.gms.maps.GoogleMap;
 
 import stanford.cs194.stanfood.R;
 
-
-public class BottomSheet {
-    private BottomSheetBehavior<View> mBottomSheetBehavior;
+public class BottomSheet{
+    private BottomSheetBehavior<NestedScrollView> mBottomSheetBehavior;
     private Context context;
     private GoogleMap mMap;
     private final float BOTTOM_SHEET_EXPANDED_HEIGHT;
     private final float BOTTOM_SHEET_PEEK_HEIGHT;
 
-    public BottomSheet(View bottomSheet, Context context, final GoogleMap mMap) {
+    public BottomSheet(Context context, NestedScrollView bottomSheet, final GoogleMap mMap) {
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         collapse();
         this.context = context;
@@ -57,9 +56,9 @@ public class BottomSheet {
                 float padding = slideOffset * (BOTTOM_SHEET_EXPANDED_HEIGHT - BOTTOM_SHEET_PEEK_HEIGHT) + BOTTOM_SHEET_PEEK_HEIGHT;
                 mMap.setPadding(0, 0, 0, (int)padding);
             }
-
         });
     }
+
 
     public void setPeakHeightPadding(final GoogleMap mMap ){
         mMap.setPadding(0, 0, 0, mBottomSheetBehavior.getPeekHeight());
