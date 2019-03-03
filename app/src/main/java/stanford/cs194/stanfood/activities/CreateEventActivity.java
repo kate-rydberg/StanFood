@@ -5,11 +5,13 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -20,6 +22,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import stanford.cs194.stanfood.R;
+import android.support.v7.app.AppCompatActivity;
 import stanford.cs194.stanfood.database.Database;
 
 public class CreateEventActivity extends AppCompatActivity {
@@ -35,8 +38,34 @@ public class CreateEventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_event);
         db = new Database();
         prefs = getSharedPreferences("loginData", MODE_PRIVATE);
+        final AutoCompleteTextView textView = findViewById(R.id.eventLocation);
+        String[] suggestions = getResources().getStringArray(R.array.location_list);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>
+                (this, android.R.layout.simple_list_item_1, suggestions);
+        textView.setAdapter(adapter);
+        textView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                textViewFocusChangeListener(textView, b);
+            }
+        });
     }
 
+    /**
+     * Restricts user from entering an option not in the autocomplete suggestion list.
+     */
+    private void textViewFocusChangeListener(AutoCompleteTextView textView, boolean b){
+        if(!b) {
+            String s = textView.getText().toString();
+            ListAdapter loc_adapter = textView.getAdapter();
+            for(int i = 0; i < loc_adapter.getCount(); i++) {
+                if(s.compareTo(loc_adapter.getItem(i).toString()) == 0) {
+                    return;
+                }
+            }
+            textView.setText("");
+        }
+    }
     /**
      * Extracts event name from the layout.
      * Note: Event name required

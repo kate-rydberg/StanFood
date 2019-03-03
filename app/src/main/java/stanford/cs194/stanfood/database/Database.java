@@ -52,9 +52,9 @@ public class Database {
     }
 
     // createPin: creates a new pin in the pins table
-    public String createPin(LatLng loc){
+    public String createPin(LatLng loc, String locationName){
         LatLngWrapper locW = new LatLngWrapper(loc.latitude, loc.longitude);
-        return createEntry("pins", new Pin(locW));
+        return createEntry("pins", new Pin(locW, locationName));
     }
 
     // createEvent: creates a new event in the events table
@@ -83,8 +83,7 @@ public class Database {
                         }
                     }
                     if(pinId == null) {
-                        pinId = createPin(loc);
-                        new GetNameFromCoordinates().execute(pinId, loc);
+                        pinId = createPin(loc, locationName);
                     }
                     String eventId = createEntry("events", new Event(pinId, name, description,
                             locationName, timeStart, duration, userId));
