@@ -106,6 +106,9 @@ public class NavigationDrawer {
                             case R.id.user_settings:
                                 startUserSettings();
                                 break;
+                            case R.id.edit_event:
+                                editEvent.run();
+                                break;
                             default:
                                 Log.w("navigation", "Invalid Item Selected.");
                         }

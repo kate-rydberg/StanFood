@@ -21,6 +21,11 @@
             android:title="@string/user_settings"
             android:font="@font/gotham_book"/>
         <item
+            android:id="@+id/edit_event"
+            android:icon="@drawable/ic_add_location_black_24dp"
+            android:title="@string/edit_event"
+            android:font="@font/gotham_book"/>
+        <item
             android:id="@+id/logout"
             android:icon="@drawable/ic_person_black_24dp"
             android:title="@string/logout"
