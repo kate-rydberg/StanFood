@@ -51,6 +51,7 @@ public class CreateList {
                             if(ds.hasChildren()){
                                 Event event = ds.getValue(Event.class);
                                 if(event.getPinId().equals(eventStorage.get(markerLocation))){
+                                    event.setEventId(ds.getKey());
                                     events.add(event);
                                 }
                             }
