@@ -28,7 +28,6 @@ import stanford.cs194.stanfood.helpers.FirebaseInstanceIdAccessor;
 
 import static android.content.Context.MODE_PRIVATE;
 
-
 public class NavigationDrawer {
     private Context mContext;
     private DrawerLayout mDrawerLayout;
@@ -107,7 +106,7 @@ public class NavigationDrawer {
                                 startUserSettings();
                                 break;
                             case R.id.edit_event:
-                                editEvent.run();
+                                startEditEvent();
                                 break;
                             default:
                                 Log.w("navigation", "Invalid Item Selected.");
@@ -184,6 +183,32 @@ public class NavigationDrawer {
         final Menu menu = mNavigationView.getMenu();
         menu.findItem(R.id.login_signup).setVisible(!isLoggedIn);
         menu.findItem(R.id.user_settings).setVisible(isLoggedIn);
+        menu.findItem(R.id.logout).setVisible(isLoggedIn);
+    }
+
+    /**
+     * Saves the result of logging out in preferences since we log out
+     * without starting LoginActivity.
+     */
+    @SuppressLint("ApplySharedPref")
+    private void setLogOutPrefs() {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("isLoggedIn", false);
+        editor.putString("userId", "");
+        editor.commit();
+    }
+}
+
+    /**
+     * Checks if user is logged in and displays the corresponding authentication option in menu
+     * - User is logged in -> display "Log Out" and "Edit/Delete an Event"
+     * - User is not logged in -> display "Log In or Sign Up"
+     */
+    public void setAuthenticationMenuOptions() {
+        boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
+        final Menu menu = mNavigationView.getMenu();
+        menu.findItem(R.id.login_signup).setVisible(!isLoggedIn);
+        menu.findItem(R.id.edit_event).setVisible(isLoggedIn);
         menu.findItem(R.id.logout).setVisible(isLoggedIn);
     }
 
