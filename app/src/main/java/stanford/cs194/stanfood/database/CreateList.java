@@ -2,8 +2,6 @@ package stanford.cs194.stanfood.database;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Adapter;
 import android.widget.ListAdapter;
@@ -31,7 +29,6 @@ public class CreateList {
 
     private ArrayList<Event> events;
     private ListView eventListView;
-//    private RecyclerView eventListView;
 
     public CreateList(Context context, Database db, Marker marker,
                       HashMap<LatLng, String> eventStorage, ListView eventListView) {

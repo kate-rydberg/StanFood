@@ -4,10 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.widget.NestedScrollView;
-import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
-import android.widget.ListView;
 
 import com.google.android.gms.maps.GoogleMap;
 
