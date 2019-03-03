@@ -5,30 +5,36 @@ import java.util.Date;
 public class Event implements Comparable<Event> {
     private String eventId;
     private String pinId;
+    private String name;
     private String description;
     private String locationName;
     private long timeStart;
     private long duration;
+    private String userId;
     private Food food;
 
     public Event() {}
 
-    public Event(String pinId, String description, String locationName, long timeStart,
-                 long duration) {
+    public Event(String pinId, String name, String description, String locationName, long timeStart,
+                 long duration, String userId) {
         this.pinId = pinId;
+        this.name = name;
         this.description = description;
         this.locationName = locationName;
         this.timeStart = timeStart;
         this.duration = duration;
+        this.userId = userId;
     }
 
-    public Event(String pinId, String description, String locationName, long timeStart,
-                 long duration, Food food) {
+    public Event(String pinId, String name, String description, String locationName, long timeStart,
+                 long duration, String userId, Food food) {
         this.pinId = pinId;
+        this.name = name;
         this.description = description;
         this.locationName = locationName;
         this.timeStart = timeStart;
         this.duration = duration;
+        this.userId = userId;
         this.food = food;
     }
 
@@ -43,6 +49,14 @@ public class Event implements Comparable<Event> {
     public String getPinId() { return pinId; }
 
     public void setPinId(String pinId) { this.pinId = pinId; }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getDescription() {
         return description;
@@ -84,6 +98,10 @@ public class Event implements Comparable<Event> {
     public Food getFood() { return food; }
 
     public void setFood(Food food) { this.food = food; }
+
+    public String getUserId() {
+        return userId;
+    }
 
     @Override
     public int compareTo(Event o) {

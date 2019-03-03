@@ -17,4 +17,270 @@
     <string name="createButtonText">Create</string>
     <string name="use_current_location">Use Current Location?</string>
     <string name="title_activity_splash">SplashActivity</string>
+    <string-array name="location_list">
+        <item>Allen Center for Integrated Systems (CIS)</item>
+        <item>Applied Physics Building</item>
+        <item>Arboretum Children\'s Center</item>
+        <item>Arrillaga Alumni Center</item>
+        <item>Arrillaga Outdoor Education and Recreation Center</item>
+        <item>Art Gallery and Bookshop</item>
+        <item>Bakewell</item>
+        <item>Bambi</item>
+        <item>Bechtel International Center</item>
+        <item>Beckman Center</item>
+        <item>Bike Shop</item>
+        <item>Bing Nursery School</item>
+        <item>Birch</item>
+        <item>Black Community Services Center</item>
+        <item>Blake Wilbur Clinic</item>
+        <item>Building 120, McClatchy Hall</item>
+        <item>Building 200, Lane History Corner</item>
+        <item>Building 160, Wallenberg Hall</item>
+        <item>Building 170, Office of the General Counsel</item>
+        <item>Building 1, Humanities and Sciences Dean\'s Office</item>
+        <item>Building 10, President\'s Office</item>
+        <item>Building 240, Division of Literatures, Cultures, and Languages Scheduling</item>
+        <item>Building 20, Human Biology</item>
+        <item>Building 30, Language Center</item>
+        <item>Building 250, Hume Center for Writing and Speaking</item>
+        <item>Building 40, Anthropology</item>
+        <item>Building 50, Anthropology</item>
+        <item>Building 260, Pigott Hall (Language Corner)</item>
+        <item>Building 300, Anthropology</item>
+        <item>Building 60, Physics</item>
+        <item>Building 70, Religious Studies and ICA-International Studies</item>
+        <item>Building 310, Vice Provost for Graduate Education</item>
+        <item>Building 320, Braun Corner (Geology Corner)</item>
+        <item>Building 80, Anthropology, Biology and Genetics, and the Institute for Research in the Social Sciences</item>
+        <item>Building 360, Center for Comparative Studies in Race and Ethnicity</item>
+        <item>Building 90, Philosophy</item>
+        <item>Building 370, Institute for Research in the Social Sciences</item>
+        <item>Building 100, Philosophy</item>
+        <item>Building 110, Classics</item>
+        <item>Building 380, Alfred P. Sloan Mathematics Center (Math Corner)</item>
+        <item>Building 420, Jordan Hall (Psychology)</item>
+        <item>Building 460, Margaret Jacks Hall</item>
+        <item>Building 530, Mechanical Engineering Admin.</item>
+        <item>Building 540, John A. Blume Earthquake Engineering Center</item>
+        <item>Building 550, Thomas F. Peterson Engineering Laboratory</item>
+        <item>Building 500, Frederick Emmons Terman Engineering Laboratory</item>
+        <item>Building 520, George Havas Engineering Building</item>
+        <item>Building 560, Center For Design Research</item>
+        <item>Building 570, Mechanical Engineering Labs/Shops</item>
+        <item>Building 610, Mechanical Engineering</item>
+        <item>Blood Center (800 Welch)</item>
+        <item>Bolivar House</item>
+        <item>Bookstore</item>
+        <item>Bowman Alumni House</item>
+        <item>Braun Music Center</item>
+        <item>Bridge, The</item>
+        <item>Building 590, Nitery</item>
+        <item>Graduate School of Business</item>
+        <item>Cantor Arts Center (Stanford Museum)</item>
+        <item>Career Planning Center</item>
+        <item>Carnegie Institution</item>
+        <item>Cedar Hall</item>
+        <item>Center for Advanced Study in Behavioral Science</item>
+        <item>Center for Clinical Sciences Research (CCSR)</item>
+        <item>Center for Educ. Res. at Stanford (CERAS)</item>
+        <item>Center for Turbulence Research (CTR)</item>
+        <item>Chemical Biology Lorry Lokey</item>
+        <item>Children\'s Center</item>
+        <item>Clock Tower</item>
+        <item>Clubhouse</item>
+        <item>Cogeneration Facility</item>
+        <item>Codura Hall</item>
+        <item>Credit Union</item>
+        <item>Cummings Art Building</item>
+        <item>Cypress Hall</item>
+        <item>Dining Services</item>
+        <item>Durand Building School of Education</item>
+        <item>Electrical Engineering Building</item>
+        <item>Elliott Program Center</item>
+        <item>Encina Commons</item>
+        <item>Encina Hall</item>
+        <item>Environmental Health and Safety Facility and Annex (ESF)</item>
+        <item>Escondido Elementary School</item>
+        <item>Escondido Village Office</item>
+        <item>Facilities Operations Buildings</item>
+        <item>Faculty Club</item>
+        <item>Fairchild Center</item>
+        <item>Falk Center</item>
+        <item>Fire Station</item>
+        <item>Fire Truck House</item>
+        <item>Forsythe Hall</item>
+        <item>Laurence Frost Amphitheater</item>
+        <item>Galvez Module</item>
+        <item>Gates Computer Sciences</item>
+        <item>Gilbert Biological Sciences Building</item>
+        <item>Ginzton Laboratory &amp; Module</item>
+        <item>Godzilla</item>
+        <item>Gould Center</item>
+        <item>Green Earth Sciences Building Green Library</item>
+        <item>Gyro Relativity Building (GP-B)</item>
+        <item>Haas Center</item>
+        <item>Harmony House</item>
+        <item>High Energy Physics Lab (HEPL)</item>
+        <item>Herbert Hoover Memorial Building</item>
+        <item>Lou Henry Hoover House</item>
+        <item>Lou Henry Hoover Building</item>
+        <item>Hoover Pavilion</item>
+        <item>Hoover Tower</item>
+        <item>Stanford Hospital</item>
+        <item>James H. Clark Center</item>
+        <item>Juniper</item>
+        <item>Keck Science Building</item>
+        <item>Kingscote Gardens</item>
+        <item>The Knoll</item>
+        <item>Landau Economics</item>
+        <item>Laurel</item>
+        <item>School of Law</item>
+        <item>Lucas Center</item>
+        <item>Main Quad</item>
+        <item>Mariposa House</item>
+        <item>Mausoleum</item>
+        <item>Mayer Cancer Biology</item>
+        <item>McCullough Building</item>
+        <item>Medical School Office Building</item>
+        <item>School of Medicine</item>
+        <item>Meier Hall</item>
+        <item>Memorial Church</item>
+        <item>Memorial Auditorium</item>
+        <item>Meyer Library</item>
+        <item>Mitchell Earth Sciences Building</item>
+        <item>Moore Materials Research</item>
+        <item>Mudd Chemistry Building</item>
+        <item>National Bureau of Economics Research</item>
+        <item>Norcliffe Hall</item>
+        <item>Oak</item>
+        <item>Old Chemistry Building</item>
+        <item>Old Union (Student Services)</item>
+        <item>Organic Chemistry Building</item>
+        <item>Owen House</item>
+        <item>Pine Hall</item>
+        <item>Police Services</item>
+        <item>Polya Hall</item>
+        <item>Poplar Hall</item>
+        <item>Post Office</item>
+        <item>Press Building</item>
+        <item>Stanford Outpatient Psychiatry Clinic</item>
+        <item>Stanford Recycling Drop Off Center</item>
+        <item>Red Barn</item>
+        <item>Redwood Hall</item>
+        <item>Ricker Dining Center</item>
+        <item>Rogers House</item>
+        <item>Row Housing Office</item>
+        <item>Sequoia Hall</item>
+        <item>Serra Complex</item>
+        <item>Serra House</item>
+        <item>Skilling Building</item>
+        <item>Spruce Hall</item>
+        <item>Stanford Auxiliary Library (SAL)</item>
+        <item>Stanford Barn</item>
+        <item>Stanford Hospital</item>
+        <item>Stanford Humanities Center (SHC Annex)</item>
+        <item>Stauffer Chemistry Building</item>
+        <item>Storke Student Publications</item>
+        <item>Student Services Center</item>
+        <item>Sweet Hall</item>
+        <item>Terman Engineering Center</item>
+        <item>Thornton Center</item>
+        <item>Track House</item>
+        <item>Tresidder Union</item>
+        <item>Vaden Health Center</item>
+        <item>Varian Laboratory</item>
+        <item>Ventura Hall</item>
+        <item>Wallenberg Hall</item>
+        <item>Wilbur Modules</item>
+        <item>680 Lomita</item>
+        <item>Bob (Moore South)</item>
+        <item>Branner Hall</item>
+        <item>Casa Italiana (Moore North)</item>
+        <item>Chi Theta Chi (ΧΘΧ)</item>
+        <item>Columbae</item>
+        <item>Cowell Cluster Houses</item>
+        <item>ΚΑΘ (Kappa Alpha Theta)</item>
+        <item>∆∆∆ (Delta Delta Delta)</item>
+        <item>Terra</item>
+        <item>ΠΒΦ (Pi Beta Phi)</item>
+        <item>ZAP</item>
+        <item>Crothers Hall</item>
+        <item>Crothers Memorial Hall</item>
+        <item>Durand</item>
+        <item>Enchanted Broccoli Forest</item>
+        <item>Florence Moore Hall</item>
+        <item>Alondra</item>
+        <item>Cardenal</item>
+        <item>Faisan</item>
+        <item>Gavilan</item>
+        <item>Loro</item>
+        <item>Mirlo</item>
+        <item>Paloma</item>
+        <item>Governor\'s Corner</item>
+        <item>Murray</item>
+        <item>Treat</item>
+        <item>Yost</item>
+        <item>Grove Lasuen</item>
+        <item>Grove Mayfield</item>
+        <item>Hammarskjold</item>
+        <item>Haus Mitteleuropa</item>
+        <item>Kairos</item>
+        <item>Kappa Alpha (ΚΑ)</item>
+        <item>Kappa Sigma (ΚΣ)</item>
+        <item>Lagunita Court</item>
+        <item>Adelfa</item>
+        <item>Eucalipto</item>
+        <item>Granada</item>
+        <item>Naranja</item>
+        <item>Ujamaa</item>
+        <item>La Maison Francaise</item>
+        <item>Lambda Nu (ΛΝ)</item>
+        <item>Lyman Graduate Residences</item>
+        <item>Manzanita Park</item>
+        <item>Castano</item>
+        <item>Kimball Hall</item>
+        <item>Lantana</item>
+        <item>MARS</item>
+        <item>Mirrielees House</item>
+        <item>Muwekma-Tah-Ruk</item>
+        <item>Narnia</item>
+        <item>Phi Kappa Psi (ΦΚΨ)</item>
+        <item>Phi Sig</item>
+        <item>Rains Houses</item>
+        <item>Roble Hall</item>
+        <item>Roth</item>
+        <item>Schwab Residential Center</item>
+        <item>Sigma Alpha Epsilon (ΣΑΕ)</item>
+        <item>Sigma Chi (ΣΧ)</item>
+        <item>Sigma Nu (ΣΝ)</item>
+        <item>Sterling Quad</item>
+        <item>Adams</item>
+        <item>Potter</item>
+        <item>Robinson</item>
+        <item>Schiff</item>
+        <item>Stern Hall</item>
+        <item>Burbank</item>
+        <item>Casa Zapata</item>
+        <item>Donner</item>
+        <item>Larkin</item>
+        <item>Serra</item>
+        <item>Twain</item>
+        <item>Storey Suites</item>
+        <item>Anderson</item>
+        <item>Griffen</item>
+        <item>Jenkins</item>
+        <item>Marx</item>
+        <item>Synergy</item>
+        <item>Theta Delta Chi (Θ∆Χ)</item>
+        <item>Toyon Hall</item>
+        <item>Wilbur Hall</item>
+        <item>Arroyo</item>
+        <item>Cedro</item>
+        <item>Junipero</item>
+        <item>Okada</item>
+        <item>Otero</item>
+        <item>Rinconada</item>
+        <item>Soto</item>
+        <item>Trancos</item>
+    </string-array>
 </resources>

@@ -1,6 +1,6 @@
 # StanFood
 
-<img src="img/Image from iOS.jpg" width="150">
+<img src="app/src/main/ic_launcher-web.png" width="150">
 
 
 ## Project Synopsis
