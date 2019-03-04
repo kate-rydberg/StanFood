@@ -89,8 +89,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         auth = new Authentication();
         db = new Database();
         notif = new Notification(App.getContext());
-        cloudMessaging = new CloudMessaging();
-        cloudMessaging.initialize(db, auth);
+        cloudMessaging = new CloudMessaging(db, auth);
         cloudMessaging.uploadInstanceId();
 
         eventStorage = new HashMap<>();

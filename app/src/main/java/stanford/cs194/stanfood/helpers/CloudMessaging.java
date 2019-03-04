@@ -19,7 +19,8 @@ public class CloudMessaging extends FirebaseMessagingService {
     private Database db;
     private Authentication auth;
 
-    public void initialize(Database db, Authentication auth) {
+    public CloudMessaging(Database db, Authentication auth) {
+        super();
         this.db = db;
         this.auth = auth;
     }
