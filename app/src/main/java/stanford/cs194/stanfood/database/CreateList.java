@@ -22,29 +22,26 @@ import stanford.cs194.stanfood.fragments.BottomSheetListView;
 import stanford.cs194.stanfood.models.Event;
 
 public class CreateList {
-
     private Database db;
-    private LatLng markerLocation;
-    private HashMap<LatLng,String> eventStorage;
-
     private ArrayList<Event> events;
     private BottomSheetListView eventListView;
     private ViewGroup bottomSheetContentsView;
     private FragmentManager supportFragment;
 
-    public CreateList(Database db, Marker marker,
-                      HashMap<LatLng, String> eventStorage, BottomSheetListView eventListView,
+    public CreateList(Database db, BottomSheetListView eventListView,
                       ViewGroup bottomSheetContentsView, FragmentManager supportFragment) {
         this.db = db;
-        this.markerLocation = marker.getPosition();
-        this.eventStorage = eventStorage;
         this.eventListView = eventListView;
         this.bottomSheetContentsView = bottomSheetContentsView;
         this.events = new ArrayList<>();
         this.supportFragment = supportFragment;
     }
 
-    public void createEventList(){
+    /**
+     * Creates a list of all events with Pin Ids corresponding to the current marker location.
+     * Creates an EventAdapter with this list to make a list view with all events
+     */
+    public void createLocationEventList(final Marker marker, final HashMap<LatLng, String> eventStorage){
         db.dbRef.child("events").addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
@@ -52,8 +49,44 @@ public class CreateList {
                         for(DataSnapshot ds : dataSnapshot.getChildren()){
                             if(ds.hasChildren()){
                                 Event event = ds.getValue(Event.class);
-                                if(event.getPinId().equals(eventStorage.get(markerLocation))){
-                                    event.setEventId(ds.getKey());
+                                if(event.getPinId().equals(eventStorage.get(marker.getPosition()))){
+                                    events.add(event);
+                                }
+                            }
+                        }
+                        Collections.sort(events);
+                        Adapter rowCells = new EventAdapter(
+                                eventListView.getContext(),
+                                events,
+                                eventListView,
+                                bottomSheetContentsView,
+                                supportFragment
+                        );
+                        eventListView.setAdapter((ListAdapter) rowCells);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.d("ERROR",databaseError.toString());
+                    }
+                }
+        );
+    }
+
+    /**
+     * Creates a list of all events with User Ids corresponding to the current logged-in user.
+     * Creates an EventAdapter with this list to make a list view with all events
+     */
+    public void createUserEventList(final String userId){
+        db.dbRef.child("events").addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for(DataSnapshot ds : dataSnapshot.getChildren()){
+                            if(ds.hasChildren()){
+                                Event event = ds.getValue(Event.class);
+                                // TODO: Remove null check once all data cleared out so all events are properly formatted
+                                if(event.getUserId() != null && event.getUserId().equals(userId)){
                                     events.add(event);
                                 }
                             }

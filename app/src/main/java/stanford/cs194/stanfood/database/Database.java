@@ -113,7 +113,6 @@ public class Database {
                             final long timeStart, final long duration, final String foodDescription,
                             final String userId, final String imagePath){
         final LatLng loc = getLocationFromName(locationName);
-        // TODO: Insert check for null location in case the corresponding location name doesn't exist
         dbRef.child("pins").addListenerForSingleValueEvent(
             new ValueEventListener() {
                 @Override

@@ -197,8 +197,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         ViewGroup bottomSheetContents = findViewById(R.id.bottom_sheet_contents);
         ViewCompat.setNestedScrollingEnabled(eventListView, true);
 
-        CreateList initRows = new CreateList(db, marker, eventStorage, eventListView, bottomSheetContents, supportFragment);
-        initRows.createEventList();
+        CreateList initRows = new CreateList(db, eventListView, bottomSheetContents, supportFragment);
+        initRows.createLocationEventList(marker, eventStorage);
 
         return true;
     }

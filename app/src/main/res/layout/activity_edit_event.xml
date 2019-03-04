@@ -31,6 +31,11 @@ tools:context=".activities.EditEventActivity">
         android:text="@string/editEventTitle"
         android:textSize="30sp" />
 
+    <ListView
+        android:id="@+id/userEvents"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <Button
         android:id="@+id/editEvent"
         android:layout_width="wrap_content"
