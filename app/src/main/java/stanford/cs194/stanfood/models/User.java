@@ -5,6 +5,7 @@ public class User {
     private String email;
     private String userId;
     private String name;
+    private String instanceId;
 
     public User() {}
 
@@ -35,5 +36,13 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getInstanceId() {
+        return instanceId;
+    }
+
+    public void setInstanceId(String instanceId) {
+        this.instanceId = instanceId;
     }
 }

@@ -47,13 +47,17 @@ import java.util.HashMap;
 
 import stanford.cs194.stanfood.App;
 import stanford.cs194.stanfood.R;
+import stanford.cs194.stanfood.authentication.Authentication;
 import stanford.cs194.stanfood.database.CreateList;
 import stanford.cs194.stanfood.database.Database;
 import stanford.cs194.stanfood.fragments.BottomSheetListView;
 import stanford.cs194.stanfood.fragments.BottomSheet;
 import stanford.cs194.stanfood.fragments.NavigationDrawer;
+import stanford.cs194.stanfood.helpers.CloudMessaging;
 import stanford.cs194.stanfood.helpers.Notification;
 import stanford.cs194.stanfood.models.Pin;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, OnMarkerClickListener, GoogleMap.OnMapClickListener, GoogleMap.OnCameraMoveStartedListener {
 
@@ -66,9 +70,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private FusedLocationProviderClient mFusedLocationClient;
     private float distanceRange = 10000;
+    private Authentication auth;
     private Database db;
     private Notification notif;
     private SharedPreferences prefs;
+    private CloudMessaging cloudMessaging;
 
 
     @Override
@@ -80,9 +86,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        auth = new Authentication();
         db = new Database();
-
         notif = new Notification(App.getContext());
+        cloudMessaging = new CloudMessaging();
+        cloudMessaging.initialize(db, auth);
+        cloudMessaging.uploadInstanceId();
 
         eventStorage = new HashMap<>();
         markerStorage = new HashMap<>();

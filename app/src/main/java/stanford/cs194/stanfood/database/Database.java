@@ -103,6 +103,10 @@ public class Database {
         createEntry("food", new Food(eventId, description));
     }
 
+    public void updateUserInstanceId(String userId, String instanceId) {
+        dbRef.child("users").child(userId).child("instanceId").setValue(instanceId);
+    }
+
     /**
      * getLocationFromName: uses Geocoder package to return coordinates from a locationName
      * Currently only handles conversions of Stanford locations and building names
