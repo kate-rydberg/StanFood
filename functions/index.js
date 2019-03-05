@@ -8,6 +8,7 @@ exports.checkPinEvents = functions.https.onRequest((req, res) => {
   //create database refs
   var pinsRef = admin.database().ref('/pins');
   var eventsRef = admin.database().ref('/events');
+  var foodRef = admin.database().ref('/food');
 
   eventsRef.once('value', (snapshot) => {
   	snapshot.forEach((childSnapshot) => {
@@ -21,6 +22,17 @@ exports.checkPinEvents = functions.https.onRequest((req, res) => {
   			if(timeStart + duration < curTime){
   				var eventKey = childSnapshot.key;
   				var pinId = data.pinId;
+
+          // removed food associated with expired event
+          foodRef.orderByChild('eventId').equalTo(eventKey).once('value').then((foodSnapshot) => {
+            return foodSnapshot.forEach((foodChildSnapshot) => {
+              var foodKey = foodChildSnapshot.key;
+              console.log('Removed food item ' + foodKey + ' for expired event ' + eventKey);
+              return foodRef.child(foodKey).remove();
+            });
+          }).catch((err) => {
+            console.log(err);
+          });
 
   				// remove expired event, decrement numEvents on associated pin
   				pinsRef.child(pinId).child('numEvents').transaction((numEvents) => {
