@@ -2,7 +2,9 @@ package stanford.cs194.stanfood.helpers;
 
 import com.sun.mail.imap.IMAPFolder;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -30,6 +32,7 @@ public class EmailExtractor {
     // it can be parameterized and enhanced as required
     private String protocol = "imaps";
     private String file = "INBOX";
+    private final String FOOD_SENDER_EMAIL = "cindyj@stanford.edu";
 
     public EmailExtractor() { }
 
@@ -46,28 +49,34 @@ public class EmailExtractor {
                 // Fetch unseen messages from inbox folder
                 Message[] messages = folder.search(new FlagTerm(new Flags(Flags.Flag.SEEN), false));
                 for (Message msg : messages) {
-                    processEmail(msg);
+                    if (msg.getFrom().equals(FOOD_SENDER_EMAIL)) {
+                        processEmail(msg);
+                    }
                 }
-                //if a new message came in while reading the messages start the loop over and get all unread messages
+                // If a new message came in while reading the messages start the loop over and get all unread messages
             } while (getMessageCount() != msgCount);
-            //add listener
+
+            // Add listener for new emails
             folder.addMessageCountListener(new MessageCountAdapter() {
                 @Override
                 public void messagesAdded(MessageCountEvent ev) {
-                    Message[] messages = ev.getMessages();
-                    for (Message msg : messages) {
-                        try {
-                            processEmail(msg);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                    try {
+                        Message[] messages = ev.getMessages();
+                        for (Message msg : messages) {
+                            if (msg.getFrom().equals(FOOD_SENDER_EMAIL)) {
+                                processEmail(msg);
+                            }
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             });
-            // wait for new messages
+
+            // Wait for new messages
             while (folder.isOpen()) {
                 ((IMAPFolder) folder).idle();
-                //every 25 minutes poke the server with a folder.getMessageCount() to keep the connection active/open
+                // Poke the server every 30 min with a folder.getMessageCount() to keep the connection active/open
                 ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
                 final Runnable pokeInbox = new Runnable() {
                     @Override
@@ -75,7 +84,7 @@ public class EmailExtractor {
                         try {
                             folder.getMessageCount();
                         } catch (MessagingException ex) {
-                            // do nothing
+                            // Do nothing
                         }
                     }
                 };
@@ -87,7 +96,8 @@ public class EmailExtractor {
             if (store != null) {
                 store.close();
             }
-            readEmails();//restarts listening for email if the connection times out
+            // Restarts listening for email if the connection times out
+            readEmails();
         } finally {
             if (store != null) {
                 store.close();
@@ -127,6 +137,9 @@ public class EmailExtractor {
         session = null;
     }
 
+    /**
+     * Gets the number of emails in the inbox.
+     */
     public int getMessageCount() {
         int messageCount = 0;
         try {
@@ -137,21 +150,20 @@ public class EmailExtractor {
         return messageCount;
     }
 
-    public Message[] getMessages() throws MessagingException {
-        return folder.getMessages();
-    }
-
+    /**
+     * Gets the contents of the emails and creates a new event
+     */
     private void processEmail(Message message) throws Exception {
         Date date = message.getSentDate();
-        String info = "";
+        ArrayList<String> emailContents = new ArrayList<>();
         if (message.getSubject() != null) {
             String subject = message.getSubject();
-            info += subject;
+            emailContents.add(subject);
         }
         Object content = message.getContent();
         if (content instanceof String) {
             if (content != "") {
-                info += "\n" + content;
+                emailContents.add((String)content);
             }
         } else if (content instanceof Multipart) {
             Multipart multiPart = (Multipart) content;
@@ -162,17 +174,15 @@ public class EmailExtractor {
                 o = bodyPart.getContent();
                 if (o instanceof String) {
                     if (o != "") {
-                        info += "\n" + o;
+                        emailContents.add((String)o);
                     }
                 }
             }
         }
-        if (info != "") {
-            createEvent(info, date);
-        }
+        createEvent(emailContents, date);
     }
 
-    private void createEvent(String info, Date date) {
+    private void createEvent(ArrayList<String> info, Date date) {
         //TODO
     }
 
