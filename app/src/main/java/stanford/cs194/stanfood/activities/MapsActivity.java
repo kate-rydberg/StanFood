@@ -56,6 +56,7 @@ import stanford.cs194.stanfood.fragments.BottomSheetListView;
 import stanford.cs194.stanfood.fragments.BottomSheet;
 import stanford.cs194.stanfood.fragments.NavigationDrawer;
 import stanford.cs194.stanfood.helpers.FirebaseInstanceIdAccessor;
+import stanford.cs194.stanfood.helpers.EmailExtractor;
 import stanford.cs194.stanfood.helpers.Notification;
 import stanford.cs194.stanfood.helpers.ViewGroupUtils;
 import stanford.cs194.stanfood.models.Pin;
@@ -93,10 +94,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         eventStorage = new HashMap<>();
         markerStorage = new HashMap<>();
-        // Get the transparent toolbar to insert the navigation menu icon
-
         // Get SharedPreferences for login data
         prefs = getSharedPreferences("loginData", MODE_PRIVATE);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    EmailExtractor emailExtractor = new EmailExtractor();
+                    emailExtractor.readEmails();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     @Override

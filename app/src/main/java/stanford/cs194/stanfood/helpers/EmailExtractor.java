@@ -1,15 +1,17 @@
 package stanford.cs194.stanfood.helpers;
 
+import android.util.Log;
+
 import com.sun.mail.imap.IMAPFolder;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import javax.mail.Address;
 import javax.mail.BodyPart;
 import javax.mail.Flags;
 import javax.mail.Folder;
@@ -22,6 +24,7 @@ import javax.mail.Store;
 import javax.mail.URLName;
 import javax.mail.event.MessageCountAdapter;
 import javax.mail.event.MessageCountEvent;
+import javax.mail.internet.InternetAddress;
 import javax.mail.search.FlagTerm;
 
 public class EmailExtractor {
@@ -34,22 +37,29 @@ public class EmailExtractor {
     private String file = "INBOX";
     private final String FOOD_SENDER_EMAIL = "cindyj@stanford.edu";
 
-    public EmailExtractor() { }
+    public EmailExtractor() {
+        Log.d("email_start", "EmailExtractor: IT HAS BEGUN");
+    }
 
-    public boolean isLoggedIn() {
-        return store.isConnected();
+    private boolean senderEmailIsCorrect(Message msg) throws MessagingException {
+        Address address = msg.getFrom()[0];
+        String senderEmail = ((InternetAddress)address).getAddress();
+        return senderEmail.equals(FOOD_SENDER_EMAIL);
     }
 
     public void readEmails() throws Exception {
         try {
-            login("imap.gmail.com", "free.stanfood", "stanfoodalpaca");
+            login("imap.gmail.com", "free.stanfood@gmail.com", "stanfoodalpaca");
+            Log.d("email_login", "EmailExtractor: I HAVE LOGGED IN");
             int msgCount;
             do {
                 msgCount = getMessageCount();
+                Log.d("email_#", "EmailExtractor: message count is " + msgCount);
                 // Fetch unseen messages from inbox folder
                 Message[] messages = folder.search(new FlagTerm(new Flags(Flags.Flag.SEEN), false));
                 for (Message msg : messages) {
-                    if (msg.getFrom().equals(FOOD_SENDER_EMAIL)) {
+                    Log.d("email_from", "EmailExtractor: message is from " + ((InternetAddress)(msg.getFrom()[0])).getAddress());
+                    if (senderEmailIsCorrect(msg)) {
                         processEmail(msg);
                     }
                 }
@@ -63,7 +73,7 @@ public class EmailExtractor {
                     try {
                         Message[] messages = ev.getMessages();
                         for (Message msg : messages) {
-                            if (msg.getFrom().equals(FOOD_SENDER_EMAIL)) {
+                            if (senderEmailIsCorrect(msg)) {
                                 processEmail(msg);
                             }
                         }
@@ -105,14 +115,18 @@ public class EmailExtractor {
         }
     }
 
+    private boolean isLoggedIn() {
+        return store.isConnected();
+    }
+
     /**
      * Logs in to the mail host server
      */
-    public void login(String host, String username, String password) throws Exception {
+    private void login(String host, String username, String password) throws Exception {
         URLName url = new URLName(protocol, host, 993, file, username, password);
 
         if (session == null) {
-            Properties props = null;
+            Properties props;
             try {
                 props = System.getProperties();
             } catch (SecurityException sex) {
@@ -130,7 +144,7 @@ public class EmailExtractor {
     /**
      * Logs out from the mail host server
      */
-    public void logout() throws MessagingException {
+    private void logout() throws MessagingException {
         folder.close(false);
         store.close();
         store = null;
@@ -140,7 +154,7 @@ public class EmailExtractor {
     /**
      * Gets the number of emails in the inbox.
      */
-    public int getMessageCount() {
+    private int getMessageCount() {
         int messageCount = 0;
         try {
             messageCount = folder.getMessageCount();
@@ -156,16 +170,20 @@ public class EmailExtractor {
     private void processEmail(Message message) throws Exception {
         Date date = message.getSentDate();
         ArrayList<String> emailContents = new ArrayList<>();
+        Log.d("email_subject", "processEmail: subject is " + message.getSubject());
         if (message.getSubject() != null) {
             String subject = message.getSubject();
             emailContents.add(subject);
         }
         Object content = message.getContent();
+        Log.d("email_content", "processEmail: content is " + content);
         if (content instanceof String) {
-            if (content != "") {
+            Log.d("email_content1", "processEmail: content1 is " + content);
+            if (!content.equals("") && !((String) content).startsWith("<div")) {
                 emailContents.add((String)content);
             }
         } else if (content instanceof Multipart) {
+            Log.d("email_content2", "processEmail: multipart content");
             Multipart multiPart = (Multipart) content;
             int multiPartCount = multiPart.getCount();
             for (int part = 0; part < multiPartCount; part++) {
@@ -173,17 +191,27 @@ public class EmailExtractor {
                 Object o;
                 o = bodyPart.getContent();
                 if (o instanceof String) {
-                    if (o != "") {
+                    Log.d("email_content_parts", "processEmail: multipart content: " + o);
+                    if (!o.equals("") && !((String) o).startsWith("<div")) {
                         emailContents.add((String)o);
                     }
                 }
             }
         }
+        Log.d("email_contents", "processEmail: email contents list is " + emailContents);
         createEvent(emailContents, date);
     }
 
-    private void createEvent(ArrayList<String> info, Date date) {
-        //TODO
+    private void createEvent(ArrayList<String> emailContents, Date date) {
+        //TODO: preprocess contents to remove empty subject or messages
+        Log.d("email_extractor", "createEvent: contents: " + emailContents + ", date: " + date);
+        for (String text : emailContents) {
+            if (!text.equals("")) {
+                String[] lines = text.split("\n");
+                for (String line : lines) {
+                    Log.d("email_line", "createEvent: line is " + line);
+                }
+            }
+        }
     }
-
 }
