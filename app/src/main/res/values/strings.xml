@@ -11,7 +11,7 @@
     <string name="channel_name">Channel Name</string>
     <string name="channel_description">Channel Description</string>
     <string name="createEventTitle">Create Your Event!</string>
-    <string name="editEventTitle">Edit/Delete Your Event!</string>
+    <string name="editEventTitle">Tap an Event to Edit/Delete!</string>
     <string name="event_name">Event Name</string>
     <string name="food_description">Food Description</string>
     <string name="event_location">Event Location</string>

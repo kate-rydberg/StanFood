@@ -153,6 +153,43 @@ public class Database {
     }
 
     /**
+     * Edits the details of an event in the events table
+     */
+    public void editEvent(final Event event){
+        dbRef.child("users").child(event.getEventId());
+        // add setValue checks for variou attributes in Event
+    }
+
+    /**
+     * Deletes an event in the events table.
+     * Also decrements the number of events in the corresponding pin by 1.
+     */
+    public void deleteEvent(final Event event){
+        dbRef.child("users").child(event.getEventId()).removeValue();
+        final String pinId = event.getPinId();
+        dbRef.child("pins").addListenerForSingleValueEvent(
+            new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot ds : dataSnapshot.getChildren()){
+                        if(ds.hasChildren()){
+                            Pin pin = ds.getValue(Pin.class);
+                            if (pin != null && pin.getPinId().equals(pinId)) {
+                                int numEvents = pin.getNumEvents() - 1;
+                                dbRef.child("pins").child(pinId).child("numEvents").setValue(numEvents);
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.d("ERROR", databaseError.toString());
+                }
+            });
+    }
+
+    /**
      * getLocationFromName: uses Geocoder package to return coordinates from a locationName
      * Currently only handles conversions of Stanford locations and building names
      * @return null if the location name does not correspond to a recognizable Stanford location.

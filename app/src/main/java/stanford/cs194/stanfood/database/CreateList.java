@@ -50,6 +50,7 @@ public class CreateList {
                             if(ds.hasChildren()){
                                 Event event = ds.getValue(Event.class);
                                 if(event.getPinId().equals(eventStorage.get(marker.getPosition()))){
+                                    event.setEventId(ds.getKey());
                                     events.add(event);
                                 }
                             }
@@ -85,8 +86,8 @@ public class CreateList {
                         for(DataSnapshot ds : dataSnapshot.getChildren()){
                             if(ds.hasChildren()){
                                 Event event = ds.getValue(Event.class);
-                                // TODO: Remove null check once all data cleared out so all events are properly formatted
                                 if(event.getUserId() != null && event.getUserId().equals(userId)){
+                                    event.setEventId(ds.getKey());
                                     events.add(event);
                                 }
                             }
