@@ -23,7 +23,7 @@ public class FirebaseInstanceIdAccessor {
 
     public void uploadInstanceId() {
         if (auth.getCurrentUser() == null) return;
-        com.google.firebase.iid.FirebaseInstanceId.getInstance().getInstanceId()
+        FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override
                     public void onComplete(@NonNull Task<InstanceIdResult> task) {

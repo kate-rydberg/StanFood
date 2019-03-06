@@ -21,8 +21,6 @@ import stanford.cs194.stanfood.authentication.Authentication;
 import stanford.cs194.stanfood.database.Database;
 import stanford.cs194.stanfood.helpers.FirebaseInstanceIdAccessor;
 
-import static android.app.Activity.RESULT_OK;
-
 public class LoginActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123; // Arbitrary request code value for signing in
 
