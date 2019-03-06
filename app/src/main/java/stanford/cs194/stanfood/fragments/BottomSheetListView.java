@@ -21,11 +21,12 @@ public class BottomSheetListView extends ListView {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         LinearLayout parent = (LinearLayout) getParent();
+        NestedScrollView grandparent = (NestedScrollView) parent.getParent();
         if (canScrollVertically(this)) {
-            ViewCompat.setNestedScrollingEnabled(parent, false);
+            ViewCompat.setNestedScrollingEnabled(grandparent, false);
         }
         else{
-            ViewCompat.setNestedScrollingEnabled(parent, true);
+            ViewCompat.setNestedScrollingEnabled(grandparent, true);
         }
         return super.onInterceptTouchEvent(ev);
     }
@@ -33,11 +34,12 @@ public class BottomSheetListView extends ListView {
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         LinearLayout parent = (LinearLayout) getParent();
+        NestedScrollView grandparent = (NestedScrollView) parent.getParent();
         if (canScrollVertically(this)) {
-            ViewCompat.setNestedScrollingEnabled(parent, false);
+            ViewCompat.setNestedScrollingEnabled(grandparent, false);
         }
         else{
-            ViewCompat.setNestedScrollingEnabled(parent, true);
+            ViewCompat.setNestedScrollingEnabled(grandparent, true);
         }
         return super.onTouchEvent(ev);
     }
