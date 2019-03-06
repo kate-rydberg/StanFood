@@ -35,7 +35,11 @@ public class EmailExtractor {
     // it can be parameterized and enhanced as required
     private String protocol = "imaps";
     private String file = "INBOX";
-    private final String FOOD_SENDER_EMAIL = "cindyj@stanford.edu";
+    private final String[] FOOD_EMAIL_RECIPIENTS = {
+            "food@gates.stanford.edu",
+            "gates-food@lists.stanford.edu",
+            "cindyj@stanford.edu"   // TODO: delete this after testing
+    };
 
     public EmailExtractor() {
         Log.d("email_start", "EmailExtractor: IT HAS BEGUN");
@@ -43,8 +47,13 @@ public class EmailExtractor {
 
     private boolean senderEmailIsCorrect(Message msg) throws MessagingException {
         Address address = msg.getFrom()[0];
-        String senderEmail = ((InternetAddress)address).getAddress();
-        return senderEmail.equals(FOOD_SENDER_EMAIL);
+        String recipientEmail = ((InternetAddress)address).getAddress();
+        for (String email: FOOD_EMAIL_RECIPIENTS) {
+            if (recipientEmail.equals(email)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void readEmails() throws Exception {
@@ -204,9 +213,31 @@ public class EmailExtractor {
 
     private void createEvent(ArrayList<String> emailContents, Date date) {
         //TODO: preprocess contents to remove empty subject or messages
+        // emailContents should contain the subject and body of the email as the first two entries
+        String description = "Extracted from gates-food mailing list:\n";
+        String subject = emailContents.get(0);
+        if (!subject.equals("")) {
+            description += subject;
+            description += "\n";
+        }
+        String body = emailContents.get(1);
+        if (!body.equals("")) {
+            description += body;
+        }
+        for (int i = description.length() - 1; i >= 0; i--) {
+            if (description.endsWith("\n")) {
+                description = description.substring(0, i);
+            } else {
+                break;
+            }
+        }
+        // CREATE NEW EVENT IN DB HERE
+
+        // testing:
         Log.d("email_extractor", "createEvent: contents: " + emailContents + ", date: " + date);
         for (String text : emailContents) {
             if (!text.equals("")) {
+                description += text;
                 String[] lines = text.split("\n");
                 for (String line : lines) {
                     Log.d("email_line", "createEvent: line is " + line);
