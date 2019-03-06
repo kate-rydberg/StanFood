@@ -3,6 +3,7 @@ package stanford.cs194.stanfood.database;
 import android.location.Address;
 import android.location.Geocoder;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -10,6 +11,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
@@ -153,40 +156,70 @@ public class Database {
     }
 
     /**
-     * Edits the details of an event in the events table
+     * Edits the details of an event in the events table in a transaction
      */
     public void editEvent(final Event event){
-        dbRef.child("users").child(event.getEventId());
-        // add setValue checks for variou attributes in Event
+        dbRef.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                Event e = mutableData.child("events").child(event.getEventId()).getValue(Event.class);
+                if (e == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                // TODO: Replace with event field editing based off of Event inputted
+                final String pinId = event.getPinId();
+                Integer numEvents = mutableData.child("pins").child(pinId).child("numEvents").getValue(Integer.class);
+                if (numEvents == null) {
+                    return Transaction.abort();
+                }
+
+                // Remove event, set new event number value, and report transaction success
+                dbRef.child("events").child(event.getEventId()).removeValue();
+                mutableData.child("pins").child(pinId).child("numEvents").setValue(numEvents-1);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b,
+                                   @Nullable DataSnapshot dataSnapshot) {
+                Log.d("editEvent", "editEvent:onComplete:" + databaseError);
+            }
+        });
     }
 
     /**
-     * Deletes an event in the events table.
-     * Also decrements the number of events in the corresponding pin by 1.
+     * Deletes an event in the events table and
+     * decrements the number of events in the corresponding pin by 1.
      */
     public void deleteEvent(final Event event){
-        dbRef.child("users").child(event.getEventId()).removeValue();
-        final String pinId = event.getPinId();
-        dbRef.child("pins").addListenerForSingleValueEvent(
-            new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for(DataSnapshot ds : dataSnapshot.getChildren()){
-                        if(ds.hasChildren()){
-                            Pin pin = ds.getValue(Pin.class);
-                            if (pin != null && pin.getPinId().equals(pinId)) {
-                                int numEvents = pin.getNumEvents() - 1;
-                                dbRef.child("pins").child(pinId).child("numEvents").setValue(numEvents);
-                            }
-                        }
-                    }
+        dbRef.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                Event e = mutableData.child("events").child(event.getEventId()).getValue(Event.class);
+                if (e == null) {
+                    return Transaction.success(mutableData);
+                }
+                final String pinId = event.getPinId();
+                Integer numEvents = mutableData.child("pins").child(pinId).child("numEvents").getValue(Integer.class);
+                if (numEvents == null) {
+                    return Transaction.abort();
                 }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Log.d("ERROR", databaseError.toString());
-                }
-            });
+                // Remove event, set new event number value, and report transaction success
+                dbRef.child("events").child(event.getEventId()).removeValue();
+                mutableData.child("pins").child(pinId).child("numEvents").setValue(numEvents-1);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b,
+                                   @Nullable DataSnapshot dataSnapshot) {
+                Log.d("deleteEvent", "deleteEvent:onComplete:" + databaseError);
+            }
+        });
     }
 
     /**
