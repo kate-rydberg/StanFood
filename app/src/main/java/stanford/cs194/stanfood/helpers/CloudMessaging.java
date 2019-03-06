@@ -65,7 +65,9 @@ public class CloudMessaging extends FirebaseMessagingService {
     @Override
     public void onNewToken(String token) {
         Log.d(TAG, "Refreshed token: " + token);
-        String userId = auth.getCurrentUser().getUid();
-        db.updateUserInstanceId(token, userId);
+        if (auth.getCurrentUser() != null) {
+            String userId = auth.getCurrentUser().getUid();
+            db.updateUserInstanceId(token, userId);
+        }
     }
 }
