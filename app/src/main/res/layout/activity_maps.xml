@@ -20,19 +20,30 @@
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/bottom_sheet_expanded_height"
+        android:layout_height="@dimen/bottom_sheet_peek_height"
         android:background="@drawable/rounded_corners"
         android:clipToPadding="true"
         android:fillViewport="true"
         app:behavior_hideable="false"
         app:behavior_peekHeight="@dimen/bottom_sheet_peek_height"
-        app:layout_behavior="@string/bottom_sheet_behavior">
+        app:layout_behavior="@string/bottom_sheet_behavior" >
 
-        <stanford.cs194.stanfood.fragments.BottomSheetListView
-            android:id="@+id/eventList"
-            android:layout_marginTop="@dimen/bottom_sheet_peek_height"
+        <LinearLayout android:id="@+id/bottom_sheet_contents"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/bottom_sheet_header"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bottom_sheet_peek_height"
+                android:gravity="center"
+                android:text="@string/bottom_sheet_peek"
+                android:textSize="@dimen/text_size" />
+
+            <include layout="@layout/list_info" />
+
+        </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
 

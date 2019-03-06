@@ -3,28 +3,30 @@ package stanford.cs194.stanfood.fragments;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.v4.widget.NestedScrollView;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.google.android.gms.maps.GoogleMap;
 
 import stanford.cs194.stanfood.R;
 
 public class BottomSheet{
-    private BottomSheetBehavior<NestedScrollView> mBottomSheetBehavior;
+    private View bottomSheetView;
+    private BottomSheetBehavior<View> mBottomSheetBehavior;
     private Context context;
     private GoogleMap mMap;
-    private final float BOTTOM_SHEET_EXPANDED_HEIGHT;
+    private float BOTTOM_SHEET_EXPANDED_HEIGHT;
     private final float BOTTOM_SHEET_PEEK_HEIGHT;
 
-    public BottomSheet(Context context, NestedScrollView bottomSheet, final GoogleMap mMap) {
-        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+    public BottomSheet(Context context, View bottomSheet, final GoogleMap mMap) {
+        this.bottomSheetView = bottomSheet;
+        this.mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         collapse();
         this.context = context;
         this.mMap = mMap;
 
-        BOTTOM_SHEET_EXPANDED_HEIGHT = context.getResources().getDimension(R.dimen.bottom_sheet_expanded_height);
-        BOTTOM_SHEET_PEEK_HEIGHT = mBottomSheetBehavior.getPeekHeight();
+        this.BOTTOM_SHEET_EXPANDED_HEIGHT = mBottomSheetBehavior.getPeekHeight();
+        this.BOTTOM_SHEET_PEEK_HEIGHT = mBottomSheetBehavior.getPeekHeight();
     }
 
     public float getExpandedHeight() {
@@ -47,21 +49,27 @@ public class BottomSheet{
                 if (newState == mBottomSheetBehavior.STATE_EXPANDED) {
                     mMap.setPadding(0, 0, 0, (int)BOTTOM_SHEET_EXPANDED_HEIGHT);
                 } else if (newState == mBottomSheetBehavior.STATE_COLLAPSED) {
-                    int peek_height = mBottomSheetBehavior.getPeekHeight();
-                    mMap.setPadding(0, 0, 0, peek_height);
+                    mMap.setPadding(0, 0, 0, (int)BOTTOM_SHEET_PEEK_HEIGHT);
                 }
             }
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                float padding = slideOffset * (BOTTOM_SHEET_EXPANDED_HEIGHT - BOTTOM_SHEET_PEEK_HEIGHT) + BOTTOM_SHEET_PEEK_HEIGHT;
-                mMap.setPadding(0, 0, 0, (int)padding);
+                if (!Float.isNaN(slideOffset)) {
+                    float padding = slideOffset * (BOTTOM_SHEET_EXPANDED_HEIGHT - BOTTOM_SHEET_PEEK_HEIGHT) + BOTTOM_SHEET_PEEK_HEIGHT;
+                    mMap.setPadding(0, 0, 0, (int) padding);
+                }
             }
         });
     }
 
-
-    public void setPeakHeightPadding(final GoogleMap mMap ){
-        mMap.setPadding(0, 0, 0, mBottomSheetBehavior.getPeekHeight());
+    // initExpandedHeight: initialize the expanded height to the height set in values/dimens
+    public void initExpandedHeight() {
+        ViewGroup.LayoutParams params = bottomSheetView.getLayoutParams();
+        if (params.height == BOTTOM_SHEET_PEEK_HEIGHT) {
+            BOTTOM_SHEET_EXPANDED_HEIGHT = context.getResources().getDimension(R.dimen.bottom_sheet_expanded_height);
+            params.height = (int)BOTTOM_SHEET_EXPANDED_HEIGHT;
+            bottomSheetView.setLayoutParams(params);
+        }
     }
 
     // expand: expands the bottom sheet

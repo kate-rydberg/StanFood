@@ -2,7 +2,7 @@
     <string name="app_name">StanFood</string>
     <string name="title_activity_maps"></string>
     <string name="CustomBottomSheetBehavior">stanford.cs194.stanfood.CustomBottomSheetBehavior</string>
-    <string name="bottom_sheet_peek">Bottom Sheet Peek!</string>
+    <string name="bottom_sheet_peek">Click on a marker to find free food!</string>
     <string name="bottom_sheet_content">Bottom Sheet Content!</string>
     <string name="login_signup">Log In or Sign Up</string>
     <string name="logout">Log Out</string>
@@ -14,6 +14,9 @@
     <string name="food_description">Food Description</string>
     <string name="event_location">Event Location</string>
     <string name="event_description">Event Description</string>
+    <string name="event_description_header">Event Description:&#160;</string>
+    <string name="event_location_header">Location:&#160;</string>
+    <string name="event_time_header">Time:&#160;</string>
     <string name="createButtonText">Create</string>
     <string name="use_current_location">Use Current Location?</string>
     <string name="title_activity_splash">SplashActivity</string>

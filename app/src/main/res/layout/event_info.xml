@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/eventInfo"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/infoEventDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/bottom_sheet_padding"
+        android:paddingRight="@dimen/bottom_sheet_padding"
+        android:textSize="@dimen/text_size" />
+
+    <TextView
+        android:id="@+id/infoLocationName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/bottom_sheet_padding"
+        android:paddingRight="@dimen/bottom_sheet_padding"
+        android:text="@string/event_location_header"
+        android:textSize="@dimen/text_size" />
+
+    <TextView
+        android:id="@+id/infoEventTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/bottom_sheet_padding"
+        android:paddingRight="@dimen/bottom_sheet_padding"
+        android:text="@string/event_time_header"
+        android:textSize="@dimen/text_size" />
+
+</LinearLayout>

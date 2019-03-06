@@ -15,13 +15,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
-import android.widget.ListView;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -53,6 +53,7 @@ import stanford.cs194.stanfood.fragments.BottomSheetListView;
 import stanford.cs194.stanfood.fragments.BottomSheet;
 import stanford.cs194.stanfood.fragments.NavigationDrawer;
 import stanford.cs194.stanfood.helpers.Notification;
+import stanford.cs194.stanfood.helpers.ViewGroupUtils;
 import stanford.cs194.stanfood.models.Pin;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, OnMarkerClickListener, GoogleMap.OnMapClickListener, GoogleMap.OnCameraMoveStartedListener {
@@ -132,7 +133,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setOnCameraMoveStartedListener(this);
 
         // Get the bottom sheet view
-        NestedScrollView bottomSheetView = findViewById(R.id.bottom_sheet);
+        View bottomSheetView = findViewById(R.id.bottom_sheet);
         bottomSheet = new BottomSheet(bottomSheetView.getContext(), bottomSheetView, mMap);
         bottomSheet.moveListener();
         // Set padding to show Google logo in correct position
@@ -151,14 +152,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onMarkerClick(Marker marker) {
         LatLng location = marker.getPosition();
 
+        bottomSheet.initExpandedHeight();
         bottomSheet.expand();
         mMap.setPadding(0, 0, 0, (int)bottomSheet.getExpandedHeight());
         mMap.animateCamera(CameraUpdateFactory.newLatLng(location),500,null);
 
-        BottomSheetListView eventList = findViewById(R.id.eventList);
+        BottomSheetListView eventListView = findViewById(R.id.eventList);
+        ViewGroup bottomSheetContents = findViewById(R.id.bottom_sheet_contents);
+        if (eventListView == null) {
+            LayoutInflater viewInflater = LayoutInflater.from(App.getContext());
+            eventListView = (BottomSheetListView) viewInflater.inflate(R.layout.list_info, null, true);
+            ViewGroupUtils viewGroupUtils = new ViewGroupUtils();
+            viewGroupUtils.replaceViewById(eventListView, bottomSheetContents, 1);
+        }
+        ViewCompat.setNestedScrollingEnabled(eventListView, true);
 
-        ViewCompat.setNestedScrollingEnabled(eventList, true);
-        CreateList initRows = new CreateList(App.getContext(), db, marker, eventStorage, eventList);
+        CreateList initRows = new CreateList(
+                db,
+                marker,
+                eventStorage,
+                eventListView,
+                bottomSheetContents
+        );
         initRows.createEventList();
 
         return true;
