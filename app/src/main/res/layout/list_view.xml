@@ -19,13 +19,14 @@
                 android:layout_weight="7"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/text_size"
-                android:textStyle="bold"/>
+                android:font="@font/gotham_book"/>
             <TextView
                 android:id="@+id/eventTimeStart"
                 android:layout_width="0dp"
                 android:layout_weight="3"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size" />
+                android:textSize="@dimen/text_size"
+                android:font="@font/gotham_book"/>
         </LinearLayout>
 
         <TextView
@@ -33,7 +34,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_size"
-            android:textStyle="italic"/>
+            android:textStyle="italic"
+            android:textAlignment="center"
+            android:font="@font/gotham_book"/>
 
     </LinearLayout>
 </RelativeLayout>

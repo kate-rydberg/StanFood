@@ -1,0 +1,215 @@
+[
+  {
+    "featureType": "landscape.man_made",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "weight": 8
+      }
+    ]
+  },
+  {
+    "featureType": "landscape.man_made",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "weight": 0.5
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#dcd5d7"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.attraction",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#b9ffa2"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.attraction",
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "color": "#b0aaac"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.business",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#b9ffa2"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.business",
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "color": "#b0aaac"
+      },
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.government",
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "color": "#b0aaac"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.medical",
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "color": "#b0aaac"
+      },
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#b9ffa2"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "color": "#b0aaac"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.place_of_worship",
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "color": "#b0aaac"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.school",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#e8e8e8"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.school",
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "color": "#b0aaac"
+      },
+      {
+        "visibility": "simplified"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.sports_complex",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#b9ffa2"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.sports_complex",
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "color": "#b0aaac"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "stylers": [
+      {
+        "color": "#fffbfc"
+      }
+    ]
+  },
+  {
+    "featureType": "road.local",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#ffffff"
+      }
+    ]
+  },
+  {
+    "featureType": "road.local",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "color": "#ffffff"
+      }
+    ]
+  },
+  {
+    "featureType": "road.local",
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.line",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.station",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  }
+]
