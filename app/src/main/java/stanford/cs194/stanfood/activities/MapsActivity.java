@@ -54,6 +54,7 @@ import stanford.cs194.stanfood.fragments.BottomSheetListView;
 import stanford.cs194.stanfood.fragments.BottomSheet;
 import stanford.cs194.stanfood.fragments.NavigationDrawer;
 import stanford.cs194.stanfood.helpers.CloudMessaging;
+import stanford.cs194.stanfood.helpers.FirebaseInstanceIdAccessor;
 import stanford.cs194.stanfood.helpers.Notification;
 import stanford.cs194.stanfood.models.Pin;
 
@@ -74,8 +75,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Database db;
     private Notification notif;
     private SharedPreferences prefs;
-    private CloudMessaging cloudMessaging;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,8 +88,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         auth = new Authentication();
         db = new Database();
         notif = new Notification(App.getContext());
-        cloudMessaging = new CloudMessaging(db, auth);
-        cloudMessaging.uploadInstanceId();
+        FirebaseInstanceIdAccessor instanceIdAccessor = new FirebaseInstanceIdAccessor(db, auth);
+        instanceIdAccessor.uploadInstanceId();
 
         eventStorage = new HashMap<>();
         markerStorage = new HashMap<>();

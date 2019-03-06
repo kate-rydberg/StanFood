@@ -1,48 +1,21 @@
 package stanford.cs194.stanfood.helpers;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import stanford.cs194.stanfood.App;
+import stanford.cs194.stanfood.R;
 import stanford.cs194.stanfood.authentication.Authentication;
 import stanford.cs194.stanfood.database.Database;
 
 public class CloudMessaging extends FirebaseMessagingService {
     private static final String TAG = "CloudMessaging";
-    private Database db;
-    private Authentication auth;
-
-    public CloudMessaging(Database db, Authentication auth) {
-        super();
-        this.db = db;
-        this.auth = auth;
-    }
-
-    public void uploadInstanceId() {
-        if (auth.getCurrentUser() == null) return;
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()) {
-                            Log.e(TAG, "getInstanceId failed", task.getException());
-                            return;
-                        }
-
-                        // Get new Instance ID token
-                        String token = task.getResult().getToken();
-                        String userId = auth.getCurrentUser().getUid();
-                        db.updateUserInstanceId(userId, token);
-                    }
-                });
-    }
+    private Database db = new Database();
+    private Authentication auth = new Authentication();
+    private Notification notif = new Notification(App.getContext());
 
     /**
      * Called when message is received.
@@ -76,7 +49,12 @@ public class CloudMessaging extends FirebaseMessagingService {
 
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+            String title = getResources().getString(R.string.new_event_notification_title);
+            String body = remoteMessage.getNotification().getBody();
+            Log.d(TAG, "Message Notification Body: " + body);
+            int notificationId = body.hashCode(); // TODO Uniqueness not guaranteed
+
+            notif.sendNotification(title, body, notificationId);
         }
     }
 

@@ -19,7 +19,7 @@ import java.util.List;
 import stanford.cs194.stanfood.R;
 import stanford.cs194.stanfood.authentication.Authentication;
 import stanford.cs194.stanfood.database.Database;
-import stanford.cs194.stanfood.helpers.CloudMessaging;
+import stanford.cs194.stanfood.helpers.FirebaseInstanceIdAccessor;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -32,7 +32,6 @@ public class LoginActivity extends AppCompatActivity {
             new AuthUI.IdpConfig.EmailBuilder().build(),
             new AuthUI.IdpConfig.GoogleBuilder().build());
     private boolean createEvent;
-    private CloudMessaging cloudMessaging = new CloudMessaging(db, auth);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +64,8 @@ public class LoginActivity extends AppCompatActivity {
             Log.d("Authentication", "User successfully logged in as: "
                     + auth.getCurrentUser().getDisplayName());
             auth.addCurrentUserToDatabase();
-            cloudMessaging.uploadInstanceId();
+            FirebaseInstanceIdAccessor instanceIdAccessor = new FirebaseInstanceIdAccessor(db, auth);
+            instanceIdAccessor.uploadInstanceId();
             setLoggedInData();
             String text = "Log-In successful!";
             Toast toast = Toast.makeText(context, text, duration);
