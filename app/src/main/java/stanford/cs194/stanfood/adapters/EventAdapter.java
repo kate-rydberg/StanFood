@@ -15,7 +15,7 @@ import java.util.Locale;
 
 import stanford.cs194.stanfood.R;
 import stanford.cs194.stanfood.fragments.BottomSheetListView;
-import stanford.cs194.stanfood.helpers.ViewGroupUtils;
+import stanford.cs194.stanfood.fragments.EventInfoDisplay;
 import stanford.cs194.stanfood.models.Event;
 
 
@@ -79,29 +79,15 @@ public class EventAdapter extends ArrayAdapter {
              */
             @Override
             public void onClick(View listItemView) {
-                LayoutInflater viewInflater = LayoutInflater.from(context);
                 // we want to somehow get the database id, so that we can pull more details from the db
                 String clickedEventName = ((TextView)listItemView.findViewById(R.id.eventName)).getText().toString();
                 String clickedTimeRange = ((TextView)listItemView.findViewById(R.id.eventTimeStart)).getText().toString();
                 String clickedEventDescription = ((TextView)listItemView.findViewById(R.id.eventDescription)).getText().toString();
 
-                View infoView = viewInflater.inflate(R.layout.event_info, null, true);
-
                 TextView infoHeader = bottomSheetContentsView.findViewById(R.id.bottom_sheet_header);
                 String clickedLocationName = infoHeader.getText().toString();
-                TextView infoLocationName = infoView.findViewById(R.id.infoLocationName);
-                TextView infoEventTime = infoView.findViewById(R.id.infoEventTime);
-                TextView infoEventDescription = infoView.findViewById(R.id.infoEventDescription);
-
-                infoHeader.setText(clickedEventName);
-                String locationText = infoLocationName.getText().toString() + clickedLocationName;
-                infoLocationName.setText(locationText);
-                String timeText = infoEventTime.getText().toString() + clickedTimeRange;
-                infoEventTime.setText(timeText);
-                infoEventDescription.setText(clickedEventDescription);
-
-                ViewGroupUtils viewGroupUtils = new ViewGroupUtils();
-                viewGroupUtils.replaceViewById(infoView, bottomSheetContentsView, 1);
+                EventInfoDisplay infoDisplay = new EventInfoDisplay(context, clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription);
+                infoDisplay.displayInfo(bottomSheetContentsView);
             }
         });
 
