@@ -162,8 +162,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (eventListView == null) {
             LayoutInflater viewInflater = LayoutInflater.from(App.getContext());
             eventListView = (BottomSheetListView) viewInflater.inflate(R.layout.list_info, null, true);
-            ViewGroupUtils viewGroupUtils = new ViewGroupUtils();
-            viewGroupUtils.replaceViewById(eventListView, bottomSheetContents, 1);
+            ViewGroupUtils.replaceViewById(eventListView, bottomSheetContents, 1);
         }
         ViewCompat.setNestedScrollingEnabled(eventListView, true);
 
