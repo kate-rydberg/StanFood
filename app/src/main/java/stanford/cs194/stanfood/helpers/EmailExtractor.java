@@ -27,7 +27,10 @@ import javax.mail.event.MessageCountEvent;
 import javax.mail.internet.InternetAddress;
 import javax.mail.search.FlagTerm;
 
+import stanford.cs194.stanfood.database.Database;
+
 public class EmailExtractor {
+    private Database db;
     private Session session;
     private Store store;
     private Folder folder;
@@ -41,15 +44,13 @@ public class EmailExtractor {
             "cindyj@stanford.edu"   // TODO: delete this after testing
     };
 
-    public EmailExtractor() {
-        Log.d("email_start", "EmailExtractor: IT HAS BEGUN");
-    }
+    public EmailExtractor() { }
 
     private boolean senderEmailIsCorrect(Message msg) throws MessagingException {
-        Address address = msg.getFrom()[0];
+        Address address = msg.getAllRecipients()[0];
         String recipientEmail = ((InternetAddress)address).getAddress();
         for (String email: FOOD_EMAIL_RECIPIENTS) {
-            if (recipientEmail.equals(email)) {
+            if (recipientEmail.toLowerCase().equals(email)) {
                 return true;
             }
         }
@@ -67,7 +68,7 @@ public class EmailExtractor {
                 // Fetch unseen messages from inbox folder
                 Message[] messages = folder.search(new FlagTerm(new Flags(Flags.Flag.SEEN), false));
                 for (Message msg : messages) {
-                    Log.d("email_from", "EmailExtractor: message is from " + ((InternetAddress)(msg.getFrom()[0])).getAddress());
+                    Log.d("email_from", "EmailExtractor: message is for " + ((InternetAddress)(msg.getAllRecipients()[0])).getAddress());
                     if (senderEmailIsCorrect(msg)) {
                         processEmail(msg);
                     }
@@ -201,7 +202,7 @@ public class EmailExtractor {
                 o = bodyPart.getContent();
                 if (o instanceof String) {
                     Log.d("email_content_parts", "processEmail: multipart content: " + o);
-                    if (!o.equals("") && !((String) o).startsWith("<div")) {
+                    if (!o.equals("") && !((String) o).startsWith("<div") && !((String)o).startsWith("--++**==")) {
                         emailContents.add((String)o);
                     }
                 }
@@ -211,8 +212,12 @@ public class EmailExtractor {
         createEvent(emailContents, date);
     }
 
+    private String getEventLocation(String description) {
+        // \d[A|B], \d[A|B] pantry, \d\d\d, \d\d\d[A|B], fujitsu
+        return description;
+    }
+
     private void createEvent(ArrayList<String> emailContents, Date date) {
-        //TODO: preprocess contents to remove empty subject or messages
         // emailContents should contain the subject and body of the email as the first two entries
         String description = "Extracted from gates-food mailing list:\n";
         String subject = emailContents.get(0);
@@ -220,7 +225,10 @@ public class EmailExtractor {
             description += subject;
             description += "\n";
         }
-        String body = emailContents.get(1);
+        String body = "";
+        if (emailContents.size() > 1) {
+            body = emailContents.get(1);
+        }
         if (!body.equals("")) {
             description += body;
         }
@@ -231,7 +239,24 @@ public class EmailExtractor {
                 break;
             }
         }
-        // CREATE NEW EVENT IN DB HERE
+        String location = getEventLocation(description);
+        String eventName = "Free food!";
+        if (!location.equals("")) {
+            eventName += " in " + location;
+        }
+
+        long startTimeMs = 30;
+        long durationMs = 30 * 60 * 1000;   // hard code to 30 minutes
+        //TODO: CREATE NEW EVENT IN DB HERE
+//        db.createEvent(
+//                eventName,
+//                description,
+//                "Gates Computer Sciences",
+//                startTimeMs,
+//                durationMs,
+//                "",
+//                "gates"  // gates mailing list needs a userId
+//        );
 
         // testing:
         Log.d("email_extractor", "createEvent: contents: " + emailContents + ", date: " + date);
