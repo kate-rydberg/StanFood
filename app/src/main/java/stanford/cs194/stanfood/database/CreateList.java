@@ -49,7 +49,7 @@ public class CreateList {
                         for(DataSnapshot ds : dataSnapshot.getChildren()){
                             if(ds.hasChildren()){
                                 Event event = ds.getValue(Event.class);
-                                if(event.getPinId().equals(eventStorage.get(marker.getPosition()))){
+                                if (event != null && event.getPinId().equals(eventStorage.get(marker.getPosition()))) {
                                     event.setEventId(ds.getKey());
                                     events.add(event);
                                 }

@@ -46,9 +46,9 @@ public class BottomSheet{
              */
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == mBottomSheetBehavior.STATE_EXPANDED) {
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     mMap.setPadding(0, 0, 0, (int)BOTTOM_SHEET_EXPANDED_HEIGHT);
-                } else if (newState == mBottomSheetBehavior.STATE_COLLAPSED) {
+                } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     mMap.setPadding(0, 0, 0, (int)BOTTOM_SHEET_PEEK_HEIGHT);
                 }
             }
@@ -96,16 +96,16 @@ public class BottomSheet{
 
     // isExpanded: returns true if the bottom sheet is expanded
     public boolean isExpanded() {
-        return mBottomSheetBehavior.getState() == mBottomSheetBehavior.STATE_EXPANDED;
+        return mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED;
     }
 
     // isExpanded: returns true if the bottom sheet is expanded
     public boolean isCollapsed() {
-        return mBottomSheetBehavior.getState() == mBottomSheetBehavior.STATE_COLLAPSED;
+        return mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED;
     }
 
     // isExpanded: returns true if the bottom sheet is expanded
     public boolean isHidden() {
-        return mBottomSheetBehavior.getState() == mBottomSheetBehavior.STATE_HIDDEN;
+        return mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN;
     }
 }

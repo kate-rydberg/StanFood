@@ -156,28 +156,51 @@ public class Database {
     }
 
     /**
-     * Edits the details of an event in the events table in a transaction
+     * Edits the details of an event in the events table in a transaction.
+     * Does not create new events if old event does not exist.
+     * @param oldEvent The old event to be updated in the database
+     * @param newEvent The new event containing the new updated values for replacement
      */
-    public void editEvent(final Event event){
+    public void editEvent(final Event oldEvent, final Event newEvent){
         dbRef.runTransaction(new Transaction.Handler() {
             @NonNull
             @Override
             public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
-                Event e = mutableData.child("events").child(event.getEventId()).getValue(Event.class);
+                final String eventId = oldEvent.getEventId();
+                final MutableData eventData = mutableData.child("events");
+                final MutableData pinData = mutableData.child("pins");
+                Event e = eventData.child(eventId).getValue(Event.class);
                 if (e == null) {
                     return Transaction.success(mutableData);
                 }
 
-                // TODO: Replace with event field editing based off of Event inputted
-                final String pinId = event.getPinId();
-                Integer numEvents = mutableData.child("pins").child(pinId).child("numEvents").getValue(Integer.class);
-                if (numEvents == null) {
-                    return Transaction.abort();
+                // Decrement number of events in old pin & increment number of events in new pin
+                final String oldPinId = oldEvent.getPinId();
+                final String newPinId = newEvent.getPinId();
+                if (newPinId != null && !newPinId.isEmpty() && !oldPinId.equals(newPinId)) {
+                    e.setPinId(newPinId);
+                    Integer numEvents = pinData.child(oldPinId).child("numEvents").getValue(Integer.class);
+                    pinData.child(oldPinId).child("numEvents").setValue(numEvents-1);
+                    Pin newPin = pinData.child(newPinId).getValue(Pin.class);
+                    if (newPin == null) {
+                        final LatLng loc = getLocationFromName(newEvent.getLocationName());
+                        createPin(loc, newEvent.getLocationName());
+                    } else {
+                        Integer newNumEvents = pinData.child(newPinId).child("numEvents").getValue(Integer.class);
+                        pinData.child(newPinId).child("numEvents").setValue(newNumEvents+1);
+                    }
                 }
 
-                // Remove event, set new event number value, and report transaction success
-                dbRef.child("events").child(event.getEventId()).removeValue();
-                mutableData.child("pins").child(pinId).child("numEvents").setValue(numEvents-1);
+                final Food oldFood = oldEvent.getFood();
+                final Food newFood = newEvent.getFood();
+                if (newFood != null) {
+                    e.setFood(newFood);
+                }
+
+                // Replace other simpler event fields
+                replaceEvent(e, newEvent);
+
+                mutableData.child("events").child(eventId).setValue(e);
                 return Transaction.success(mutableData);
             }
 
@@ -187,6 +210,39 @@ public class Database {
                 Log.d("editEvent", "editEvent:onComplete:" + databaseError);
             }
         });
+    }
+
+    /*
+     * Replaces the relevant fields of the replacement event
+     * with all of the filled out values of the new event.
+     * Note: Does not replace pinId because of the increment/decrement transaction requirement
+     */
+    private void replaceEvent(final Event replaceEvent, final Event newEvent) {
+        final String newName = newEvent.getName();
+        final String newDescription = newEvent.getDescription();
+        final String newLocationName = newEvent.getLocationName();
+        final long newTimeStart = newEvent.getTimeStart();
+        final long newDuration = newEvent.getDuration();
+
+        if (newName != null && !newName.isEmpty()) {
+            replaceEvent.setName(newName);
+        }
+
+        if (newDescription != null && !newDescription.isEmpty()) {
+            replaceEvent.setDescription(newDescription);
+        }
+
+        if (newLocationName != null && !newLocationName.isEmpty()) {
+            replaceEvent.setLocationName(newLocationName);
+        }
+
+        if (newTimeStart != 0) {
+            replaceEvent.setTimeStart(newTimeStart);
+        }
+
+        if (newDuration != 0) {
+            replaceEvent.setDuration(newDuration);
+        }
     }
 
     /**
