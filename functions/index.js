@@ -57,3 +57,59 @@ exports.checkPinEvents = functions.https.onRequest((req, res) => {
   res.status(200).end();
 
 });
+
+exports.sendNotificationsForEventAdded = functions.database.ref('/events/{eventId}')
+    .onCreate((snapshot, context) => {
+      // Grab the current value of what was written to the Realtime Database.
+      const event = snapshot.val();
+      const eventId = context.params.eventId;
+      console.log('New event added', eventId, event);
+
+      // TODO Get the list of device notification tokens.
+      const getUsersPromise = admin.database()
+          .ref('/users').once('value');
+
+      return Promise.all([getUsersPromise]).then(results => {
+        let users = results[0].val();
+
+        // Notification details.
+        const payload = {
+          notification: {
+            title: 'Free food added in your area!',
+            body: eventId
+          }
+        };
+
+        // TODO: Currently sends to all users with a device token for Firebase Cloud Messaging
+        // Once we implement preferences we should only send to users with preferences that
+        // match the event
+        let tokens = [];
+        for (let userId in users) {
+          if (users.hasOwnProperty(userId)) {
+            let token = users[userId].instanceId;
+            if (token) {
+              tokens.push(token);
+            }
+          }
+        }
+        console.log('Will send to these device tokens: ', tokens);
+
+        // Send notifications to all tokens.
+        return admin.messaging().sendToDevice(tokens, payload);
+      }).then((response) => {
+        // For each message check if there was an error.
+        const tokensToRemove = [];
+        response.results.forEach((result, index) => {
+          const error = result.error;
+          if (error) {
+            console.error('Failure sending notification to', tokens[index], error);
+            // Cleanup the tokens who are not registered anymore.
+            if (error.code === 'messaging/invalid-registration-token' ||
+                error.code === 'messaging/registration-token-not-registered') {
+              tokensToRemove.push(tokensSnapshot.ref.child(tokens[index]).remove());
+            }
+          }
+        });
+        return Promise.all(tokensToRemove);
+      });
+    });

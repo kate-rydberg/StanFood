@@ -18,11 +18,14 @@ import java.util.List;
 
 import stanford.cs194.stanfood.R;
 import stanford.cs194.stanfood.authentication.Authentication;
+import stanford.cs194.stanfood.database.Database;
+import stanford.cs194.stanfood.helpers.FirebaseInstanceIdAccessor;
 
 public class LoginActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123; // Arbitrary request code value for signing in
 
     private Authentication auth = new Authentication();
+    private Database db = new Database();
     private List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.EmailBuilder().build(),
             new AuthUI.IdpConfig.GoogleBuilder().build());
@@ -59,6 +62,8 @@ public class LoginActivity extends AppCompatActivity {
             Log.d("Authentication", "User successfully logged in as: "
                     + auth.getCurrentUser().getDisplayName());
             auth.addCurrentUserToDatabase();
+            FirebaseInstanceIdAccessor instanceIdAccessor = new FirebaseInstanceIdAccessor(db, auth);
+            instanceIdAccessor.uploadInstanceId();
             setLoggedInData();
             String text = "Log-In successful!";
             Toast toast = Toast.makeText(context, text, duration);
