@@ -8,14 +8,17 @@
         <item
             android:id="@+id/login_signup"
             android:icon="@drawable/ic_person_black_24dp"
-            android:title="@string/login_signup" />
+            android:title="@string/login_signup"
+            android:font="@font/gotham_book"/>
         <item
             android:id="@+id/create_event"
             android:icon="@drawable/ic_add_location_black_24dp"
-            android:title="@string/create_event" />
+            android:title="@string/create_event"
+            android:font="@font/gotham_book"/>
         <item
             android:id="@+id/logout"
             android:icon="@drawable/ic_person_black_24dp"
-            android:title="@string/logout" />
+            android:title="@string/logout"
+            android:font="@font/gotham_book"/>
     </group>
 </menu>
