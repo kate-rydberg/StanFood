@@ -1,17 +1,12 @@
 package stanford.cs194.stanfood.adapters;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
 import android.support.annotation.NonNull;
-import android.view.Gravity;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -21,8 +16,8 @@ import java.util.Locale;
 
 import stanford.cs194.stanfood.App;
 import stanford.cs194.stanfood.R;
-import stanford.cs194.stanfood.activities.PopupActivity;
 import stanford.cs194.stanfood.fragments.BottomSheetListView;
+import stanford.cs194.stanfood.fragments.PopUpFragment;
 import stanford.cs194.stanfood.models.Event;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
@@ -33,6 +28,7 @@ public class EventAdapter extends ArrayAdapter {
     private ArrayList<Event> events;
     private Context context;
 
+    private FragmentManager supportFragment;
     private BottomSheetListView eventListView;
     private ViewGroup bottomSheetContentsView;
 
@@ -40,17 +36,19 @@ public class EventAdapter extends ArrayAdapter {
             Context context,
             ArrayList<Event> events,
             BottomSheetListView eventListView,
-            ViewGroup bottomSheetContentsView
+            ViewGroup bottomSheetContentsView,
+            FragmentManager supportFragment
     ) {
         super(context, R.layout.list_view, events);
         this.context = context;
         this.events = events;
         this.eventListView = eventListView;
         this.bottomSheetContentsView = bottomSheetContentsView;
+        this.supportFragment = supportFragment;
     }
 
     @NonNull
-    public View getView(int position, final View view, @NonNull ViewGroup parent) {
+    public View getView(int position, final View view, @NonNull final ViewGroup parent) {
         final LayoutInflater inflater = LayoutInflater.from(context);
         final View rowView = inflater.inflate(R.layout.list_view, null, true);
 
@@ -106,29 +104,8 @@ public class EventAdapter extends ArrayAdapter {
                 infoEventTime.setText(timeText);
                 infoEventDescription.setText(clickedEventDescription);
 
-                Intent popUpActivitiy = new Intent(App.getContext(),PopupActivity.class);
-                App.getContext().startActivity(popUpActivitiy);
-                //create the popup window
-                int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-                int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-                boolean focusable = true; // lets taps outside the popup also dismiss it
-                final PopupWindow eventPopUp = new PopupWindow(popupView, width, height, focusable);
-
-                // which view you pass in doesn't matter, it is only used for the window tolken
-                eventPopUp.showAtLocation(rowView, Gravity.CENTER, 0, -200);
-                popupView.setFocusable(true);
-                // dismiss the popup window when touched
-                popupView.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        eventPopUp.dismiss();
-                        return true;
-                    }
-                });
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    eventPopUp.setElevation(20);
-                }
+                PopUpFragment eventPopUp = new PopUpFragment();
+                eventPopUp.show(supportFragment,null);
             }
         });
 

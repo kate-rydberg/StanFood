@@ -13,7 +13,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.transition.FragmentTransitionSupport;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -58,6 +60,7 @@ import stanford.cs194.stanfood.database.Database;
 import stanford.cs194.stanfood.fragments.BottomSheetListView;
 import stanford.cs194.stanfood.fragments.BottomSheet;
 import stanford.cs194.stanfood.fragments.NavigationDrawer;
+import stanford.cs194.stanfood.fragments.PopUpFragment;
 import stanford.cs194.stanfood.helpers.Notification;
 import stanford.cs194.stanfood.helpers.ViewGroupUtils;
 import stanford.cs194.stanfood.models.Pin;
@@ -76,7 +79,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Database db;
     private Notification notif;
     private SharedPreferences prefs;
-
+    private FragmentManager supportFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,6 +173,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onMarkerClick(Marker marker) {
         LatLng location = marker.getPosition();
+        this.supportFragment = getSupportFragmentManager();
 
         bottomSheet.initExpandedHeight();
         bottomSheet.expand();
@@ -178,21 +182,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         BottomSheetListView eventListView = findViewById(R.id.eventList);
         ViewGroup bottomSheetContents = findViewById(R.id.bottom_sheet_contents);
-        if (eventListView == null) {
-//            LayoutInflater viewInflater = LayoutInflater.from(App.getContext());
-//            eventListView = (BottomSheetListView) viewInflater.inflate(R.layout.list_info, null, true);
-//            ViewGroupUtils viewGroupUtils = new ViewGroupUtils();
-//            viewGroupUtils.replaceViewById(eventListView, bottomSheetContents, 1);
-        }
         ViewCompat.setNestedScrollingEnabled(eventListView, true);
 
-        CreateList initRows = new CreateList(
-                db,
-                marker,
-                eventStorage,
-                eventListView,
-                bottomSheetContents
-        );
+        CreateList initRows = new CreateList(db, marker, eventStorage, eventListView, bottomSheetContents, supportFragment);
         initRows.createEventList();
 
         return true;
