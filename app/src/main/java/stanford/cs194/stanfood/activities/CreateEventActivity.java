@@ -1,6 +1,7 @@
 package stanford.cs194.stanfood.activities;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
@@ -37,16 +39,22 @@ import java.util.Locale;
 
 import stanford.cs194.stanfood.R;
 import android.support.v7.app.AppCompatActivity;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.UploadTask;
+
 import stanford.cs194.stanfood.database.Database;
+import stanford.cs194.stanfood.database.Storage;
 
 public class CreateEventActivity extends AppCompatActivity {
     public static final long HOURS_TO_MS = 3600000;
     public static final long MINUTES_TO_MS = 60000;
     private static final int RC_CAMERA_INTENT = 991;
-    private String currentPhotoPath;
     private Uri photoURI;
 
     private Database db;
+    private Storage store;
     private SharedPreferences prefs;
 
     @Override
@@ -54,6 +62,7 @@ public class CreateEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
         db = new Database();
+        store = new Storage();
         prefs = getSharedPreferences("loginData", MODE_PRIVATE);
         final AutoCompleteTextView textView = findViewById(R.id.eventLocation);
         String[] suggestions = getResources().getStringArray(R.array.location_list);
@@ -112,7 +121,7 @@ public class CreateEventActivity extends AppCompatActivity {
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(imageFileName,".jpg", storageDir);
-        currentPhotoPath = image.getAbsolutePath();
+        image.deleteOnExit();
         return image;
     }
 
@@ -278,31 +287,59 @@ public class CreateEventActivity extends AppCompatActivity {
      * start date and time, and duration.
      */
     public void createEvent(View view) {
-        String eventName = getEventName();
-        String eventDescription = getEventDescription();
-        String foodDescription = getFood();
-        String locationName = getLocationName();
-        long startTimeMS = getStartTimeMS();
-        long durationMS = getDurationMS();
+        final String eventName = getEventName();
+        final String eventDescription = getEventDescription();
+        final String foodDescription = getFood();
+        final String locationName = getLocationName();
+        final long startTimeMS = getStartTimeMS();
+        final long durationMS = getDurationMS();
 
         // Get User ID to link to event
-        String userId = prefs.getString("userId", "");
+        final String userId = prefs.getString("userId", "");
 
         // If any fields empty/invalid, return without attempting database event creation
         if (eventName.equals("") || foodDescription.equals("") || locationName.equals("")
             || startTimeMS == 0 || durationMS == 0 || userId.equals("")) {
             return;
         }
+        if (photoURI == null){
+            displayToast("Take a picture of your food pretty please :)");
+            return;
+        }
 
-        db.createEvent(eventName, eventDescription, locationName, startTimeMS, durationMS, foodDescription, userId);
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Creating your event...");
+        progressDialog.show();
 
+        UploadTask imageTask = store.uploadImage(photoURI);
+        imageTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                String imagePath = taskSnapshot.getMetadata().getPath();
+                db.createEvent(eventName, eventDescription, locationName,
+                        startTimeMS, durationMS, foodDescription, userId, imagePath);
+                progressDialog.dismiss();
+                displayToast("Event creation successful!");
+                finish();
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressDialog.dismiss();
+                Log.d("ERROR", e.toString());
+                displayToast("Unable to create event");
+                finish();
+            }
+        });
+    }
+
+    private void displayToast(String toastMessage){
         Context context = getApplicationContext();
-        String text = "Event creation successful!";
-        Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT);
         final int BOTTOM_SHEET_PEEK_HEIGHT = (int)context.getResources().getDimension(R.dimen.bottom_sheet_peek_height);
         toast.setGravity(Gravity.BOTTOM, 0, BOTTOM_SHEET_PEEK_HEIGHT);
         toast.show();
-        finish();
     }
 
     /*

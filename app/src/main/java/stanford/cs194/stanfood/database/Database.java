@@ -63,7 +63,7 @@ public class Database {
     // event to be created
     public void createEvent(final String name, final String description, final String locationName,
                             final long timeStart, final long duration, final String foodDescription,
-                            final String userId){
+                            final String userId, final String imagePath){
         final LatLng loc = getLocationFromName(locationName);
         // TODO: Insert check for null location in case the corresponding location name doesn't exist
         dbRef.child("pins").addListenerForSingleValueEvent(
@@ -87,7 +87,7 @@ public class Database {
                     }
                     String eventId = createEntry("events", new Event(pinId, name, description,
                             locationName, timeStart, duration, userId));
-                    createFood(eventId, foodDescription);
+                    createFood(eventId, foodDescription, imagePath);
                 }
 
                 @Override
@@ -99,8 +99,8 @@ public class Database {
     }
 
     // createFood: creates a new food item in the food table
-    public void createFood(String eventId, String description){
-        createEntry("food", new Food(eventId, description));
+    public void createFood(String eventId, String description, String imagePath){
+        createEntry("food", new Food(eventId, description, imagePath));
     }
 
     public void updateUserInstanceId(String userId, String instanceId) {
