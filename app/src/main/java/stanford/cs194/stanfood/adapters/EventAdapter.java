@@ -1,11 +1,17 @@
 package stanford.cs194.stanfood.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -13,10 +19,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+import stanford.cs194.stanfood.App;
 import stanford.cs194.stanfood.R;
+import stanford.cs194.stanfood.activities.PopupActivity;
 import stanford.cs194.stanfood.fragments.BottomSheetListView;
-import stanford.cs194.stanfood.helpers.ViewGroupUtils;
 import stanford.cs194.stanfood.models.Event;
+
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 
 public class EventAdapter extends ArrayAdapter {
@@ -41,9 +50,9 @@ public class EventAdapter extends ArrayAdapter {
     }
 
     @NonNull
-    public View getView(int position, View view, @NonNull ViewGroup parent) {
+    public View getView(int position, final View view, @NonNull ViewGroup parent) {
         final LayoutInflater inflater = LayoutInflater.from(context);
-        View rowView = inflater.inflate(R.layout.list_view, null, true);
+        final View rowView = inflater.inflate(R.layout.list_view, null, true);
 
         // gets references to objects in the list_view.xml file
         TextView eventLocation = bottomSheetContentsView.findViewById(R.id.bottom_sheet_header);
@@ -79,29 +88,47 @@ public class EventAdapter extends ArrayAdapter {
              */
             @Override
             public void onClick(View listItemView) {
-                LayoutInflater viewInflater = LayoutInflater.from(context);
-                // we want to somehow get the database id, so that we can pull more details from the db
+                LayoutInflater inflater = (LayoutInflater) App.getContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+                View popupView = inflater.inflate(R.layout.event_popup, null);
                 String clickedEventName = ((TextView)listItemView.findViewById(R.id.eventName)).getText().toString();
                 String clickedTimeRange = ((TextView)listItemView.findViewById(R.id.eventTimeStart)).getText().toString();
                 String clickedEventDescription = ((TextView)listItemView.findViewById(R.id.eventDescription)).getText().toString();
 
-                View infoView = viewInflater.inflate(R.layout.event_info, null, true);
-
                 TextView infoHeader = bottomSheetContentsView.findViewById(R.id.bottom_sheet_header);
                 String clickedLocationName = infoHeader.getText().toString();
-                TextView infoLocationName = infoView.findViewById(R.id.infoLocationName);
-                TextView infoEventTime = infoView.findViewById(R.id.infoEventTime);
-                TextView infoEventDescription = infoView.findViewById(R.id.infoEventDescription);
+                TextView infoLocationName = popupView.findViewById(R.id.infoLocationName);
+                TextView infoEventTime = popupView.findViewById(R.id.infoEventTime);
+                TextView infoEventDescription = popupView.findViewById(R.id.infoEventDescription);
 
-                infoHeader.setText(clickedEventName);
                 String locationText = infoLocationName.getText().toString() + clickedLocationName;
                 infoLocationName.setText(locationText);
                 String timeText = infoEventTime.getText().toString() + clickedTimeRange;
                 infoEventTime.setText(timeText);
                 infoEventDescription.setText(clickedEventDescription);
 
-                ViewGroupUtils viewGroupUtils = new ViewGroupUtils();
-                viewGroupUtils.replaceViewById(infoView, bottomSheetContentsView, 1);
+                Intent popUpActivitiy = new Intent(App.getContext(),PopupActivity.class);
+                App.getContext().startActivity(popUpActivitiy);
+                //create the popup window
+                int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+                int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                boolean focusable = true; // lets taps outside the popup also dismiss it
+                final PopupWindow eventPopUp = new PopupWindow(popupView, width, height, focusable);
+
+                // which view you pass in doesn't matter, it is only used for the window tolken
+                eventPopUp.showAtLocation(rowView, Gravity.CENTER, 0, -200);
+                popupView.setFocusable(true);
+                // dismiss the popup window when touched
+                popupView.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        eventPopUp.dismiss();
+                        return true;
+                    }
+                });
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    eventPopUp.setElevation(20);
+                }
             }
         });
 
@@ -122,7 +149,7 @@ public class EventAdapter extends ArrayAdapter {
         Calendar endTime = Calendar.getInstance();
         endTime.setTimeInMillis(startTimeInMillis + durationInMillis);
 
-        SimpleDateFormat startFormat = new SimpleDateFormat("E MMM dd, hh:mma", Locale.US);
+        SimpleDateFormat startFormat = new SimpleDateFormat(/*"E MMM dd,*/"hh:mm", Locale.US);
         SimpleDateFormat endFormat = new SimpleDateFormat("hh:mma", Locale.US);
         String startTimeStr = startFormat.format(startTime.getTime());
         String endTimeStr = endFormat.format(endTime.getTime());

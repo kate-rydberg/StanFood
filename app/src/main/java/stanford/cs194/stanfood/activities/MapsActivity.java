@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -21,8 +22,11 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -136,7 +140,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
-                            LatLng current = new LatLng(location.getLatitude(),location.getLongitude());
+                            LatLng current = new LatLng(37.4274745,-122.1719077);//location.getLatitude(),location.getLongitude());
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current,16));
                             populatePins(location);
                         }
@@ -175,10 +179,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         BottomSheetListView eventListView = findViewById(R.id.eventList);
         ViewGroup bottomSheetContents = findViewById(R.id.bottom_sheet_contents);
         if (eventListView == null) {
-            LayoutInflater viewInflater = LayoutInflater.from(App.getContext());
-            eventListView = (BottomSheetListView) viewInflater.inflate(R.layout.list_info, null, true);
-            ViewGroupUtils viewGroupUtils = new ViewGroupUtils();
-            viewGroupUtils.replaceViewById(eventListView, bottomSheetContents, 1);
+//            LayoutInflater viewInflater = LayoutInflater.from(App.getContext());
+//            eventListView = (BottomSheetListView) viewInflater.inflate(R.layout.list_info, null, true);
+//            ViewGroupUtils viewGroupUtils = new ViewGroupUtils();
+//            viewGroupUtils.replaceViewById(eventListView, bottomSheetContents, 1);
         }
         ViewCompat.setNestedScrollingEnabled(eventListView, true);
 
