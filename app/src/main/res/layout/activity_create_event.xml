@@ -18,8 +18,10 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <TextView
             android:id="@+id/title"
@@ -39,13 +41,40 @@
             android:hint="@string/event_name"
             android:inputType="textCapSentences" />
 
-        <EditText
-            android:id="@+id/foodDescription"
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/food_description"
-            android:inputType="textMultiLine|textCapSentences"/>
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/foodDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:layout_weight="20"
+                android:hint="@string/food_description"
+                android:inputType="textMultiLine|textCapSentences" />
+
+            <ImageButton
+                android:id="@+id/btnCamera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/camera_button_padding"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:background="@null"
+                android:src="@drawable/ic_camera_alt_black_24dp"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:visibility="gone" />
 
         <AutoCompleteTextView
             android:id="@+id/eventLocation"

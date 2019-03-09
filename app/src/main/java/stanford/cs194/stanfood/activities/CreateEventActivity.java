@@ -3,23 +3,37 @@ package stanford.cs194.stanfood.activities;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
+
 
 import stanford.cs194.stanfood.R;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +42,9 @@ import stanford.cs194.stanfood.database.Database;
 public class CreateEventActivity extends AppCompatActivity {
     public static final long HOURS_TO_MS = 3600000;
     public static final long MINUTES_TO_MS = 60000;
+    private static final int RC_CAMERA_INTENT = 991;
+    private String currentPhotoPath;
+    private Uri photoURI;
 
     private Database db;
     private SharedPreferences prefs;
@@ -49,6 +66,54 @@ public class CreateEventActivity extends AppCompatActivity {
                 textViewFocusChangeListener(textView, b);
             }
         });
+        ImageButton btnCamera = findViewById(R.id.btnCamera);
+        btnCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException ex) {
+                    Log.d("ERROR", ex.toString());
+                }
+                if (photoFile != null) {
+                    photoURI = FileProvider.getUriForFile(getApplicationContext(),
+                            "stanford.cs194.stanfood.fileprovider",
+                            photoFile);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(intent, RC_CAMERA_INTENT);
+                }
+            }
+            }
+        });
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == RC_CAMERA_INTENT){
+            if(resultCode == RESULT_OK){
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoURI);
+                    ImageView imageView = findViewById(R.id.imageView);
+                    imageView.setImageBitmap(bitmap);
+                    imageView.setVisibility(View.VISIBLE);
+                } catch (IOException e) {
+                    Log.d("ERROR", e.toString());
+                }
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US)
+                .format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(imageFileName,".jpg", storageDir);
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 
     /**

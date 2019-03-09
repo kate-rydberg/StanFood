@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="stanford.cs194.stanfood">
+
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -8,6 +9,7 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -24,9 +26,12 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".activities.SplashActivity" android:theme="@style/SplashTheme">
+        <activity
+            android:name=".activities.SplashActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -37,7 +42,7 @@
              Note that the API key is linked to the encryption key used to sign the APK.
              You need a different API key for each encryption key, including the release key that is used to
              sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -59,8 +64,7 @@
 
         <activity
             android:name=".activities.MapsActivity"
-            android:label="@string/title_activity_maps">
-        </activity>
+            android:label="@string/title_activity_maps"></activity>
 
         <uses-library
             android:name="org.apache.http.legacy"
@@ -68,10 +72,21 @@
 
         <activity
             android:name=".activities.CreateEventActivity"
-            android:parentActivityName=".activities.MapsActivity"></activity>
-
+            android:parentActivityName=".activities.MapsActivity" />
         <activity
             android:name=".activities.LoginActivity"
-            android:parentActivityName=".activities.MapsActivity"></activity>
+            android:parentActivityName=".activities.MapsActivity" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="stanford.cs194.stanfood.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
     </application>
+
 </manifest>
