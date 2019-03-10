@@ -118,7 +118,6 @@ exports.sendNotificationsForEventAdded = functions.database.ref('/events/{eventI
 exports.createEventFromEmail = functions.https.onRequest((req, res) => {
     var Imap = require('imap'),
       inspect = require('util').inspect;
-    var fs = require('fs'), fileStream;
     var buffer = '';
 
     var myMap;
@@ -149,28 +148,29 @@ exports.createEventFromEmail = functions.https.onRequest((req, res) => {
     imap.once('ready', function () {
       openInbox(function (err, box) {
         if (err) throw err;
-        imap.search(['UNSEEN', ['SUBJECT', 'Give Subject Here']], function (err, results) {
+        imap.search(['UNSEEN', ['TO', 'Give Subject Here']], function (err, results) {
           if (err) throw err;
-          var f = imap.fetch(results, { bodies: '1', markSeen: true });
+          var f = imap.fetch(results, { bodies: ['HEADER.FIELDS (SUBJECT)','TEXT'], markSeen: true });
           f.on('message', function (msg, seqno) {
             console.log('Message #%d' + seqno);
             console.log('Message type' + msg.text)
             var prefix = '(#' + seqno + ') ';
             msg.on('body', function (stream, info) {
+              if (info.which === 'TEXT')
+                console.log(prefix + 'Body [%s] found, %d total bytes', inspect(info.which), info.size);
               stream.on('data', function (chunk) {
                 buffer += chunk.toString('utf8');
                 console.log("BUFFER" + buffer)
-
+                if (info.which === 'TEXT')
+                  console.log(prefix + 'Body [%s] (%d/%d)', inspect(info.which), info.size);
               })
               stream.once('end', function () {
-                if (info.which === '1') {
-                  console.log("BUFFER" + buffer)
-                }
-
-
+                if (info.which !== 'TEXT')
+                  console.log(prefix + 'Parsed header: %s', inspect(Imap.parseHeader(buffer)));
+                else
+                  console.log(prefix + 'Body [%s] Finished', inspect(info.which));
+                console.log("BUFFER" + buffer)
               });
-              console.log(prefix + 'Body');
-              stream.pipe(fs.createWriteStream('msg-' + seqno + '-body.txt'));
             });
             msg.once('attributes', function (attrs) {
               console.log(prefix + 'Attributes: %s', inspect(attrs, false, 8));
