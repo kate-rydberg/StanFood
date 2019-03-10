@@ -31,7 +31,7 @@
     "elementType": "geometry.fill",
     "stylers": [
       {
-        "color": "#b9ffa2"
+        "color": "#97e585"
       }
     ]
   },
@@ -49,7 +49,7 @@
     "elementType": "geometry.fill",
     "stylers": [
       {
-        "color": "#b9ffa2"
+        "color": "#8fda7e"
       }
     ]
   },
@@ -91,7 +91,7 @@
     "elementType": "geometry.fill",
     "stylers": [
       {
-        "color": "#b9ffa2"
+        "color": "#8fda7e"
       }
     ]
   },
@@ -148,7 +148,7 @@
     "elementType": "geometry.fill",
     "stylers": [
       {
-        "color": "#b9ffa2"
+        "color": "#8fda7e"
       }
     ]
   },
