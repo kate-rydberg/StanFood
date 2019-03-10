@@ -307,15 +307,15 @@ public class CreateEventActivity extends AppCompatActivity {
             || startTimeMS == 0 || durationMS == 0 || userId.equals("")) {
             return;
         }
-        if (photoURI == null){
-            displayToast("Take a picture of your food pretty please :)");
-            return;
-        }
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Creating your event...");
         progressDialog.show();
 
+        /* Note the upload task is run even if an image is never taken. In this case,
+        it will upload a null file to Firebase Storage, and populate the imagePath field
+        on the Food model.
+         */
         UploadTask imageTask = store.uploadImage(photoURI);
         imageTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
