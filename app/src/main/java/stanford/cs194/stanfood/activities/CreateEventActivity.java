@@ -52,6 +52,7 @@ public class CreateEventActivity extends AppCompatActivity {
     public static final long MINUTES_TO_MS = 60000;
     private static final int RC_CAMERA_INTENT = 991;
     private Uri photoURI;
+    private File photoFile;
 
     private Database db;
     private Storage store;
@@ -79,24 +80,29 @@ public class CreateEventActivity extends AppCompatActivity {
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (intent.resolveActivity(getPackageManager()) != null) {
-                File photoFile = null;
-                try {
-                    photoFile = createImageFile();
-                } catch (IOException ex) {
-                    Log.d("ERROR", ex.toString());
-                }
-                if (photoFile != null) {
-                    photoURI = FileProvider.getUriForFile(getApplicationContext(),
-                            "stanford.cs194.stanfood.fileprovider",
-                            photoFile);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                    startActivityForResult(intent, RC_CAMERA_INTENT);
-                }
-            }
+                imageCameraButtonOnClickListener(v);
             }
         });
+    }
+
+    private void imageCameraButtonOnClickListener(View v){
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            try {
+                // if user tries to take multiple images, only ever create one image file
+                if(photoFile == null)
+                    photoFile = createImageFile();
+            } catch (IOException ex) {
+                Log.d("ERROR", ex.toString());
+            }
+            if (photoFile != null) {
+                photoURI = FileProvider.getUriForFile(getApplicationContext(),
+                        "stanford.cs194.stanfood.fileprovider",
+                        photoFile);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(intent, RC_CAMERA_INTENT);
+            }
+        }
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -121,7 +127,6 @@ public class CreateEventActivity extends AppCompatActivity {
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(imageFileName,".jpg", storageDir);
-        image.deleteOnExit();
         return image;
     }
 
@@ -320,15 +325,16 @@ public class CreateEventActivity extends AppCompatActivity {
                         startTimeMS, durationMS, foodDescription, userId, imagePath);
                 progressDialog.dismiss();
                 displayToast("Event creation successful!");
+                getContentResolver().delete(photoURI, null, null);
                 finish();
-
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                progressDialog.dismiss();
                 Log.d("ERROR", e.toString());
+                progressDialog.dismiss();
                 displayToast("Unable to create event");
+                getContentResolver().delete(photoURI, null, null);
                 finish();
             }
         });
