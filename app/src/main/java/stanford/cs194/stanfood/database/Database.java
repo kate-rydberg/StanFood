@@ -17,12 +17,12 @@ import java.util.List;
 import java.util.Locale;
 
 import stanford.cs194.stanfood.App;
+import stanford.cs194.stanfood.helpers.LatLngWrapper;
 import stanford.cs194.stanfood.models.Event;
 import stanford.cs194.stanfood.models.Food;
 import stanford.cs194.stanfood.models.Pin;
+import stanford.cs194.stanfood.models.Setting;
 import stanford.cs194.stanfood.models.User;
-import stanford.cs194.stanfood.helpers.GetNameFromCoordinates;
-import stanford.cs194.stanfood.helpers.LatLngWrapper;
 
 public class Database {
     final private String dbPath = "https://stanfood-e7255.firebaseio.com/";
@@ -49,6 +49,21 @@ public class Database {
         User user = new User(email, name);
         dbRef.child("users").child(uid).setValue(user);
         return uid;
+    }
+
+    // Updates the instance id of the specified user
+    public void updateUserInstanceId(String userId, String instanceId) {
+        dbRef.child("users").child(userId).child("instanceId").setValue(instanceId);
+    }
+
+    /**
+     * Creates a new user setting in the settings table.
+     * Note: setting id is equivalent to the user id of the logged in user
+     * Furthermore, it takes in an existing uid we already generated from Firebase authentications
+     */
+    public void createSetting(String uid, boolean receivePush, long timeWindowStart, long timeWindowEnd) {
+        Setting setting = new Setting(uid, receivePush, timeWindowStart, timeWindowEnd);
+        dbRef.child("settings").child(uid).setValue(setting);
     }
 
     // createPin: creates a new pin in the pins table
@@ -101,10 +116,6 @@ public class Database {
     // createFood: creates a new food item in the food table
     public void createFood(String eventId, String description, String imagePath){
         createEntry("food", new Food(eventId, description, imagePath));
-    }
-
-    public void updateUserInstanceId(String userId, String instanceId) {
-        dbRef.child("users").child(userId).child("instanceId").setValue(instanceId);
     }
 
     /**
