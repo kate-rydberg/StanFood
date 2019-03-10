@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import stanford.cs194.stanfood.R;
@@ -46,6 +47,7 @@ public class EventInfoDisplay {
         TextView infoLocationName = infoView.findViewById(R.id.infoLocationName);
         TextView infoEventTime = infoView.findViewById(R.id.infoEventTime);
         TextView infoEventDescription = infoView.findViewById(R.id.infoEventDescription);
+//        ImageView eventImage =
 
         infoHeader.setText(name);
         String locationText = infoLocationName.getText().toString() + location;

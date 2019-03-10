@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -50,6 +51,7 @@ public class EventAdapter extends ArrayAdapter {
         TextView eventName = rowView.findViewById(R.id.eventName);
         TextView eventTimeStart = rowView.findViewById(R.id.eventTimeStart);
         TextView eventDescription = rowView.findViewById(R.id.eventDescription);
+        ImageView eventImage = rowView.findViewById(R.id.eventImage);
 
         Event event = events.get(position);
         String name = event.getName();
@@ -71,6 +73,8 @@ public class EventAdapter extends ArrayAdapter {
 
         if(!description.equals("")) eventDescription.setText(description);
         else eventDescription.setText("N/A");
+
+
 
         rowView.setOnClickListener(new View.OnClickListener(){
             /**
