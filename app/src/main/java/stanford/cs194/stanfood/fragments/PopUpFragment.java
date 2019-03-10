@@ -1,26 +1,39 @@
 package stanford.cs194.stanfood.fragments;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import stanford.cs194.stanfood.R;
 
 public class PopUpFragment extends DialogFragment {
 
+    private String name;
+    private String location;
+    private String time;
+    private String description;
+    private ViewGroup bottomSheetContents;
+
+    public static PopUpFragment newInstance(String name, String location, String time, String description, ViewGroup bottomSheetContents) {
+        PopUpFragment p = new PopUpFragment();
+        // initiate popup variables.
+        p.name = name;
+        p.location = location;
+        p.time = time;
+        p.description = description;
+        p.bottomSheetContents = bottomSheetContents;
+
+        return p;
+    }
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -31,6 +44,17 @@ public class PopUpFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View popupView = inflater.inflate(R.layout.event_popup, container, false);
 
+        TextView infoHeader = bottomSheetContents.findViewById(R.id.bottom_sheet_header);
+        TextView infoLocationName = popupView.findViewById(R.id.infoLocationName);
+        TextView infoEventTime = popupView.findViewById(R.id.infoEventTime);
+        TextView infoEventDescription = popupView.findViewById(R.id.infoEventDescription);
+
+        infoHeader.setText(name);
+        String locationText = infoLocationName.getText().toString() + location;
+        infoLocationName.setText(locationText);
+        String timeText = infoEventTime.getText().toString() + time;
+        infoEventTime.setText(timeText);
+        infoEventDescription.setText(description);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         popupView.setFocusable(true);

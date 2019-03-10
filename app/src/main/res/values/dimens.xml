@@ -5,11 +5,7 @@
     <dimen name="bottom_sheet_title_height">80dp</dimen>
     <dimen name="bottom_sheet_content_height">320dp</dimen>
     <dimen name="bottom_sheet_padding">15dp</dimen>
-<<<<<<< HEAD
-    <dimen name="margin_padding">20dp</dimen>
-=======
     <dimen name="camera_button_padding">10dp</dimen>
     <dimen name="margin_padding">15dp</dimen>
->>>>>>> 8387d218af2324413f65c99c3096a190cf80c031
     <dimen name="text_size">20sp</dimen>
 </resources>

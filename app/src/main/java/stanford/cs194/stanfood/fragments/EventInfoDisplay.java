@@ -1,13 +1,8 @@
 package stanford.cs194.stanfood.fragments;
 
 import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
+import android.support.v4.app.FragmentManager;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
-import stanford.cs194.stanfood.R;
-import stanford.cs194.stanfood.helpers.ViewGroupUtils;
 
 public class EventInfoDisplay {
 
@@ -16,13 +11,15 @@ public class EventInfoDisplay {
     private String location;
     private String time;
     private String description;
+    private FragmentManager supportFragment;
 
     public EventInfoDisplay(
             Context context,
             String eventName,
             String eventLocation,
             String eventTime,
-            String eventDescription
+            String eventDescription,
+            FragmentManager supportFragment
     ) {
         this.context = context;
         // initialize when creating object so that there can be getters and setters
@@ -30,6 +27,7 @@ public class EventInfoDisplay {
         this.location = eventLocation;
         this.time = eventTime;
         this.description = eventDescription;
+        this.supportFragment = supportFragment;
 
     }
 
@@ -40,21 +38,7 @@ public class EventInfoDisplay {
      * @param bottomSheetContents - the parent of the event info view
      */
     public void displayInfo(ViewGroup bottomSheetContents) {
-        LayoutInflater viewInflater = LayoutInflater.from(context);
-        View infoView = viewInflater.inflate(R.layout.event_info, null, true);
-
-        TextView infoHeader = bottomSheetContents.findViewById(R.id.bottom_sheet_header);
-        TextView infoLocationName = infoView.findViewById(R.id.infoLocationName);
-        TextView infoEventTime = infoView.findViewById(R.id.infoEventTime);
-        TextView infoEventDescription = infoView.findViewById(R.id.infoEventDescription);
-
-        infoHeader.setText(name);
-        String locationText = infoLocationName.getText().toString() + location;
-        infoLocationName.setText(locationText);
-        String timeText = infoEventTime.getText().toString() + time;
-        infoEventTime.setText(timeText);
-        infoEventDescription.setText(description);
-
-        ViewGroupUtils.replaceViewById(infoView, bottomSheetContents, 1);
+        PopUpFragment eventPopUp = new PopUpFragment();
+        eventPopUp.newInstance(name, location, time, description, bottomSheetContents).show(supportFragment,null);
     }
 }
