@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -55,12 +54,13 @@ import java.util.HashMap;
 
 import stanford.cs194.stanfood.App;
 import stanford.cs194.stanfood.R;
+import stanford.cs194.stanfood.authentication.Authentication;
 import stanford.cs194.stanfood.database.CreateList;
 import stanford.cs194.stanfood.database.Database;
 import stanford.cs194.stanfood.fragments.BottomSheetListView;
 import stanford.cs194.stanfood.fragments.BottomSheet;
 import stanford.cs194.stanfood.fragments.NavigationDrawer;
-import stanford.cs194.stanfood.fragments.PopUpFragment;
+import stanford.cs194.stanfood.helpers.FirebaseInstanceIdAccessor;
 import stanford.cs194.stanfood.helpers.Notification;
 import stanford.cs194.stanfood.helpers.ViewGroupUtils;
 import stanford.cs194.stanfood.models.Pin;
@@ -76,6 +76,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private FusedLocationProviderClient mFusedLocationClient;
     private float distanceRange = 10000;
+    private Authentication auth;
     private Database db;
     private Notification notif;
     private SharedPreferences prefs;
@@ -90,9 +91,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        auth = new Authentication();
         db = new Database();
-
         notif = new Notification(App.getContext());
+        FirebaseInstanceIdAccessor instanceIdAccessor = new FirebaseInstanceIdAccessor(db, auth);
+        instanceIdAccessor.uploadInstanceId();
 
         eventStorage = new HashMap<>();
         markerStorage = new HashMap<>();

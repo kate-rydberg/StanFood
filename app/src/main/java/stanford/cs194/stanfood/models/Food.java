@@ -5,12 +5,14 @@ public class Food {
     private String foodId;
     private String eventId;
     private String description;
+    private String imagePath;
 
     public Food() {}
 
-    public Food(String eventId, String description) {
+    public Food(String eventId, String description, String imagePath) {
         this.eventId = eventId;
         this.description = description;
+        this.imagePath = imagePath;
     }
 
     public String getFoodId() {
@@ -36,4 +38,8 @@ public class Food {
     public void setEventId(String eventId) {
         this.eventId = eventId;
     }
+
+    public String getImagePath() { return imagePath; }
+
+    public void setImagePath(String imagePath) { this.imagePath = imagePath; }
 }

@@ -18,6 +18,7 @@ import stanford.cs194.stanfood.App;
 import stanford.cs194.stanfood.R;
 import stanford.cs194.stanfood.fragments.BottomSheetListView;
 import stanford.cs194.stanfood.fragments.PopUpFragment;
+import stanford.cs194.stanfood.fragments.EventInfoDisplay;
 import stanford.cs194.stanfood.models.Event;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
@@ -88,12 +89,14 @@ public class EventAdapter extends ArrayAdapter {
             public void onClick(View listItemView) {
                 LayoutInflater inflater = (LayoutInflater) App.getContext().getSystemService(LAYOUT_INFLATER_SERVICE);
                 View popupView = inflater.inflate(R.layout.event_popup, null);
+                // we want to somehow get the database id, so that we can pull more details from the db
                 String clickedEventName = ((TextView)listItemView.findViewById(R.id.eventName)).getText().toString();
                 String clickedTimeRange = ((TextView)listItemView.findViewById(R.id.eventTimeStart)).getText().toString();
                 String clickedEventDescription = ((TextView)listItemView.findViewById(R.id.eventDescription)).getText().toString();
 
                 TextView infoHeader = bottomSheetContentsView.findViewById(R.id.bottom_sheet_header);
                 String clickedLocationName = infoHeader.getText().toString();
+
                 TextView infoLocationName = popupView.findViewById(R.id.infoLocationName);
                 TextView infoEventTime = popupView.findViewById(R.id.infoEventTime);
                 TextView infoEventDescription = popupView.findViewById(R.id.infoEventDescription);
@@ -106,6 +109,10 @@ public class EventAdapter extends ArrayAdapter {
 
                 PopUpFragment eventPopUp = new PopUpFragment();
                 eventPopUp.show(supportFragment,null);
+
+//                EventInfoDisplay infoDisplay = new EventInfoDisplay(context, clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription);
+//                infoDisplay.displayInfo(bottomSheetContentsView);
+
             }
         });
 

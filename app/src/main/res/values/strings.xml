@@ -20,6 +20,8 @@
     <string name="createButtonText">Create</string>
     <string name="use_current_location">Use Current Location?</string>
     <string name="title_activity_splash">SplashActivity</string>
+    <string name="default_notification_channel_id">DefaultNotificationChannel</string>
+    <string name="new_event_notification_title">Free food added in your area!</string>
     <string-array name="location_list">
         <item>Allen Center for Integrated Systems (CIS)</item>
         <item>Applied Physics Building</item>
