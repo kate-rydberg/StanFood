@@ -10,6 +10,9 @@ exports.checkPinEvents = functions.https.onRequest((req, res) => {
   var eventsRef = admin.database().ref('/events');
   var foodRef = admin.database().ref('/food');
 
+  // initialize storage bucket
+  var bucket = admin.storage().bucket();
+
   eventsRef.once('value', (snapshot) => {
   	snapshot.forEach((childSnapshot) => {
   		var data = childSnapshot.val();
@@ -27,6 +30,14 @@ exports.checkPinEvents = functions.https.onRequest((req, res) => {
           foodRef.orderByChild('eventId').equalTo(eventKey).once('value').then((foodSnapshot) => {
             return foodSnapshot.forEach((foodChildSnapshot) => {
               var foodKey = foodChildSnapshot.key;
+
+              // remove image associated with food from storage
+              var imagePath = foodChildSnapshot.val().imagePath;
+              if(imagePath){
+                bucket.file(imagePath).delete();
+                console.log('Removed food item ' + foodKey + ' image ' + imagePath + ' from storage');
+              }
+
               console.log('Removed food item ' + foodKey + ' for expired event ' + eventKey);
               return foodRef.child(foodKey).remove();
             });
