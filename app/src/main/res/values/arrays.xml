@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="time_ticks">
+        <item>0</item>
+        <item/>
+        <item/>
+        <item>3</item>
+        <item/>
+        <item/>
+        <item>6</item>
+        <item/>
+        <item/>
+        <item>9</item>
+        <item/>
+        <item/>
+        <item>12</item>
+        <item/>
+        <item/>
+        <item>15</item>
+        <item/>
+        <item/>
+        <item>18</item>
+        <item/>
+        <item/>
+        <item>21</item>
+        <item/>
+        <item/>
+        <item>24</item>
+    </string-array>
+</resources>

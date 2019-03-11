@@ -6,8 +6,10 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 
+import com.appyvet.materialrangebar.RangeBar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -26,20 +28,35 @@ public class UserSettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_settings);
         db = new Database();
         prefs = getSharedPreferences("loginData", MODE_PRIVATE);
+        Switch receivePush = findViewById(R.id.receivePush);
+        receivePush.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                RangeBar timeWindow = findViewById(R.id.timeWindow);
+                timeWindow.setEnabled(isChecked);
+            }
+        });
         readSettings();
     }
 
+    /*
+     * Reads the settings when the activity is loaded to show the user
+     * their previously selected settings.
+     */
     private void readSettings() {
-        final Switch receivePush = findViewById(R.id.receivePush);
         final String userId = prefs.getString("userId", "");
         db.dbRef.child("settings").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Setting setting = dataSnapshot.getValue(Setting.class);
                 if (setting != null) {
+                    Switch receivePush = findViewById(R.id.receivePush);
+                    RangeBar timeWindow = findViewById(R.id.timeWindow);
                     boolean doReceivePush = setting.getReceivePushNotifications();
                     int timeWindowStart = setting.getTimeWindowStart();
                     int timeWindowEnd = setting.getTimeWindowEnd();
+                    timeWindow.setEnabled(doReceivePush);
+                    timeWindow.setRangePinsByIndices(timeWindowStart, timeWindowEnd);
                     receivePush.setChecked(doReceivePush);
                 }
             }
@@ -56,9 +73,12 @@ public class UserSettingsActivity extends AppCompatActivity {
      */
     public void saveSettings(View view) {
         Switch receivePush = findViewById(R.id.receivePush);
+        RangeBar timeWindow = findViewById(R.id.timeWindow);
         boolean doReceivePush = receivePush.isChecked();
-        final String userId = prefs.getString("userId", "");
-        db.createSetting(userId, doReceivePush, 0, 24);
+        String userId = prefs.getString("userId", "");
+        int timeWindowStart = timeWindow.getLeftIndex();
+        int timeWindowEnd = timeWindow.getRightIndex();
+        db.createSetting(userId, doReceivePush, timeWindowStart, timeWindowEnd);
         finish();
     }
 }

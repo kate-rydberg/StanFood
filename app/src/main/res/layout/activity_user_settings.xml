@@ -41,6 +41,36 @@
             android:checked="true"
             android:text="@string/receive_push_switch" />
 
+        <TextView
+            android:id="@+id/timeWindowTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/timeWindowTitle"
+            android:textColor="#000000"/>
+
+        <com.appyvet.materialrangebar.RangeBar
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/timeWindow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:mrb_selectorColor="@color/colorPrimary"
+            app:mrb_selectorBoundaryColor="@color/colorPrimary"
+            app:mrb_rangeBarColor="@color/colorPrimary"
+            app:mrb_pinMaxFont="15sp"
+            app:mrb_pinMinFont="12sp"
+            app:mrb_selectorBoundarySize="2dp"
+            app:mrb_temporaryPins="true"
+            app:mrb_selectorSize="8dp"
+            app:mrb_tickTopLabels="@array/time_ticks"
+            app:mrb_tickEnd="24"
+            app:mrb_tickInterval="1"
+            app:mrb_tickStart="0"
+            app:mrb_pinRadius="10dp"
+            app:mrb_rangeBar_rounded="true"
+            app:mrb_connectingLineColor="@color/colorPrimary"
+            app:mrb_rangeBar="true"
+            app:mrb_pinColor="@color/colorPrimary"/>
+
         <Button
             android:id="@+id/saveSettings"
             android:layout_width="wrap_content"

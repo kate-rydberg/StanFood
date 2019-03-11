@@ -26,6 +26,7 @@
     <string name="userSettingsTitle">User Settings</string>
     <string name="receive_push_switch">Receive Push Notifications?</string>
     <string name="user_settings">Settings</string>
+    <string name="timeWindowTitle">Receive Notifications for Events Starting at These Times:</string>
     <string-array name="location_list">
         <item>Allen Center for Integrated Systems (CIS)</item>
         <item>Applied Physics Building</item>
