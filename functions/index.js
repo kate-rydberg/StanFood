@@ -119,10 +119,9 @@ exports.sendNotificationsForEventAdded = functions.database.ref('/events/{eventI
           const error = result.error;
           if (error) {
             console.error('Failure sending notification to', tokens[index], error);
-            // Cleanup the tokens who are not registered anymore.
             if (error.code === 'messaging/invalid-registration-token' ||
                 error.code === 'messaging/registration-token-not-registered') {
-              tokensToRemove.push(tokensSnapshot.ref.child(tokens[index]).remove());
+              // TODO Cleanup the tokens who are not registered anymore via tokensToRemove
             }
           }
         });
