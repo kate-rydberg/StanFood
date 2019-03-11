@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -62,10 +63,9 @@ public class EventAdapter extends ArrayAdapter {
         TextView eventName = rowView.findViewById(R.id.eventName);
         TextView eventTimeStart = rowView.findViewById(R.id.eventTimeStart);
         TextView eventDescription = rowView.findViewById(R.id.eventDescription);
-        ImageView eventImage = rowView.findViewById(R.id.eventImage);
 
         Event event = events.get(position);
-        // TODO: finish loadFoodImages(event.getEventId());
+        loadFoodImages(event.getEventId(), rowView);
 
         String name = event.getName();
         final String locationName = event.getLocationName();
@@ -136,7 +136,7 @@ public class EventAdapter extends ArrayAdapter {
      * @param eventId
      * TODO: Retrieves images from Storage and loads into Picasso adapter
      */
-    private void loadFoodImages(final String eventId){
+    private void loadFoodImages(final String eventId, final View rowView){
         db.dbRef.child("food").orderByChild("eventId").equalTo(eventId).
                 addValueEventListener(new ValueEventListener() {
                     @Override
@@ -144,7 +144,9 @@ public class EventAdapter extends ArrayAdapter {
                         for(DataSnapshot ds : dataSnapshot.getChildren()){
                             Food food = ds.getValue(Food.class);
                             String url = food.getImagePath();
-                            //TODO: load this url into a Picasso adapter
+                            ImageView eventImage = rowView.findViewById(R.id.eventImage);
+
+                            Picasso.get().load(url).resize(100,100).centerCrop().error(R.drawable.ic_camera_alt_black_24dp).into(eventImage);
                         }
                     }
 
