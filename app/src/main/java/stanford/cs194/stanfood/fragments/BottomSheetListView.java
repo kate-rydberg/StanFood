@@ -1,9 +1,6 @@
 package stanford.cs194.stanfood.fragments;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.util.AttributeSet;

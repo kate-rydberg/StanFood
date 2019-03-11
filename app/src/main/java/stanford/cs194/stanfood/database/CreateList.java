@@ -1,6 +1,7 @@
 package stanford.cs194.stanfood.database;
 
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Adapter;
@@ -29,17 +30,18 @@ public class CreateList {
     private ArrayList<Event> events;
     private BottomSheetListView eventListView;
     private ViewGroup bottomSheetContentsView;
-
+    private FragmentManager supportFragment;
 
     public CreateList(Database db, Marker marker,
                       HashMap<LatLng, String> eventStorage, BottomSheetListView eventListView,
-                      ViewGroup bottomSheetContentsView) {
+                      ViewGroup bottomSheetContentsView, FragmentManager supportFragment) {
         this.db = db;
         this.markerLocation = marker.getPosition();
         this.eventStorage = eventStorage;
         this.eventListView = eventListView;
         this.bottomSheetContentsView = bottomSheetContentsView;
         this.events = new ArrayList<>();
+        this.supportFragment = supportFragment;
     }
 
     public void createEventList(){
@@ -62,7 +64,8 @@ public class CreateList {
                                 eventListView.getContext(),
                                 events,
                                 eventListView,
-                                bottomSheetContentsView
+                                bottomSheetContentsView,
+                                supportFragment
                         );
                         eventListView.setAdapter((ListAdapter) rowCells);
                     }
