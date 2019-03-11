@@ -2,15 +2,15 @@ package stanford.cs194.stanfood.models;
 
 public class Setting {
     private String userId;
-    private boolean receivePush;
+    private boolean receivePushNotifications;
     private long timeWindowStart;
     private long timeWindowEnd;
 
     public Setting() {}
 
-    public Setting(String userId, boolean receivePush, long timeWindowStart, long timeWindowEnd) {
+    public Setting(String userId, boolean receivePushNotifications, long timeWindowStart, long timeWindowEnd) {
         this.userId = userId;
-        this.receivePush = receivePush;
+        this.receivePushNotifications = receivePushNotifications;
         this.timeWindowStart = timeWindowStart;
         this.timeWindowEnd = timeWindowEnd;
     }
@@ -23,12 +23,12 @@ public class Setting {
         this.userId = userId;
     }
 
-    public boolean getReceivePush() {
-        return receivePush;
+    public boolean getReceivePushNotifications() {
+        return receivePushNotifications;
     }
 
-    public void setReceivePush(boolean receivePush) {
-        this.receivePush = receivePush;
+    public void setReceivePushNotifications(boolean receivePushNotifications) {
+        this.receivePushNotifications = receivePushNotifications;
     }
 
     public long getTimeWindowStart() {
