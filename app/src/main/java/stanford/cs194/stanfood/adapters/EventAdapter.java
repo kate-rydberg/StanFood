@@ -2,6 +2,7 @@ package stanford.cs194.stanfood.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,15 +10,21 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
 import stanford.cs194.stanfood.R;
+import stanford.cs194.stanfood.database.Database;
 import stanford.cs194.stanfood.fragments.BottomSheetListView;
 import stanford.cs194.stanfood.fragments.EventInfoDisplay;
 import stanford.cs194.stanfood.models.Event;
+import stanford.cs194.stanfood.models.Food;
 
 
 public class EventAdapter extends ArrayAdapter {
@@ -28,7 +35,10 @@ public class EventAdapter extends ArrayAdapter {
     private BottomSheetListView eventListView;
     private ViewGroup bottomSheetContentsView;
 
+    private Database db;
+
     public EventAdapter(
+            Database db,
             Context context,
             ArrayList<Event> events,
             BottomSheetListView eventListView,
@@ -39,6 +49,7 @@ public class EventAdapter extends ArrayAdapter {
         this.events = events;
         this.eventListView = eventListView;
         this.bottomSheetContentsView = bottomSheetContentsView;
+        this.db = db;
     }
 
     @NonNull
@@ -54,6 +65,8 @@ public class EventAdapter extends ArrayAdapter {
         ImageView eventImage = rowView.findViewById(R.id.eventImage);
 
         Event event = events.get(position);
+        // TODO: finish loadFoodImages(event.getEventId());
+
         String name = event.getName();
         final String locationName = event.getLocationName();
         long time = event.getTimeStart();
@@ -119,4 +132,26 @@ public class EventAdapter extends ArrayAdapter {
         return startTimeStr + " - " + endTimeStr;
     }
 
+    /**
+     * @param eventId
+     * TODO: Retrieves images from Storage and loads into Picasso adapter
+     */
+    private void loadFoodImages(final String eventId){
+        db.dbRef.child("food").orderByChild("eventId").equalTo(eventId).
+                addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for(DataSnapshot ds : dataSnapshot.getChildren()){
+                            Food food = ds.getValue(Food.class);
+                            String url = food.getImagePath();
+                            //TODO: load this url into a Picasso adapter
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.d("ERROR", databaseError.toString());
+                    }
+                });
+    }
 }
