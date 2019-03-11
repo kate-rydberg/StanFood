@@ -150,7 +150,7 @@ public class EventAdapter extends ArrayAdapter {
                             String url = food.getImagePath();
                             ImageView eventImage = rowView.findViewById(R.id.eventImage);
 
-                            Picasso.get().load(url).resize(100,100).centerCrop().error(R.drawable.ic_camera_alt_black_24dp).into(eventImage);
+                            Picasso.get().load(url).resize(300,300).centerCrop().error(R.drawable.ic_camera_alt_black_24dp).into(eventImage);
                         }
                     }
 

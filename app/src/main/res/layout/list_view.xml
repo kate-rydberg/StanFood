@@ -10,6 +10,8 @@
         android:layout_height="wrap_content"
         android:paddingTop="15dp"
         android:paddingBottom="15dp"
+        android:paddingRight="15dp"
+        android:paddingLeft="15dp"
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,14 +28,12 @@
                     android:id="@+id/eventName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="15dp"
                     android:textSize="@dimen/text_size"
                     android:font="@font/gotham_book"/>
                 <TextView
                     android:id="@+id/eventTimeStart"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="15dp"
                     android:textSize="@dimen/text_size"
                     android:font="@font/gotham_book"/>
             </LinearLayout>
@@ -49,8 +49,6 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_size"
             android:textStyle="italic"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
             android:font="@font/gotham_book"/>
 
     </LinearLayout>
