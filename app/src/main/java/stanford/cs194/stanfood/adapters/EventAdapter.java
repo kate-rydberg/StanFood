@@ -16,7 +16,7 @@ import java.util.Locale;
 
 import stanford.cs194.stanfood.R;
 import stanford.cs194.stanfood.fragments.BottomSheetListView;
-import stanford.cs194.stanfood.fragments.EventInfoDisplay;
+import stanford.cs194.stanfood.fragments.PopUpFragment;
 import stanford.cs194.stanfood.models.Event;
 
 public class EventAdapter extends ArrayAdapter {
@@ -89,8 +89,8 @@ public class EventAdapter extends ArrayAdapter {
                 TextView infoHeader = bottomSheetContentsView.findViewById(R.id.bottom_sheet_header);
                 String clickedLocationName = infoHeader.getText().toString();
 
-                EventInfoDisplay infoDisplay = new EventInfoDisplay(context, clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription, supportFragment);
-                infoDisplay.displayInfo(bottomSheetContentsView);
+                PopUpFragment eventPopUp = new PopUpFragment();
+                eventPopUp.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription, bottomSheetContentsView).show(supportFragment,null);
 
             }
         });

@@ -1,9 +1,6 @@
 package stanford.cs194.stanfood.fragments;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.util.AttributeSet;
@@ -18,18 +15,18 @@ public class BottomSheetListView extends ListView {
         super (context, p_attrs);
     }
 
-//    @Override
-//    public boolean onInterceptTouchEvent(MotionEvent ev) {
-//        LinearLayout parent = (LinearLayout) getParent();
-//        NestedScrollView grandparent = (NestedScrollView) parent.getParent();
-//        if (canScrollVertically(this)) {
-//            ViewCompat.setNestedScrollingEnabled(grandparent, false);
-//        }
-//        else{
-//            ViewCompat.setNestedScrollingEnabled(grandparent, true);
-//        }
-//        return super.onInterceptTouchEvent(ev);
-//    }
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        LinearLayout parent = (LinearLayout) getParent();
+        NestedScrollView grandparent = (NestedScrollView) parent.getParent();
+        if (canScrollVertically(this)) {
+            ViewCompat.setNestedScrollingEnabled(grandparent, false);
+        }
+        else{
+            ViewCompat.setNestedScrollingEnabled(grandparent, true);
+        }
+        return super.onInterceptTouchEvent(ev);
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
