@@ -43,18 +43,14 @@ public class CreateList {
     }
 
     public void createEventList(){
-        db.dbRef.child("events").addListenerForSingleValueEvent(
-                new ValueEventListener() {
+        db.dbRef.child("events").orderByChild("pinId").equalTo(eventStorage.get(markerLocation)).
+                addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for(DataSnapshot ds : dataSnapshot.getChildren()){
-                            if(ds.hasChildren()){
-                                Event event = ds.getValue(Event.class);
-                                if(event.getPinId().equals(eventStorage.get(markerLocation))){
-                                    event.setEventId(ds.getKey());
-                                    events.add(event);
-                                }
-                            }
+                            Event event = ds.getValue(Event.class);
+                            event.setEventId(ds.getKey());
+                            events.add(event);
                         }
                         Collections.sort(events);
                         Adapter rowCells = new EventAdapter(
