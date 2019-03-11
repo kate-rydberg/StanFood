@@ -116,6 +116,8 @@ exports.sendNotificationsForEventAdded = functions.database.ref('/events/{eventI
 
 
 exports.createEventFromEmail = functions.https.onRequest((req, res) => {
+    const express = require('express');
+    const bodyParser = require('body-parser');
     var app = express();
     var port = 5000;
 
