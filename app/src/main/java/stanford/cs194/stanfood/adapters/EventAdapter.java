@@ -2,6 +2,7 @@ package stanford.cs194.stanfood.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,15 +16,15 @@ import java.util.Locale;
 
 import stanford.cs194.stanfood.R;
 import stanford.cs194.stanfood.fragments.BottomSheetListView;
-import stanford.cs194.stanfood.fragments.EventInfoDisplay;
+import stanford.cs194.stanfood.fragments.PopUpFragment;
 import stanford.cs194.stanfood.models.Event;
-
 
 public class EventAdapter extends ArrayAdapter {
 
     private ArrayList<Event> events;
     private Context context;
 
+    private FragmentManager supportFragment;
     private BottomSheetListView eventListView;
     private ViewGroup bottomSheetContentsView;
 
@@ -31,19 +32,21 @@ public class EventAdapter extends ArrayAdapter {
             Context context,
             ArrayList<Event> events,
             BottomSheetListView eventListView,
-            ViewGroup bottomSheetContentsView
+            ViewGroup bottomSheetContentsView,
+            FragmentManager supportFragment
     ) {
         super(context, R.layout.list_view, events);
         this.context = context;
         this.events = events;
         this.eventListView = eventListView;
         this.bottomSheetContentsView = bottomSheetContentsView;
+        this.supportFragment = supportFragment;
     }
 
     @NonNull
-    public View getView(int position, View view, @NonNull ViewGroup parent) {
+    public View getView(int position, final View view, @NonNull final ViewGroup parent) {
         final LayoutInflater inflater = LayoutInflater.from(context);
-        View rowView = inflater.inflate(R.layout.list_view, null, true);
+        final View rowView = inflater.inflate(R.layout.list_view, null, true);
 
         // gets references to objects in the list_view.xml file
         TextView eventLocation = bottomSheetContentsView.findViewById(R.id.bottom_sheet_header);
@@ -79,15 +82,16 @@ public class EventAdapter extends ArrayAdapter {
              */
             @Override
             public void onClick(View listItemView) {
-                // we want to somehow get the database id, so that we can pull more details from the db
                 String clickedEventName = ((TextView)listItemView.findViewById(R.id.eventName)).getText().toString();
                 String clickedTimeRange = ((TextView)listItemView.findViewById(R.id.eventTimeStart)).getText().toString();
                 String clickedEventDescription = ((TextView)listItemView.findViewById(R.id.eventDescription)).getText().toString();
 
                 TextView infoHeader = bottomSheetContentsView.findViewById(R.id.bottom_sheet_header);
                 String clickedLocationName = infoHeader.getText().toString();
-                EventInfoDisplay infoDisplay = new EventInfoDisplay(context, clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription);
-                infoDisplay.displayInfo(bottomSheetContentsView);
+
+                PopUpFragment eventPopUp = new PopUpFragment();
+                eventPopUp.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription, bottomSheetContentsView).show(supportFragment,null);
+
             }
         });
 
@@ -108,7 +112,7 @@ public class EventAdapter extends ArrayAdapter {
         Calendar endTime = Calendar.getInstance();
         endTime.setTimeInMillis(startTimeInMillis + durationInMillis);
 
-        SimpleDateFormat startFormat = new SimpleDateFormat("E MMM dd, hh:mma", Locale.US);
+        SimpleDateFormat startFormat = new SimpleDateFormat(/*"E MMM dd,*/"hh:mm", Locale.US);
         SimpleDateFormat endFormat = new SimpleDateFormat("hh:mma", Locale.US);
         String startTimeStr = startFormat.format(startTime.getTime());
         String endTimeStr = endFormat.format(endTime.getTime());
