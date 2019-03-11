@@ -191,12 +191,6 @@ public class Database {
                     }
                 }
 
-                final Food oldFood = oldEvent.getFood();
-                final Food newFood = newEvent.getFood();
-                if (newFood != null) {
-                    e.setFood(newFood);
-                }
-
                 // Replace other simpler event fields
                 replaceEvent(e, newEvent);
 
@@ -250,11 +244,12 @@ public class Database {
      * decrements the number of events in the corresponding pin by 1.
      */
     public void deleteEvent(final Event event){
+        final String eventId = event.getEventId();
         dbRef.runTransaction(new Transaction.Handler() {
             @NonNull
             @Override
             public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
-                Event e = mutableData.child("events").child(event.getEventId()).getValue(Event.class);
+                Event e = mutableData.child("events").child(eventId).getValue(Event.class);
                 if (e == null) {
                     return Transaction.success(mutableData);
                 }
@@ -265,7 +260,7 @@ public class Database {
                 }
 
                 // Remove event, set new event number value, and report transaction success
-                dbRef.child("events").child(event.getEventId()).removeValue();
+                dbRef.child("events").child(eventId).removeValue();
                 mutableData.child("pins").child(pinId).child("numEvents").setValue(numEvents-1);
                 return Transaction.success(mutableData);
             }
