@@ -86,11 +86,11 @@ public class EventAdapter extends ArrayAdapter {
                 String clickedTimeRange = ((TextView)listItemView.findViewById(R.id.eventTimeStart)).getText().toString();
                 String clickedEventDescription = ((TextView)listItemView.findViewById(R.id.eventDescription)).getText().toString();
 
-                TextView infoHeader = bottomSheetContentsView.findViewById(R.id.bottom_sheet_header);
-                String clickedLocationName = infoHeader.getText().toString();
+                TextView bottomSheetHeader = bottomSheetContentsView.findViewById(R.id.bottom_sheet_header);
+                String clickedLocationName = bottomSheetHeader.getText().toString();
 
                 PopUpFragment eventPopUp = new PopUpFragment();
-                eventPopUp.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription, bottomSheetContentsView).show(supportFragment,null);
+                eventPopUp.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription).show(supportFragment,null);
 
             }
         });

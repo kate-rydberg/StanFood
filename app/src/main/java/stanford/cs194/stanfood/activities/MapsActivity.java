@@ -55,9 +55,9 @@ import stanford.cs194.stanfood.database.Database;
 import stanford.cs194.stanfood.fragments.BottomSheetListView;
 import stanford.cs194.stanfood.fragments.BottomSheet;
 import stanford.cs194.stanfood.fragments.NavigationDrawer;
+import stanford.cs194.stanfood.fragments.PopUpFragment;
 import stanford.cs194.stanfood.helpers.FirebaseInstanceIdAccessor;
 import stanford.cs194.stanfood.helpers.Notification;
-import stanford.cs194.stanfood.helpers.ViewGroupUtils;
 import stanford.cs194.stanfood.models.Pin;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, OnMarkerClickListener, GoogleMap.OnMapClickListener, GoogleMap.OnCameraMoveStartedListener {
@@ -98,6 +98,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // Get SharedPreferences for login data
         prefs = getSharedPreferences("loginData", MODE_PRIVATE);
+
+        String openPopup = getIntent().getStringExtra("openPopup");
+        if (openPopup != null) {
+            PopUpFragment eventPopUp = new PopUpFragment();
+            //eventPopUp.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription).show(supportFragment,null);
+        }
     }
 
     @Override

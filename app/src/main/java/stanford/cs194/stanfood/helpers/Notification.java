@@ -6,12 +6,14 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import stanford.cs194.stanfood.R;
 import stanford.cs194.stanfood.activities.MapsActivity;
+import stanford.cs194.stanfood.fragments.PopUpFragment;
 
 public class Notification {
     final private String CHANNEL_ID = "123";
@@ -55,6 +57,7 @@ public class Notification {
          * TODO when the user clicks on the notification
          */
         Intent intent = new Intent(context, MapsActivity.class);
+        intent.putExtra("openPopup", content);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
