@@ -116,87 +116,98 @@ exports.sendNotificationsForEventAdded = functions.database.ref('/events/{eventI
 
 
 exports.createEventFromEmail = functions.https.onRequest((req, res) => {
-    var Imap = require('imap'),
-      inspect = require('util').inspect;
-    var buffer = '';
+    var app = express();
+    var port = 5000;
 
-    var myMap;
+    app.use(bodyParser.json());
 
-    var imap = new Imap({
-      user: "free.stanfood@gmail.com",
-      password: "stanfoodalpaca",
-      host: "imap.gmail.com", //this may differ if you are using some other mail services like yahoo
-      port: 993,
-      tls: true,
-      connTimeout: 10000, // Default by node-imap
-      authTimeout: 5000, // Default by node-imap,
-      debug: console.log, // Or your custom function with only one incoming argument. Default: null
-      tlsOptions: { rejectUnauthorized: false },
-      mailbox: "INBOX", // mailbox to monitor
-      searchFilter: ["UNSEEN", "FLAGGED"], // the search filter being used after an IDLE notification has been retrieved
-      markSeen: true, // all fetched email will be marked as seen and not fetched next time
-      fetchUnreadOnStart: true, // use it only if you want to get all unread email on lib start. Default is `false`,
-      mailParserOptions: { streamAttachments: false }, // options to be passed to mailParser lib.
-      attachments: false, // download attachments as they are encountered to the project directory
-      attachmentOptions: { directory: "attachments/" } // specify a download directory for attachments
-    });
+    app.set('port', (process.env.PORT || port));
 
-    function openInbox(cb) {
-      imap.openBox('INBOX', false, cb);
-    }
+    app.use(express.static(__dirname + '/public'));
 
-    imap.once('ready', function () {
-      openInbox(function (err, box) {
-        if (err) throw err;
-        imap.search(['UNSEEN', ['TO', 'Give Subject Here']], function (err, results) {
+    app.get('/', function(request, response) {
+      var Imap = require('imap'),
+        inspect = require('util').inspect;
+      var buffer = '';
+
+      var myMap;
+
+      var imap = new Imap({
+        user: "free.stanfood@gmail.com",
+        password: "stanfoodalpaca",
+        host: "imap.gmail.com", //this may differ if you are using some other mail services like yahoo
+        port: 993,
+        tls: true,
+        connTimeout: 10000, // Default by node-imap
+        authTimeout: 5000, // Default by node-imap,
+        debug: console.log, // Or your custom function with only one incoming argument. Default: null
+        tlsOptions: { rejectUnauthorized: false },
+        mailbox: "INBOX", // mailbox to monitor
+        searchFilter: ["UNSEEN", "FLAGGED"], // the search filter being used after an IDLE notification has been retrieved
+        markSeen: true, // all fetched email will be marked as seen and not fetched next time
+        fetchUnreadOnStart: true, // use it only if you want to get all unread email on lib start. Default is `false`,
+        mailParserOptions: { streamAttachments: false }, // options to be passed to mailParser lib.
+        attachments: false, // download attachments as they are encountered to the project directory
+        attachmentOptions: { directory: "attachments/" } // specify a download directory for attachments
+      });
+
+      function openInbox(cb) {
+        imap.openBox('INBOX', false, cb);
+      }
+
+      imap.once('ready', function () {
+        openInbox(function (err, box) {
           if (err) throw err;
-          var f = imap.fetch(results, { bodies: ['HEADER.FIELDS (SUBJECT)','TEXT'], markSeen: true });
-          f.on('message', function (msg, seqno) {
-            console.log('Message #%d' + seqno);
-            console.log('Message type' + msg.text)
-            var prefix = '(#' + seqno + ') ';
-            msg.on('body', function (stream, info) {
-              if (info.which === 'TEXT')
-                console.log(prefix + 'Body [%s] found, %d total bytes', inspect(info.which), info.size);
-              stream.on('data', function (chunk) {
-                buffer += chunk.toString('utf8');
-                console.log("BUFFER" + buffer)
+          imap.search(['UNSEEN', ['TO', 'Give Subject Here']], function (err, results) {
+            if (err) throw err;
+            var f = imap.fetch(results, { bodies: ['HEADER.FIELDS (SUBJECT)','TEXT'], markSeen: true });
+            f.on('message', function (msg, seqno) {
+              console.log('Message #%d' + seqno);
+              console.log('Message type' + msg.text)
+              var prefix = '(#' + seqno + ') ';
+              msg.on('body', function (stream, info) {
                 if (info.which === 'TEXT')
-                  console.log(prefix + 'Body [%s] (%d/%d)', inspect(info.which), info.size);
-              })
-              stream.once('end', function () {
-                if (info.which !== 'TEXT')
-                  console.log(prefix + 'Parsed header: %s', inspect(Imap.parseHeader(buffer)));
-                else
-                  console.log(prefix + 'Body [%s] Finished', inspect(info.which));
-                console.log("BUFFER" + buffer)
+                  console.log(prefix + 'Body [%s] found, %d total bytes', inspect(info.which), info.size);
+                stream.on('data', function (chunk) {
+                  buffer += chunk.toString('utf8');
+                  console.log("BUFFER" + buffer)
+                  if (info.which === 'TEXT')
+                    console.log(prefix + 'Body [%s] (%d/%d)', inspect(info.which), info.size);
+                })
+                stream.once('end', function () {
+                  if (info.which !== 'TEXT')
+                    console.log(prefix + 'Parsed header: %s', inspect(Imap.parseHeader(buffer)));
+                  else
+                    console.log(prefix + 'Body [%s] Finished', inspect(info.which));
+                  console.log("BUFFER" + buffer)
+                });
+              });
+              msg.once('attributes', function (attrs) {
+                console.log(prefix + 'Attributes: %s', inspect(attrs, false, 8));
+              });
+              msg.once('end', function () {
+                console.log(prefix + 'Finished');
               });
             });
-            msg.once('attributes', function (attrs) {
-              console.log(prefix + 'Attributes: %s', inspect(attrs, false, 8));
+            f.once('error', function (err) {
+              console.log('Fetch error: ' + err);
             });
-            msg.once('end', function () {
-              console.log(prefix + 'Finished');
+            f.once('end', function () {
+              console.log('Done fetching all messages!');
+              imap.end();
             });
-          });
-          f.once('error', function (err) {
-            console.log('Fetch error: ' + err);
-          });
-          f.once('end', function () {
-            console.log('Done fetching all messages!');
-            imap.end();
           });
         });
       });
-    });
 
-    imap.once('error', function (err) {
-      console.log(err);
-    });
+      imap.once('error', function (err) {
+        console.log(err);
+      });
 
-    imap.once('end', function () {
-      console.log('Connection ended');
-    });
+      imap.once('end', function () {
+        console.log('Connection ended');
+      });
 
-    imap.connect();
+      imap.connect();
+    });
 });
