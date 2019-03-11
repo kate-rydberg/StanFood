@@ -5,25 +5,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/list_borders">
     <!--android:background="?android:attr/selectableItemBackground">-->
-    <LinearLayout
+    <!--LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="15dp"
         android:paddingBottom="15dp"
         android:paddingRight="15dp"
         android:paddingLeft="15dp"
-        android:orientation="vertical">
+        android:orientation="vertical"-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp">
+            <ImageView
+                android:id="@+id/eventImage"
+                android:layout_width="@dimen/thumb_image_size"
+                android:layout_height="@dimen/thumb_image_size" />
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="7"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:paddingLeft="@dimen/margin_padding"
                 xmlns:android="http://schemas.android.com/apk/res/android">
-
                 <TextView
                     android:id="@+id/eventName"
                     android:layout_width="wrap_content"
@@ -36,20 +43,14 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size"
                     android:font="@font/gotham_book"/>
+                <TextView
+                    android:id="@+id/eventDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size"
+                    android:textStyle="italic"
+                    android:font="@font/gotham_book"/>
             </LinearLayout>
-            <ImageView
-                android:id="@+id/eventImage"
-                android:layout_width="0dp"
-                android:layout_weight="3"
-                android:layout_height="wrap_content" />
         </LinearLayout>
-        <TextView
-            android:id="@+id/eventDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size"
-            android:textStyle="italic"
-            android:font="@font/gotham_book"/>
-
-    </LinearLayout>
+    <!--/LinearLayout-->
 </RelativeLayout>

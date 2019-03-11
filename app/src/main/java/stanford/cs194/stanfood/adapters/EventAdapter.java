@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.support.v4.app.FragmentManager;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,7 @@ public class EventAdapter extends ArrayAdapter {
     private FragmentManager supportFragment;
     private BottomSheetListView eventListView;
     private ViewGroup bottomSheetContentsView;
+    private Display screen;
 
     private Database db;
 
@@ -45,7 +47,8 @@ public class EventAdapter extends ArrayAdapter {
             ArrayList<Event> events,
             BottomSheetListView eventListView,
             ViewGroup bottomSheetContentsView,
-            FragmentManager supportFragment
+            FragmentManager supportFragment,
+            Display screen
     ) {
         super(context, R.layout.list_view, events);
         this.context = context;
@@ -54,6 +57,7 @@ public class EventAdapter extends ArrayAdapter {
         this.bottomSheetContentsView = bottomSheetContentsView;
         this.db = db;
         this.supportFragment = supportFragment;
+        this.screen = screen;
     }
 
     @NonNull
@@ -67,7 +71,7 @@ public class EventAdapter extends ArrayAdapter {
         TextView eventTimeStart = rowView.findViewById(R.id.eventTimeStart);
         TextView eventDescription = rowView.findViewById(R.id.eventDescription);
 
-        Event event = events.get(position);
+        final Event event = events.get(position);
         loadFoodImages(event.getEventId(), rowView);
 
         String name = event.getName();
@@ -90,8 +94,6 @@ public class EventAdapter extends ArrayAdapter {
         if(!description.equals("")) eventDescription.setText(description);
         else eventDescription.setText("N/A");
 
-
-
         rowView.setOnClickListener(new View.OnClickListener(){
             /**
              * When list item is clicked on, display the event information.
@@ -107,7 +109,7 @@ public class EventAdapter extends ArrayAdapter {
                 String clickedLocationName = infoHeader.getText().toString();
 
                 PopUpFragment eventPopUp = new PopUpFragment();
-                eventPopUp.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription, bottomSheetContentsView).show(supportFragment,null);
+                eventPopUp.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription, event.getEventId(), bottomSheetContentsView, screen, db).show(supportFragment,null);
 
             }
         });
@@ -129,7 +131,8 @@ public class EventAdapter extends ArrayAdapter {
         Calendar endTime = Calendar.getInstance();
         endTime.setTimeInMillis(startTimeInMillis + durationInMillis);
 
-        SimpleDateFormat startFormat = new SimpleDateFormat(/*"E MMM dd,*/"hh:mm", Locale.US);
+        SimpleDateFormat eventDate = new SimpleDateFormat("E MMM dd yyyy",Locale.US);
+        SimpleDateFormat startFormat = new SimpleDateFormat("hh:mma", Locale.US);
         SimpleDateFormat endFormat = new SimpleDateFormat("hh:mma", Locale.US);
         String startTimeStr = startFormat.format(startTime.getTime());
         String endTimeStr = endFormat.format(endTime.getTime());
@@ -150,7 +153,11 @@ public class EventAdapter extends ArrayAdapter {
                             String url = food.getImagePath();
                             ImageView eventImage = rowView.findViewById(R.id.eventImage);
 
-                            Picasso.get().load(url).resize(300,300).centerCrop().error(R.drawable.ic_camera_alt_black_24dp).into(eventImage);
+                            Picasso.get()
+                                    .load(url)
+                                    .fit()
+                                    .error(R.drawable.ic_camera_alt_black_24dp)
+                                    .into(eventImage);
                         }
                     }
 

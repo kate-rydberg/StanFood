@@ -8,4 +8,5 @@
     <dimen name="camera_button_padding">10dp</dimen>
     <dimen name="margin_padding">15dp</dimen>
     <dimen name="text_size">20sp</dimen>
+    <dimen name="thumb_image_size">150dp</dimen>
 </resources>
