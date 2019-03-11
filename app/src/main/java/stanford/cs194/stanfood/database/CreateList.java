@@ -58,6 +58,7 @@ public class CreateList {
                         }
                         Collections.sort(events);
                         Adapter rowCells = new EventAdapter(
+                                db,
                                 eventListView.getContext(),
                                 events,
                                 eventListView,
@@ -73,6 +74,5 @@ public class CreateList {
                 }
         );
     }
-
 }
 

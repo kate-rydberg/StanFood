@@ -40,9 +40,8 @@ import java.util.Locale;
 import stanford.cs194.stanfood.R;
 import android.support.v7.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.UploadTask;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import stanford.cs194.stanfood.database.Database;
 import stanford.cs194.stanfood.database.Storage;
@@ -316,24 +315,23 @@ public class CreateEventActivity extends AppCompatActivity {
         it will upload a null file to Firebase Storage, and populate the imagePath field
         on the Food model.
          */
-        UploadTask imageTask = store.uploadImage(photoURI);
-        imageTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        Task imageTask = store.uploadImage(photoURI);
+        imageTask.addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                String imagePath = taskSnapshot.getMetadata().getPath();
-                db.createEvent(eventName, eventDescription, locationName,
-                        startTimeMS, durationMS, foodDescription, userId, imagePath);
+            public void onComplete(@NonNull Task<Uri> task) {
+                String toastMessage = "";
+                if(task.isSuccessful()){
+                    String imagePath = task.getResult().toString();
+                    db.createEvent(eventName, eventDescription, locationName,
+                            startTimeMS, durationMS, foodDescription, userId, imagePath);
+                    toastMessage = "Event creation successful!";
+                }
+                else{
+                    Log.d("ERROR", task.getException().toString());
+                    toastMessage = "Unable to create event";
+                }
                 progressDialog.dismiss();
-                displayToast("Event creation successful!");
-                getContentResolver().delete(photoURI, null, null);
-                finish();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("ERROR", e.toString());
-                progressDialog.dismiss();
-                displayToast("Unable to create event");
+                displayToast(toastMessage);
                 getContentResolver().delete(photoURI, null, null);
                 finish();
             }
