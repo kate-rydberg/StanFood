@@ -40,9 +40,8 @@ import java.util.Locale;
 import stanford.cs194.stanfood.R;
 import android.support.v7.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.UploadTask;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import stanford.cs194.stanfood.database.Database;
 import stanford.cs194.stanfood.database.Storage;
@@ -52,8 +51,6 @@ public class CreateEventActivity extends AppCompatActivity {
     public static final long MINUTES_TO_MS = 60000;
     private static final int RC_CAMERA_INTENT = 991;
     private Uri photoURI;
-    private File photoFile;
-
     private Database db;
     private Storage store;
     private SharedPreferences prefs;
@@ -65,6 +62,9 @@ public class CreateEventActivity extends AppCompatActivity {
         db = new Database();
         store = new Storage();
         prefs = getSharedPreferences("loginData", MODE_PRIVATE);
+        photoURI = FileProvider.getUriForFile(getApplicationContext(),
+                "stanford.cs194.stanfood.fileprovider",
+                createImageFile());
         final AutoCompleteTextView textView = findViewById(R.id.eventLocation);
         String[] suggestions = getResources().getStringArray(R.array.location_list);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>
@@ -88,20 +88,8 @@ public class CreateEventActivity extends AppCompatActivity {
     private void imageCameraButtonOnClickListener(View v){
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (intent.resolveActivity(getPackageManager()) != null) {
-            try {
-                // if user tries to take multiple images, only ever create one image file
-                if(photoFile == null)
-                    photoFile = createImageFile();
-            } catch (IOException ex) {
-                Log.d("ERROR", ex.toString());
-            }
-            if (photoFile != null) {
-                photoURI = FileProvider.getUriForFile(getApplicationContext(),
-                        "stanford.cs194.stanfood.fileprovider",
-                        photoFile);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(intent, RC_CAMERA_INTENT);
-            }
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            startActivityForResult(intent, RC_CAMERA_INTENT);
         }
     }
     @Override
@@ -121,12 +109,17 @@ public class CreateEventActivity extends AppCompatActivity {
         }
     }
 
-    private File createImageFile() throws IOException {
+    private File createImageFile()  {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US)
                 .format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(imageFileName,".jpg", storageDir);
+        File image = null;
+        try {
+            image = File.createTempFile(imageFileName,".jpg", storageDir);
+        } catch (IOException e) {
+            Log.d("ERRROR", e.toString());
+        }
         return image;
     }
 
@@ -304,7 +297,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
         // If any fields empty/invalid, return without attempting database event creation
         if (eventName.equals("") || foodDescription.equals("") || locationName.equals("")
-            || startTimeMS == 0 || durationMS == 0 || userId.equals("")) {
+                || startTimeMS == 0 || durationMS == 0 || userId.equals("")) {
             return;
         }
 
@@ -316,24 +309,23 @@ public class CreateEventActivity extends AppCompatActivity {
         it will upload a null file to Firebase Storage, and populate the imagePath field
         on the Food model.
          */
-        UploadTask imageTask = store.uploadImage(photoURI);
-        imageTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        Task imageTask = store.uploadImage(photoURI);
+        imageTask.addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                String imagePath = taskSnapshot.getMetadata().getPath();
-                db.createEvent(eventName, eventDescription, locationName,
-                        startTimeMS, durationMS, foodDescription, userId, imagePath);
+            public void onComplete(@NonNull Task<Uri> task) {
+                String toastMessage = "";
+                if(task.isSuccessful()){
+                    String imagePath = task.getResult().toString();
+                    db.createEvent(eventName, eventDescription, locationName,
+                            startTimeMS, durationMS, foodDescription, userId, imagePath);
+                    toastMessage = "Event creation successful!";
+                }
+                else{
+                    Log.d("ERROR", task.getException().toString());
+                    toastMessage = "Unable to create event";
+                }
                 progressDialog.dismiss();
-                displayToast("Event creation successful!");
-                getContentResolver().delete(photoURI, null, null);
-                finish();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("ERROR", e.toString());
-                progressDialog.dismiss();
-                displayToast("Unable to create event");
+                displayToast(toastMessage);
                 getContentResolver().delete(photoURI, null, null);
                 finish();
             }
