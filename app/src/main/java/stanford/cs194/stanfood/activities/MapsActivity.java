@@ -288,7 +288,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         drawerLayout = new NavigationDrawer(mDrawerLayout);
         final NavigationView navigationView = findViewById(R.id.nav_view);
         drawerLayout.addMenuIconListener();
-        drawerLayout.addNavigationListener(loginSignupRunnable(), logOutRunnable(), createEventRunnable(), navigationView);
+        drawerLayout.addNavigationListener(loginSignupRunnable(), logOutRunnable(), createEventRunnable(), userSettingsRunnable(), navigationView);
         setAuthenticationMenuOptions();
         moveCompassPosition();
         createNavigationMenuListener();
@@ -373,6 +373,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
+     * Starts the intent for users to change their push notifications settings.
+     */
+    private Runnable userSettingsRunnable() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(MapsActivity.this, UserSettingsActivity.class);
+                startActivity(intent);
+            }
+        };
+    }
+
+    /**
      * Saves the result of logging out in preferences since we log out
      * without starting LoginActivity.
      */
@@ -393,6 +406,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
         final Menu menu = ((NavigationView)findViewById(R.id.nav_view)).getMenu();
         menu.findItem(R.id.login_signup).setVisible(!isLoggedIn);
+        menu.findItem(R.id.user_settings).setVisible(isLoggedIn);
         menu.findItem(R.id.logout).setVisible(isLoggedIn);
     }
 

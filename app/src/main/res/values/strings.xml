@@ -22,6 +22,10 @@
     <string name="title_activity_splash">SplashActivity</string>
     <string name="default_notification_channel_id">DefaultNotificationChannel</string>
     <string name="new_event_notification_title">Free food added in your area!</string>
+    <string name="saveSettingsText">Save</string>
+    <string name="userSettingsTitle">User Settings</string>
+    <string name="receive_push_switch">Receive Push Notifications?</string>
+    <string name="user_settings">Settings</string>
     <string-array name="location_list">
         <item>Allen Center for Integrated Systems (CIS)</item>
         <item>Applied Physics Building</item>

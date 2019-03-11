@@ -61,7 +61,8 @@ public class NavigationDrawer {
      * Add listener for the list items in the navigation menu.
      */
     public void addNavigationListener(final Runnable loginSignup, final Runnable logOut,
-                                      final Runnable createEvent, final NavigationView navigationView) {
+                                      final Runnable createEvent, final Runnable userSettings,
+                                      final NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -79,6 +80,9 @@ public class NavigationDrawer {
                                 break;
                             case R.id.create_event:
                                 createEvent.run();
+                                break;
+                            case R.id.user_settings:
+                                userSettings.run();
                                 break;
                         }
 

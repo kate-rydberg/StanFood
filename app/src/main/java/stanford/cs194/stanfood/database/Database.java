@@ -57,13 +57,22 @@ public class Database {
     }
 
     /**
-     * Creates a new user setting in the settings table.
-     * Note: setting id is equivalent to the user id of the logged in user
-     * Furthermore, it takes in an existing uid we already generated from Firebase authentications
+     * Creates a new user setting in the settings table for the given user.
      */
-    public void createSetting(String uid, boolean receivePush, long timeWindowStart, long timeWindowEnd) {
-        Setting setting = new Setting(uid, receivePush, timeWindowStart, timeWindowEnd);
+    public void createSetting(String uid, boolean receivePush, int timeWindowStart, int timeWindowEnd) {
+        Setting setting = new Setting(receivePush, timeWindowStart, timeWindowEnd);
         dbRef.child("settings").child(uid).setValue(setting);
+    }
+
+    /**
+     * Creates a new default user setting in the settings table for the given user.
+     * Default settings are:
+     * receivePush = true
+     * timeWindowStart = 0 (hour)
+     * timeWindowEnd = 24 (hour)
+     */
+    public void createDefaultSetting(String uid) {
+        createSetting(uid, true, 0, 24);
     }
 
     // createPin: creates a new pin in the pins table
