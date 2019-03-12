@@ -85,10 +85,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        supportFragment = getSupportFragmentManager();
 
         auth = new Authentication();
         db = new Database();
-        notif = new Notification(App.getContext());
+        notif = new Notification(App.getContext(), db);
         FirebaseInstanceIdAccessor instanceIdAccessor = new FirebaseInstanceIdAccessor(db, auth);
         instanceIdAccessor.uploadInstanceId();
 
@@ -99,11 +100,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Get SharedPreferences for login data
         prefs = getSharedPreferences("loginData", MODE_PRIVATE);
 
-        String openPopup = getIntent().getStringExtra("openPopup");
-        if (openPopup != null) {
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
             PopUpFragment eventPopUp = new PopUpFragment();
-            //eventPopUp.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription).show(supportFragment,null);
+            String openPopup = extras.getString("openPopup");
+            String clickedEventName = extras.getString("clickedEventName");
+            String clickedLocationName = extras.getString("clickedLocationName");
+            String clickedTimeRange = extras.getString("clickedTimeRange");
+            String clickedEventDescription = extras.getString("clickedEventDescription");
+            Log.d("POTEST", openPopup + " " + clickedEventName + " " + clickedLocationName
+                    + " " + clickedTimeRange + " " + clickedEventDescription + " in MapsActivity");
+            eventPopUp.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription)
+                    .show(supportFragment, null);
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
     }
 
     @Override
@@ -177,7 +192,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onMarkerClick(Marker marker) {
         LatLng location = marker.getPosition();
-        this.supportFragment = getSupportFragmentManager();
 
         bottomSheet.initExpandedHeight();
         bottomSheet.expand();

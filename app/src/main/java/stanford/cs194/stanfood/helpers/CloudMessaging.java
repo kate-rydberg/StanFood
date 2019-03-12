@@ -14,7 +14,7 @@ public class CloudMessaging extends FirebaseMessagingService {
     private static final String TAG = "CloudMessaging";
     private Database db = new Database();
     private Authentication auth = new Authentication();
-    private Notification notif = new Notification(App.getContext());
+    private Notification notif = new Notification(App.getContext(), db);
 
     /**
      * Called when message is received.

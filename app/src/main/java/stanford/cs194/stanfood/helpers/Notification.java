@@ -6,23 +6,31 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.support.v4.app.FragmentManager;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
 import stanford.cs194.stanfood.R;
 import stanford.cs194.stanfood.activities.MapsActivity;
-import stanford.cs194.stanfood.fragments.PopUpFragment;
+import stanford.cs194.stanfood.database.Database;
+import stanford.cs194.stanfood.models.Event;
 
 public class Notification {
     final private String CHANNEL_ID = "123";
     final private long DEFAULT_NOTIFICATION_TIMEOUT_MS = 3600000; // 1 hour
     final private Context context;
+    final private Database db;
     private NotificationManagerCompat notificationManagerCompat;
 
-    public Notification(Context context) {
+    public Notification(Context context, Database db) {
         this.context = context;
+        this.db = db;
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -47,17 +55,45 @@ public class Notification {
      * @param notificationId - unique id to interact with the notification in the future,
      *                       e.g. cancel the notification
      */
-    public void sendNotification(String title, String content, int notificationId) {
+    public void sendNotification(final String title, final String content, final int notificationId) {
         Log.d("Notification", "Sending notification with title: " + title
                 + ", content: " + content + ", notificationId: " + notificationId);
 
-        /*
-         * TODO We will need to pass in additional information to this intent and
-         * TODO MapsActivity in order to automatically center the map and pull up event details
-         * TODO when the user clicks on the notification
-         */
+        db.dbRef.child("events").child(content).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot){
+                        Event event = dataSnapshot.getValue(Event.class);
+                        String name = event.getName();
+                        String time = TimeDateUtils.getEventTimeRange(event.getTimeStart(), event.getDuration());
+                        String location = event.getLocationName();
+                        String description = event.getDescription();
+                        String body = String.format("%s at %s, %s", name, time, location);
+                        sendNotificationWithEventDetails(title, body, content, notificationId,
+                                name, location, time, description);
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.d("ERROR",databaseError.toString());
+                    }
+                }
+        );
+
+
+    }
+
+    private void sendNotificationWithEventDetails(final String title, final String content,
+                                                  final String eventId, final int notificationId,
+                                                  final String name, final String location,
+                                                  final String time, final String description) {
         Intent intent = new Intent(context, MapsActivity.class);
-        intent.putExtra("openPopup", content);
+        Bundle extras = new Bundle();
+        extras.putString("openPopup", eventId);
+        extras.putString("clickedEventName", name);
+        extras.putString("clickedLocationName", location);
+        extras.putString("clickedTimeRange", time);
+        extras.putString("clickedEventDescription", description);
+        intent.putExtras(extras);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
