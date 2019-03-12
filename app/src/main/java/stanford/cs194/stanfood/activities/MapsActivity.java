@@ -2,9 +2,6 @@ package stanford.cs194.stanfood.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
@@ -19,14 +16,10 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
-import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -38,9 +31,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -52,16 +43,14 @@ import stanford.cs194.stanfood.R;
 import stanford.cs194.stanfood.authentication.Authentication;
 import stanford.cs194.stanfood.database.CreateList;
 import stanford.cs194.stanfood.database.Database;
-import stanford.cs194.stanfood.fragments.BottomSheetListView;
 import stanford.cs194.stanfood.fragments.BottomSheet;
+import stanford.cs194.stanfood.fragments.BottomSheetListView;
 import stanford.cs194.stanfood.fragments.NavigationDrawer;
 import stanford.cs194.stanfood.helpers.FirebaseInstanceIdAccessor;
 import stanford.cs194.stanfood.helpers.Notification;
-import stanford.cs194.stanfood.helpers.ViewGroupUtils;
 import stanford.cs194.stanfood.models.Pin;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, OnMarkerClickListener, GoogleMap.OnMapClickListener, GoogleMap.OnCameraMoveStartedListener {
-
     private GoogleMap mMap;
     private SupportMapFragment mapFragment;
     private BottomSheet bottomSheet;
@@ -74,7 +63,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Authentication auth;
     private Database db;
     private Notification notif;
-    private SharedPreferences prefs;
     private FragmentManager supportFragment;
 
     @Override
@@ -95,22 +83,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         eventStorage = new HashMap<>();
         markerStorage = new HashMap<>();
         // Get the transparent toolbar to insert the navigation menu icon
-
-        // Get SharedPreferences for login data
-        prefs = getSharedPreferences("loginData", MODE_PRIVATE);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        setAuthenticationMenuOptions();
+        // Checks null to account for case that onResume called before drawerLayout initialized
+        if (drawerLayout != null) {
+            drawerLayout.setAuthenticationMenuOptions();
+        }
     }
 
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
+     * This is where we can add markers or lines, add listeners or move the camera.
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
@@ -243,6 +230,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    /**
+     * Populates the map with all pins within a distance range of the current location of
+     * the user by reading the Firebase database and comparing
+     * the current location with the location of every pin.
+     * If a pin has no events associated with it, then it disappears from the map.
+     */
     public void populatePins(final Location cur){
         db.dbRef.child("pins").addValueEventListener(
                 new ValueEventListener() {
@@ -285,11 +278,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     private void setupNavigationMenu() {
         DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
-        drawerLayout = new NavigationDrawer(mDrawerLayout);
         final NavigationView navigationView = findViewById(R.id.nav_view);
+        drawerLayout = new NavigationDrawer(this, mDrawerLayout, navigationView);
         drawerLayout.addMenuIconListener();
-        drawerLayout.addNavigationListener(loginSignupRunnable(), logOutRunnable(), createEventRunnable(), navigationView);
-        setAuthenticationMenuOptions();
+        drawerLayout.addNavigationListener();
+        drawerLayout.setAuthenticationMenuOptions();
         moveCompassPosition();
         createNavigationMenuListener();
     }
@@ -306,94 +299,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 drawerLayout.openDrawer();
             }
         });
-    }
-
-    /**
-     * Starts the intent for users to log in or sign up. Returns a Runnable.
-     */
-    private Runnable loginSignupRunnable() {
-        return new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(MapsActivity.this, LoginActivity.class);
-                intent.putExtra("createEvent", false);
-                startActivity(intent);
-            }
-        };
-    }
-
-    /**
-     * Starts the intent for users to log out. Returns a Runnable.
-     */
-    private Runnable logOutRunnable() {
-        return new Runnable() {
-            @Override
-            public void run() {
-                AuthUI.getInstance()
-                        .signOut(App.getContext())
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Log.d("Authentication", "User successfully logged out");
-                                Context context = getApplicationContext();
-                                String text = "Log-Out successful!";
-                                Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
-                                final int BOTTOM_SHEET_PEEK_HEIGHT = (int)context.getResources().getDimension(R.dimen.bottom_sheet_peek_height);
-                                toast.setGravity(Gravity.BOTTOM, 0, BOTTOM_SHEET_PEEK_HEIGHT);
-                                toast.show();
-
-                                setLogOutPrefs();
-                                setAuthenticationMenuOptions();
-                            }
-                        });
-            }
-        };
-    }
-
-    /**
-     * Starts the intent for users to create an event. Returns a Runnable.
-     * If the user is logged in, goes straight to creating an event.
-     * If the user is not logged in, starts the LoginActivity with the intention
-     * to create an event immediately afterwards if the login succeeds.
-     */
-    private Runnable createEventRunnable() {
-        return new Runnable() {
-            @Override
-            public void run() {
-                boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
-                Intent intent;
-                if (isLoggedIn) {
-                    intent = new Intent(MapsActivity.this, CreateEventActivity.class);
-                } else {
-                    intent = new Intent(MapsActivity.this, LoginActivity.class);
-                    intent.putExtra("createEvent", true);
-                }
-                startActivity(intent);
-            }
-        };
-    }
-
-    /**
-     * Saves the result of logging out in preferences since we log out
-     * without starting LoginActivity.
-     */
-    @SuppressLint("ApplySharedPref")
-    private void setLogOutPrefs() {
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean("isLoggedIn", false);
-        editor.putString("userId", "");
-        editor.commit();
-    }
-
-    /**
-     * Checks if user is logged in and displays the corresponding authentication option in menu
-     * - User is logged in -> display "Log Out"
-     * - User is not logged in -> display "Log In or Sign Up"
-     */
-    private void setAuthenticationMenuOptions() {
-        boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
-        final Menu menu = ((NavigationView)findViewById(R.id.nav_view)).getMenu();
-        menu.findItem(R.id.login_signup).setVisible(!isLoggedIn);
-        menu.findItem(R.id.logout).setVisible(isLoggedIn);
     }
 
     /**

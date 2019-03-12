@@ -11,7 +11,6 @@ public class Event implements Comparable<Event> {
     private long timeStart;
     private long duration;
     private String userId;
-    private Food food;
 
     public Event() {}
 
@@ -24,18 +23,6 @@ public class Event implements Comparable<Event> {
         this.timeStart = timeStart;
         this.duration = duration;
         this.userId = userId;
-    }
-
-    public Event(String pinId, String name, String description, String locationName, long timeStart,
-                 long duration, String userId, Food food) {
-        this.pinId = pinId;
-        this.name = name;
-        this.description = description;
-        this.locationName = locationName;
-        this.timeStart = timeStart;
-        this.duration = duration;
-        this.userId = userId;
-        this.food = food;
     }
 
     public String getEventId() {
@@ -94,10 +81,6 @@ public class Event implements Comparable<Event> {
         Date timeExpire = new Date(timeStart + duration);
         return timeExpire.before(new Date());
     }
-
-    public Food getFood() { return food; }
-
-    public void setFood(Food food) { this.food = food; }
 
     public String getUserId() {
         return userId;

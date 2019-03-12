@@ -17,12 +17,11 @@ import java.util.List;
 import java.util.Locale;
 
 import stanford.cs194.stanfood.App;
+import stanford.cs194.stanfood.helpers.LatLngWrapper;
 import stanford.cs194.stanfood.models.Event;
 import stanford.cs194.stanfood.models.Food;
 import stanford.cs194.stanfood.models.Pin;
 import stanford.cs194.stanfood.models.User;
-import stanford.cs194.stanfood.helpers.GetNameFromCoordinates;
-import stanford.cs194.stanfood.helpers.LatLngWrapper;
 
 public class Database {
     final private String dbPath = "https://stanfood-e7255.firebaseio.com/";
@@ -35,32 +34,41 @@ public class Database {
         dbRef = database.getReference();
     }
 
-    // createEntry: creates an entry in Firebase table of Object obj. Returns object unique table key
+    /**
+     * Creates an entry in Firebase table of Object obj.
+     * Returns object unique table key.
+     */
     public String createEntry(String table, Object obj){
         DatabaseReference pushedTableRef = dbRef.child(table).push();
         pushedTableRef.setValue(obj);
         return pushedTableRef.getKey();
     }
 
-    // createUser: creates a new user in the users table
-    // Note: createUser signature differs from other create functions in that it takes in an
-    // existing uid we already generated from Firebase authentication
+    /**
+     * Creates a new user in the users table.
+     * Note: createUser signature differs from other create functions in that it takes in an
+     * existing uid we already generated from Firebase authentication
+     */
     public String createUser(String uid, String email, String name){
         User user = new User(email, name);
         dbRef.child("users").child(uid).setValue(user);
         return uid;
     }
 
-    // createPin: creates a new pin in the pins table
+    /**
+     * Creates a new pin in the pins table
+     */
     public String createPin(LatLng loc, String locationName){
         LatLngWrapper locW = new LatLngWrapper(loc.latitude, loc.longitude);
         return createEntry("pins", new Pin(locW, locationName));
     }
 
-    // createEvent: creates a new event in the events table
-    // first searches to see if there is a pin at the associated location
-    // if not, one is created. pinId is then retrieved, allowing the
-    // event to be created
+    /**
+     * Creates a new event in the events table.
+     * First searches to see if there is a pin at the associated location
+     * if not, one is created. pinId is then retrieved, allowing the
+     * event to be created
+     */
     public void createEvent(final String name, final String description, final String locationName,
                             final long timeStart, final long duration, final String foodDescription,
                             final String userId, final String imagePath){
@@ -98,7 +106,9 @@ public class Database {
         );
     }
 
-    // createFood: creates a new food item in the food table
+    /**
+     * Creates a new food item in the food table.
+     */
     public void createFood(String eventId, String description, String imagePath){
         createEntry("food", new Food(eventId, description, imagePath));
     }
