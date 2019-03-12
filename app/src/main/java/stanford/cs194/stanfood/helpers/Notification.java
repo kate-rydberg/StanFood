@@ -71,7 +71,7 @@ public class Notification {
     private void sendNotificationWithEventDetails(final String eventId, final Event event) {
         // Get general details to attach to the push notification
         String title = context.getResources().getString(R.string.new_event_notification_title);
-        int notificationId = eventId.hashCode(); // TODO Uniqueness not guaranteed
+        int notificationId = (int) System.currentTimeMillis();
 
         // Get event details to attach to the push notification
         String name = event.getName();
@@ -96,7 +96,7 @@ public class Notification {
         // notification is tapped
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
                 | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent,
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, notificationId, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         sendNotification(title, body, notificationId, pendingIntent);
