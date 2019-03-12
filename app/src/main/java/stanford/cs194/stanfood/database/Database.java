@@ -158,15 +158,16 @@ public class Database {
     /**
      * Edits the details of an event in the events table in a transaction.
      * Does not create new events if old event does not exist.
+     * ALso edits pin event number count and deletes/creates food entries as required.
      * @param oldEvent The old event to be updated in the database
      * @param newEvent The new event containing the new updated values for replacement
      */
-    public void editEvent(final Event oldEvent, final Event newEvent){
+    public void editEvent(final Event oldEvent, final Event newEvent, String newFoodDescription, String newImagePath){
+        final String eventId = oldEvent.getEventId();
         dbRef.runTransaction(new Transaction.Handler() {
             @NonNull
             @Override
             public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
-                final String eventId = oldEvent.getEventId();
                 final MutableData eventData = mutableData.child("events");
                 final MutableData pinData = mutableData.child("pins");
                 Event e = eventData.child(eventId).getValue(Event.class);
@@ -186,7 +187,7 @@ public class Database {
                         final LatLng loc = getLocationFromName(newEvent.getLocationName());
                         createPin(loc, newEvent.getLocationName());
                     } else {
-                        Integer newNumEvents = pinData.child(newPinId).child("numEvents").getValue(Integer.class);
+                        int newNumEvents = newPin.getNumEvents();
                         pinData.child(newPinId).child("numEvents").setValue(newNumEvents+1);
                     }
                 }
@@ -204,6 +205,12 @@ public class Database {
                 Log.d("editEvent", "editEvent:onComplete:" + databaseError);
             }
         });
+
+        // If new food is present, delete all food previously associated with event and add new food.
+        if (newFoodDescription != null && !newFoodDescription.isEmpty()) {
+            deleteEventFood(eventId);
+            createFood(eventId, newFoodDescription, newImagePath);
+        }
     }
 
     /*
@@ -240,8 +247,9 @@ public class Database {
     }
 
     /**
-     * Deletes an event in the events table and
-     * decrements the number of events in the corresponding pin by 1.
+     * Deletes an event in the events/ table,
+     * Decrements the number of events in the corresponding pin by 1, and
+     * Deletes all corresponding food items in the food/ table.
      */
     public void deleteEvent(final Event event){
         final String eventId = event.getEventId();
@@ -269,6 +277,34 @@ public class Database {
             public void onComplete(@Nullable DatabaseError databaseError, boolean b,
                                    @Nullable DataSnapshot dataSnapshot) {
                 Log.d("deleteEvent", "deleteEvent:onComplete:" + databaseError);
+            }
+        });
+
+        deleteEventFood(eventId);
+    }
+
+    /**
+     * Deletes all food items associated with an event.
+     */
+    private void deleteEventFood(final String eventId) {
+        // Delete all food items associated with this event
+        dbRef.child("food").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                    if(ds.hasChildren()) {
+                        Food food = ds.getValue(Food.class);
+                        String foodEventId = food.getEventId();
+                        if (eventId.equals(foodEventId)) {
+                            ds.getRef().removeValue();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d("deleteFood", databaseError.toString());
             }
         });
     }

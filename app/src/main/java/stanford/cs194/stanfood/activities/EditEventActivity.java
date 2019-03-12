@@ -2,19 +2,12 @@ package stanford.cs194.stanfood.activities;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
-import stanford.cs194.stanfood.App;
 import stanford.cs194.stanfood.R;
-import stanford.cs194.stanfood.database.CreateList;
 import stanford.cs194.stanfood.database.Database;
-import stanford.cs194.stanfood.fragments.BottomSheetListView;
-import stanford.cs194.stanfood.helpers.ViewGroupUtils;
 
 public class EditEventActivity extends AppCompatActivity {
     private Database db;
@@ -35,17 +28,8 @@ public class EditEventActivity extends AppCompatActivity {
     private void getUserEventList() {
         // Get User ID to link to event
         String userId = prefs.getString("userId", "");
-        BottomSheetListView eventListView = findViewById(R.id.eventList);
-        ViewGroup bottomSheetContents = findViewById(R.id.userEventsContent);
-        if (eventListView == null) {
-            LayoutInflater viewInflater = LayoutInflater.from(App.getContext());
-            eventListView = (BottomSheetListView) viewInflater.inflate(R.layout.list_info, null, true);
-            ViewGroupUtils.replaceViewById(eventListView, bottomSheetContents, 0);
-        }
-        ViewCompat.setNestedScrollingEnabled(eventListView, true);
 
-        CreateList initRows = new CreateList(db, eventListView, bottomSheetContents);
-        initRows.createUserEventList(userId);
+        // TODO: Replace with Popout Dialog with buttons for editing and deleting.
     }
 
     /*
@@ -53,5 +37,6 @@ public class EditEventActivity extends AppCompatActivity {
      */
     public void saveChanges(View view) {
         Log.d("saveChanges", "Changes Saved!");
+        finish();
     }
 }
