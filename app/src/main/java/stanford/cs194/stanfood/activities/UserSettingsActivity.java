@@ -49,16 +49,14 @@ public class UserSettingsActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Setting setting = dataSnapshot.getValue(Setting.class);
-                if (setting != null) {
-                    Switch receivePush = findViewById(R.id.receivePush);
-                    RangeBar timeWindow = findViewById(R.id.timeWindow);
-                    boolean doReceivePush = setting.getReceivePushNotifications();
-                    int timeWindowStart = setting.getTimeWindowStart();
-                    int timeWindowEnd = setting.getTimeWindowEnd();
-                    timeWindow.setEnabled(doReceivePush);
-                    timeWindow.setRangePinsByIndices(timeWindowStart, timeWindowEnd);
-                    receivePush.setChecked(doReceivePush);
-                }
+                Switch receivePush = findViewById(R.id.receivePush);
+                RangeBar timeWindow = findViewById(R.id.timeWindow);
+                boolean doReceivePush = setting.getReceivePushNotifications();
+                int timeWindowStart = setting.getTimeWindowStart();
+                int timeWindowEnd = setting.getTimeWindowEnd();
+                timeWindow.setEnabled(doReceivePush);
+                timeWindow.setRangePinsByIndices(timeWindowStart, timeWindowEnd);
+                receivePush.setChecked(doReceivePush);
             }
 
             @Override
