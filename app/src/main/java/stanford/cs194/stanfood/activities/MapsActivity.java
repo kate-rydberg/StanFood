@@ -103,13 +103,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             PopUpFragment eventPopUp = new PopUpFragment();
-            String openPopup = extras.getString("openPopup");
+            String clickedEventId = extras.getString("clickedEventId");
             String clickedEventName = extras.getString("clickedEventName");
             String clickedLocationName = extras.getString("clickedLocationName");
             String clickedTimeRange = extras.getString("clickedTimeRange");
             String clickedEventDescription = extras.getString("clickedEventDescription");
-            Log.d("POTEST", openPopup + " " + clickedEventName + " " + clickedLocationName
-                    + " " + clickedTimeRange + " " + clickedEventDescription + " in MapsActivity");
             eventPopUp.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription)
                     .show(supportFragment, null);
         }
