@@ -2,6 +2,7 @@ package stanford.cs194.stanfood.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
@@ -80,9 +81,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         eventStorage = new HashMap<>();
         markerStorage = new HashMap<>();
-
-        // Get SharedPreferences for login data
-        prefs = getSharedPreferences("loginData", MODE_PRIVATE);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {

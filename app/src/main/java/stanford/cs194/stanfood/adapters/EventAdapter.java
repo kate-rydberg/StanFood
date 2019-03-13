@@ -90,7 +90,7 @@ public class EventAdapter extends ArrayAdapter {
                 TextView bottomSheetHeader = bottomSheetContentsView.findViewById(R.id.bottom_sheet_header);
                 String clickedLocationName = bottomSheetHeader.getText().toString();
 
-                PopUpFragment.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription, bottomSheetContentsView).show(supportFragment,null);
+                PopUpFragment.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription).show(supportFragment,null);
             }
         });
 
