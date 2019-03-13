@@ -47,6 +47,9 @@ public class PopUpFragment extends DialogFragment {
             ViewGroup bottomSheetContents,
             Display screen,
             Database db) {
+
+
+    public static PopUpFragment newInstance(String name, String location, String time, String description) {
         PopUpFragment p = new PopUpFragment();
         // initiate popup variables.
         p.name = name;
@@ -70,12 +73,10 @@ public class PopUpFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View popupView = inflater.inflate(R.layout.event_popup, container, false);
 
-        TextView infoHeader = bottomSheetContents.findViewById(R.id.bottom_sheet_header);
         TextView infoLocationName = popupView.findViewById(R.id.infoLocationName);
         TextView infoEventTime = popupView.findViewById(R.id.infoEventTime);
         TextView infoEventDescription = popupView.findViewById(R.id.infoEventDescription);
 
-        infoHeader.setText(name);
         String locationText = infoLocationName.getText().toString() + location;
         infoLocationName.setText(locationText);
         String timeText = infoEventTime.getText().toString() + time;
