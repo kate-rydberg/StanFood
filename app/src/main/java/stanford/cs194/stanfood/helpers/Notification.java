@@ -109,6 +109,7 @@ public class Notification {
      * @param content - content to be displayed to the user
      * @param notificationId - unique id to interact with the notification in the future,
      *                       e.g. cancel the notification
+     * @param pendingIntent - the intent to be called when the user taps on the push notification
      */
     public void sendNotification(final String title, final String content, final int notificationId,
                                  PendingIntent pendingIntent) {
