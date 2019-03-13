@@ -14,8 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_weight="0.6"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_camera_alt_white_24dp" />
+            android:scaleType="centerCrop" />
 
         <android.support.v7.widget.CardView
             android:id="@+id/cardView"
@@ -34,6 +33,8 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginBottom="8dp"
                 android:orientation="vertical"
+                android:divider="?android:dividerHorizontal"
+                android:showDividers="middle"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -41,152 +42,244 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0">
 
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/event_name">
-                    <android.support.design.widget.TextInputEditText
-                        android:id="@+id/eventName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:inputType="textCapSentences" />
-                </android.support.design.widget.TextInputLayout>
-
-
+                <!-- Event Name Linear Layout -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/create_event_item_margin"
+                    android:layout_marginBottom="@dimen/create_event_item_margin">
+                    <ImageView
+                        android:layout_width="@dimen/create_event_icon_width"
+                        android:layout_height="@dimen/create_event_icon_height"
+                        android:layout_marginLeft="@dimen/create_event_icon_margin_left"
+                        android:layout_marginRight="@dimen/create_event_icon_margin_right"
+                        android:src="@drawable/ic_event_note_black_24dp"
+                        android:layout_gravity="center_vertical"/>
                     <android.support.design.widget.TextInputLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/food_description"
-                        android:layout_weight="2"
-                        >
+                        android:hint="@string/event_name">
                         <android.support.design.widget.TextInputEditText
-                            android:id="@+id/foodDescription"
+                            android:id="@+id/eventName"
+                            android:background="@null"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textSize="@dimen/create_event_text_size"
+                            android:ems="10"
+                            android:inputType="textCapSentences" />
+                    </android.support.design.widget.TextInputLayout>
+                </LinearLayout>
+
+                <!-- Food Description Linear Layout -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/create_event_item_margin"
+                    android:layout_marginBottom="@dimen/create_event_item_margin">
+                    <ImageView
+                        android:layout_width="@dimen/create_event_icon_width"
+                        android:layout_height="@dimen/create_event_icon_height"
+                        android:layout_marginLeft="@dimen/create_event_icon_margin_left"
+                        android:layout_marginRight="@dimen/create_event_icon_margin_right"
+                        android:src="@drawable/ic_local_pizza_black_24dp"
+                        android:layout_gravity="center_vertical"/>
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/food_description"
+                        android:layout_weight="2">
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/foodDescription"
+                            android:background="@null"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/create_event_text_size"
                             android:ems="10"
                             android:inputType="textMultiLine|textCapSentences"/>
                     </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <!-- Event Location Linear Layout -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/event_location">
-                    <AutoCompleteTextView
-                        android:id="@+id/eventLocation"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/create_event_item_margin"
+                    android:layout_marginBottom="@dimen/create_event_item_margin">
+                    <ImageView
+                        android:layout_width="@dimen/create_event_icon_width"
+                        android:layout_height="@dimen/create_event_icon_height"
+                        android:layout_marginLeft="@dimen/create_event_icon_margin_left"
+                        android:layout_marginRight="@dimen/create_event_icon_margin_right"
+                        android:src="@drawable/ic_add_location_black_24dp"
+                        android:layout_gravity="center_vertical"/>
+                    <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentLeft="true"
-                        android:completionThreshold="1"
-                        android:ems="10"
-                        android:inputType="textPostalAddress|textCapWords" />
-                </android.support.design.widget.TextInputLayout>
+                        android:layout_height="wrap_content"
+                        android:hint="@string/event_location">
+                        <AutoCompleteTextView
+                            android:id="@+id/eventLocation"
+                            android:background="@null"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentLeft="true"
+                            android:completionThreshold="1"
+                            android:textSize="@dimen/create_event_text_size"
+                            android:ems="10"
+                            android:inputType="textPostalAddress|textCapWords" />
+                    </android.support.design.widget.TextInputLayout>
+                </LinearLayout>
 
-
+                <!-- Event Date Linear Layout -->
                 <LinearLayout
                     android:id="@+id/dateLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/create_event_item_margin"
+                    android:layout_marginBottom="@dimen/create_event_item_margin"
                     android:orientation="horizontal">
 
-                    <android.support.design.button.MaterialButton
+                    <ImageView
+                        android:layout_width="@dimen/create_event_icon_width"
+                        android:layout_height="@dimen/create_event_icon_height"
+                        android:layout_marginLeft="@dimen/create_event_icon_margin_left"
+                        android:layout_marginRight="@dimen/create_event_icon_margin_right"
+                        android:src="@drawable/ic_date_range_black_24dp"
+                        android:layout_gravity="center_vertical"/>
+                    <android.support.design.widget.TextInputLayout
                         android:id="@+id/selectDate"
-                        style="@style/Widget.MaterialComponents.Button.TextButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:onClick="getDate"
-                        android:text="Event Date" />
-
-                    <TextView
-                        android:id="@+id/startDate"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
-                        android:gravity="center_vertical"
-                        android:textSize="18sp" />
-
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Event Date">
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/startDate"
+                            android:background="@null"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:clickable="true"
+                            android:focusable="false"
+                            android:onClick="getDate"
+                            android:gravity="center_vertical"
+                            android:textSize="@dimen/create_event_text_size" />
+                    </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
 
+                <!-- Start Time Linear Layout -->
                 <LinearLayout
                     android:id="@+id/timeLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/create_event_item_margin"
+                    android:layout_marginBottom="@dimen/create_event_item_margin"
                     android:orientation="horizontal">
 
-                    <android.support.design.button.MaterialButton
-                        android:id="@+id/selectTime"
-                        style="@style/Widget.MaterialComponents.Button.TextButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:onClick="getTime"
-                        android:text="Start Time" />
+                    <ImageView
+                        android:layout_width="@dimen/create_event_icon_width"
+                        android:layout_height="@dimen/create_event_icon_height"
+                        android:layout_marginLeft="@dimen/create_event_icon_margin_left"
+                        android:layout_marginRight="@dimen/create_event_icon_margin_right"
+                        android:src="@drawable/ic_access_time_black_24dp"
+                        android:layout_gravity="center_vertical"/>
 
-                    <TextView
-                        android:id="@+id/startTime"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
-                        android:gravity="center_vertical"
-                        android:textSize="18sp" />
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/selectTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Start Time">
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/startTime"
+                            android:background="@null"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:clickable="true"
+                            android:focusable="false"
+                            android:onClick="getTime"
+                            android:gravity="center_vertical"
+                            android:textSize="@dimen/create_event_text_size" />
+                    </android.support.design.widget.TextInputLayout>
 
                 </LinearLayout>
 
+                <!-- Event Duration Linear Layout -->
                 <LinearLayout
                     android:id="@+id/durationLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/create_event_item_margin"
+                    android:layout_marginBottom="@dimen/create_event_item_margin"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/durationDescription"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center_vertical"
-                        android:text="Event Duration:"
-                        android:textSize="20sp" />
+                    <ImageView
+                        android:layout_width="@dimen/create_event_icon_width"
+                        android:layout_height="@dimen/create_event_icon_height"
+                        android:layout_marginLeft="@dimen/create_event_icon_margin_left"
+                        android:layout_marginRight="@dimen/create_event_icon_margin_right"
+                        android:src="@drawable/ic_timer_black_24dp"
+                        android:layout_gravity="center_vertical"/>
 
-                    <EditText
-                        android:id="@+id/hours"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:ems="10"
-                        android:hint="Hours"
-                        android:inputType="number" />
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Duration (in hours)"
+                        android:layout_weight="1">
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/hours"
+                            android:background="@null"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:textSize="@dimen/create_event_text_size"
+                            android:inputType="number" />
+                    </android.support.design.widget.TextInputLayout>
 
-                    <EditText
-                        android:id="@+id/minutes"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:ems="10"
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:hint="Minutes"
-                        android:inputType="number" />
+                        android:layout_weight="1">
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/minutes"
+                            android:background="@null"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:textSize="@dimen/create_event_text_size"
+                            android:inputType="number" />
+                    </android.support.design.widget.TextInputLayout>
 
                 </LinearLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <!-- Event Description Linear Layout -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/event_description">
-                    <EditText
-                        android:id="@+id/eventDescription"
+                    android:layout_marginTop="@dimen/create_event_item_margin"
+                    android:layout_marginBottom="@dimen/create_event_item_margin"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/create_event_icon_width"
+                        android:layout_height="@dimen/create_event_icon_height"
+                        android:layout_marginLeft="@dimen/create_event_icon_margin_left"
+                        android:layout_marginRight="@dimen/create_event_icon_margin_right"
+                        android:src="@drawable/ic_speaker_notes_black_24dp"
+                        android:layout_gravity="center_vertical"/>
+
+                    <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:ems="10"
-                        android:inputType="textMultiLine|textCapSentences" />
-                </android.support.design.widget.TextInputLayout>
+                        android:layout_height="wrap_content"
+                        android:hint="@string/event_description">
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/eventDescription"
+                            android:background="@null"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:inputType="textMultiLine|textCapSentences"
+                            android:textSize="@dimen/create_event_text_size"/>
+                    </android.support.design.widget.TextInputLayout>
+                </LinearLayout>
 
                 <android.support.design.button.MaterialButton
                     android:id="@+id/createEvent"
