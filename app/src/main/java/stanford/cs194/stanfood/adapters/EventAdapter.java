@@ -63,7 +63,7 @@ public class EventAdapter extends ArrayAdapter {
         String description = event.getDescription();
 
         // sets the values of the objects to the value from the current event
-        // TODO: Temporary null check until we clear out data since some events don't have explicit name fields
+        // TODO: Remove null check when we clear out data since some events don't have explicit name fields
         if(name != null && !name.equals("")) eventName.setText(name);
         else  eventName.setText("N/A");
 
@@ -79,7 +79,7 @@ public class EventAdapter extends ArrayAdapter {
         rowView.setOnClickListener(new View.OnClickListener(){
             /**
              * When list item is clicked on, display the event information.
-             * @param listItemView
+             * @param listItemView The list view to contain all of the event items
              */
             @Override
             public void onClick(View listItemView) {
@@ -90,9 +90,7 @@ public class EventAdapter extends ArrayAdapter {
                 TextView bottomSheetHeader = bottomSheetContentsView.findViewById(R.id.bottom_sheet_header);
                 String clickedLocationName = bottomSheetHeader.getText().toString();
 
-                PopUpFragment eventPopUp = new PopUpFragment();
-                eventPopUp.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription).show(supportFragment,null);
-
+                PopUpFragment.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription, bottomSheetContentsView).show(supportFragment,null);
             }
         });
 
