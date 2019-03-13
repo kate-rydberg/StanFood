@@ -1,24 +1,33 @@
 package stanford.cs194.stanfood.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
+
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
 
 import stanford.cs194.stanfood.R;
+import stanford.cs194.stanfood.database.Database;
 import stanford.cs194.stanfood.fragments.BottomSheetListView;
 import stanford.cs194.stanfood.fragments.PopUpFragment;
 import stanford.cs194.stanfood.helpers.TimeDateUtils;
 import stanford.cs194.stanfood.models.Event;
+import stanford.cs194.stanfood.models.Food;
 
 public class EventAdapter extends ArrayAdapter {
 
@@ -28,13 +37,16 @@ public class EventAdapter extends ArrayAdapter {
     private FragmentManager supportFragment;
     private BottomSheetListView eventListView;
     private ViewGroup bottomSheetContentsView;
+    private Database db;
+    private String url;
 
     public EventAdapter(
             Context context,
             ArrayList<Event> events,
             BottomSheetListView eventListView,
             ViewGroup bottomSheetContentsView,
-            FragmentManager supportFragment
+            FragmentManager supportFragment,
+            Database db
     ) {
         super(context, R.layout.list_view, events);
         this.context = context;
@@ -42,6 +54,8 @@ public class EventAdapter extends ArrayAdapter {
         this.eventListView = eventListView;
         this.bottomSheetContentsView = bottomSheetContentsView;
         this.supportFragment = supportFragment;
+        this.db = db;
+        this.url = null;
     }
 
     @NonNull
@@ -97,4 +111,60 @@ public class EventAdapter extends ArrayAdapter {
         return rowView;
     }
 
+    /**
+     * @param eventId
+     * TODO: Retrieves images from Storage and loads into Picasso adapter
+     */
+    private void loadFoodImages(final String eventId, final View rowView){
+        final ImageView eventImage = rowView.findViewById(R.id.eventImage);
+        db.dbRef.child("food").orderByChild("eventId").equalTo(eventId).
+                addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            Food food = ds.getValue(Food.class);
+                            url = food.getImagePath();
+                            if(url!=null) break;
+                        }
+                        Transformation t = new Transformation() {
+                            @Override
+                            public Bitmap transform(Bitmap source) {
+                                //whatever algorithm here to compute size
+                                float ratio = (float) source.getHeight() / (float) source.getWidth();
+                                float heightFloat = ((float) eventImage.getLayoutParams().width) * ratio;
+
+                                final android.view.ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) eventImage.getLayoutParams();
+
+                                layoutParams.height = (int) heightFloat;
+                                layoutParams.width = (int) eventImage.getLayoutParams().width;
+                                eventImage.setLayoutParams(layoutParams);
+                                eventImage.setImageBitmap(source);
+                                return source;
+                            }
+
+                            @Override
+                            public String key() {
+                                return "transformation";
+                            }
+                        };
+
+                        if(url==null){
+                            Drawable drawable = context.getResources().getDrawable(R.drawable.no_picture);
+                            eventImage.setImageDrawable(drawable);
+                        }
+                        else {
+                            Picasso.get()
+                                    .load(url)
+                                    .transform(t)
+                                    .error(R.drawable.no_picture)
+                                    .into(eventImage);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.d("ERROR", databaseError.toString());
+                    }
+                });
+    }
 }

@@ -23,4 +23,5 @@
     <dimen name="date_time_picker_cancel_margin">90dp</dimen>
     <dimen name="date_time_picker_bottom_margin">5dp</dimen>
     <dimen name="date_time_picker_layout_height">500dp</dimen>
+    <dimen name="image_thumb">100dp</dimen>
 </resources>
