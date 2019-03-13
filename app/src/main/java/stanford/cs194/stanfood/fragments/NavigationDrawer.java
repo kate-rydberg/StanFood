@@ -23,6 +23,7 @@ import stanford.cs194.stanfood.App;
 import stanford.cs194.stanfood.R;
 import stanford.cs194.stanfood.activities.CreateEventActivity;
 import stanford.cs194.stanfood.activities.LoginActivity;
+import stanford.cs194.stanfood.activities.UserSettingsActivity;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -99,7 +100,7 @@ public class NavigationDrawer {
                                 startCreateEvent();
                                 break;
                             case R.id.user_settings:
-                                userSettings.run();
+                                startUserSettings();
                                 break;
                             default:
                                 Log.w("navigation", "Invalid Item Selected.");
@@ -158,6 +159,14 @@ public class NavigationDrawer {
     }
 
     /**
+     * Starts the intent for users to change their push notifications settings.
+     */
+    private void startUserSettings() {
+        Intent intent = new Intent(mContext, UserSettingsActivity.class);
+        mContext.startActivity(intent);
+    }
+
+    /**
      * Checks if user is logged in and displays the corresponding authentication option in menu
      * - User is logged in -> display "Log Out" and "Edit/Delete an Event"
      * - User is not logged in -> display "Log In or Sign Up"
@@ -166,6 +175,7 @@ public class NavigationDrawer {
         boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
         final Menu menu = mNavigationView.getMenu();
         menu.findItem(R.id.login_signup).setVisible(!isLoggedIn);
+        menu.findItem(R.id.user_settings).setVisible(isLoggedIn);
         menu.findItem(R.id.logout).setVisible(isLoggedIn);
     }
 
