@@ -19,6 +19,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -45,6 +46,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import stanford.cs194.stanfood.App;
@@ -141,7 +143,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
-                            LatLng current = new LatLng(location.getLatitude(),location.getLongitude());
+                            LatLng current = new LatLng(37.4274745,-122.1719077);//location.getLatitude(),location.getLongitude());
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current,16));
                             populatePins(location);
                         }
@@ -172,6 +174,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onMarkerClick(Marker marker) {
         LatLng location = marker.getPosition();
         this.supportFragment = getSupportFragmentManager();
+        Display screen = getWindowManager().getDefaultDisplay();
 
         bottomSheet.initExpandedHeight();
         bottomSheet.expand();
@@ -182,7 +185,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         ViewGroup bottomSheetContents = findViewById(R.id.bottom_sheet_contents);
         ViewCompat.setNestedScrollingEnabled(eventListView, true);
 
-        CreateList initRows = new CreateList(db, marker, eventStorage, eventListView, bottomSheetContents, supportFragment);
+        CreateList initRows = new CreateList(db, marker, eventStorage, eventListView, bottomSheetContents, supportFragment, screen);
         initRows.createEventList();
 
         return true;
