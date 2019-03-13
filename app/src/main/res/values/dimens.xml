@@ -5,6 +5,7 @@
     <dimen name="bottom_sheet_title_height">80dp</dimen>
     <dimen name="bottom_sheet_content_height">320dp</dimen>
     <dimen name="bottom_sheet_padding">15dp</dimen>
+    <dimen name="bottom_sheet_header_text_size">18sp</dimen>
     <dimen name="camera_button_padding">8dp</dimen>
     <dimen name="create_event_icon_margin_left">15dp</dimen>
     <dimen name="create_event_icon_margin_right">21dp</dimen>
@@ -15,5 +16,5 @@
     <dimen name="icon_height">40dp</dimen>
     <dimen name="icon_width">40dp</dimen>
     <dimen name="margin_padding">15dp</dimen>
-    <dimen name="text_size">20sp</dimen>
+    <dimen name="text_size">15sp</dimen>
 </resources>
