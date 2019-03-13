@@ -16,5 +16,7 @@
     <dimen name="icon_height">40dp</dimen>
     <dimen name="icon_width">40dp</dimen>
     <dimen name="margin_padding">15dp</dimen>
-    <dimen name="text_size">15sp</dimen>
+    <dimen name="text_size">20sp</dimen>
+    <dimen name="thumb_image_size">150dp</dimen>
+
 </resources>
