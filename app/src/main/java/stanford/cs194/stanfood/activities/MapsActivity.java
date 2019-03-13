@@ -63,6 +63,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Authentication auth;
     private Database db;
     private FragmentManager supportFragment;
+    private String clickedPinId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,16 +83,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         eventStorage = new HashMap<>();
         markerStorage = new HashMap<>();
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            String clickedEventId = extras.getString("clickedEventId");
-            String clickedEventName = extras.getString("clickedEventName");
-            String clickedLocationName = extras.getString("clickedLocationName");
-            String clickedTimeRange = extras.getString("clickedTimeRange");
-            String clickedEventDescription = extras.getString("clickedEventDescription");
-            PopUpFragment.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription)
-                    .show(supportFragment, null);
-        }
+        loadPreviousIntent();
     }
 
     @Override
@@ -137,18 +129,39 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         enableMyLocation();
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-                            LatLng current = new LatLng(location.getLatitude(),location.getLongitude());
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current,16));
+        if (clickedPinId != null) { // Center on a given pin
+            db.dbRef.child("pins").child(clickedPinId).addListenerForSingleValueEvent(
+                    new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot){
+                            Pin pin = dataSnapshot.getValue(Pin.class);
+                            LatLng coordinate = pin.getLocationCoordinate();
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinate,16));
+                            Location location = new Location(LocationManager.GPS_PROVIDER);
+                            location.setLatitude(coordinate.latitude);
+                            location.setLongitude(coordinate.longitude);
                             populatePins(location);
                         }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Log.e("ERROR",databaseError.toString());
+                        }
                     }
-                });
+            );
+        } else { // Center on user's current or last known location
+            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+            mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    // Got last known location. In some rare situations this can be null.
+                    if (location != null) {
+                        LatLng current = new LatLng(location.getLatitude(),location.getLongitude());
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current,16));
+                        populatePins(location);
+                    }
+                }
+            });
+        }
 
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMapClickListener(this);
@@ -241,6 +254,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             ActivityCompat.requestPermissions(this, new String[]
                             {Manifest.permission.ACCESS_FINE_LOCATION},
                     1);
+        }
+    }
+
+    /**
+     * Loads pop up fragment
+     */
+    private void loadPreviousIntent() {
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            clickedPinId = extras.getString("clickedPinId");
+            String clickedEventName = extras.getString("clickedEventName");
+            String clickedLocationName = extras.getString("clickedLocationName");
+            String clickedTimeRange = extras.getString("clickedTimeRange");
+            String clickedEventDescription = extras.getString("clickedEventDescription");
+
+            PopUpFragment.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription)
+                    .show(supportFragment, null);
         }
     }
 
