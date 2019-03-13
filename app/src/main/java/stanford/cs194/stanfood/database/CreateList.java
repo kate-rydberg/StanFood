@@ -3,7 +3,6 @@ package stanford.cs194.stanfood.database;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
-import android.view.Display;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.ListAdapter;
@@ -32,11 +31,10 @@ public class CreateList {
     private BottomSheetListView eventListView;
     private ViewGroup bottomSheetContentsView;
     private FragmentManager supportFragment;
-    private Display screen;
 
     public CreateList(Database db, Marker marker,
                       HashMap<LatLng, String> eventStorage, BottomSheetListView eventListView,
-                      ViewGroup bottomSheetContentsView, FragmentManager supportFragment, Display screen) {
+                      ViewGroup bottomSheetContentsView, FragmentManager supportFragment) {
         this.db = db;
         this.markerLocation = marker.getPosition();
         this.eventStorage = eventStorage;
@@ -44,7 +42,6 @@ public class CreateList {
         this.bottomSheetContentsView = bottomSheetContentsView;
         this.events = new ArrayList<>();
         this.supportFragment = supportFragment;
-        this.screen = screen;
     }
 
     public void createEventList(){
@@ -63,13 +60,11 @@ public class CreateList {
                         }
                         Collections.sort(events);
                         Adapter rowCells = new EventAdapter(
-                                db,
                                 eventListView.getContext(),
                                 events,
                                 eventListView,
                                 bottomSheetContentsView,
-                                supportFragment,
-                                screen
+                                supportFragment
                         );
                         eventListView.setAdapter((ListAdapter) rowCells);
                     }
@@ -81,5 +76,6 @@ public class CreateList {
                 }
         );
     }
+
 }
 
