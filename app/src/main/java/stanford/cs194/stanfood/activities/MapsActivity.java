@@ -258,7 +258,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     * Loads pop up fragment
+     * Loads the previous intent being passed in and opens a pop up fragment if the intent contains
+     * event details from a push notification being tapped
      */
     private void loadPreviousIntent() {
         Bundle extras = getIntent().getExtras();
