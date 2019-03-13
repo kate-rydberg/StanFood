@@ -12,7 +12,7 @@
             android:font="@font/gotham_book"/>
         <item
             android:id="@+id/create_event"
-            android:icon="@drawable/ic_add_location_black_24dp"
+            android:icon="@drawable/ic_add_location_black_nav_24dp"
             android:title="@string/create_event"
             android:font="@font/gotham_book"/>
         <item
