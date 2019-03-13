@@ -2,6 +2,7 @@ package stanford.cs194.stanfood.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
@@ -45,6 +46,7 @@ import stanford.cs194.stanfood.database.Database;
 import stanford.cs194.stanfood.fragments.BottomSheet;
 import stanford.cs194.stanfood.fragments.BottomSheetListView;
 import stanford.cs194.stanfood.fragments.NavigationDrawer;
+import stanford.cs194.stanfood.fragments.PopUpFragment;
 import stanford.cs194.stanfood.helpers.FirebaseInstanceIdAccessor;
 import stanford.cs194.stanfood.models.Pin;
 
@@ -70,6 +72,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        supportFragment = getSupportFragmentManager();
 
         auth = new Authentication();
         db = new Database();
@@ -78,7 +81,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         eventStorage = new HashMap<>();
         markerStorage = new HashMap<>();
-        // Get the transparent toolbar to insert the navigation menu icon
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            String clickedEventId = extras.getString("clickedEventId");
+            String clickedEventName = extras.getString("clickedEventName");
+            String clickedLocationName = extras.getString("clickedLocationName");
+            String clickedTimeRange = extras.getString("clickedTimeRange");
+            String clickedEventDescription = extras.getString("clickedEventDescription");
+            PopUpFragment.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription)
+                    .show(supportFragment, null);
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
     }
 
     @Override
@@ -154,7 +173,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onMarkerClick(Marker marker) {
         LatLng location = marker.getPosition();
-        this.supportFragment = getSupportFragmentManager();
 
         bottomSheet.initExpandedHeight();
         bottomSheet.expand();

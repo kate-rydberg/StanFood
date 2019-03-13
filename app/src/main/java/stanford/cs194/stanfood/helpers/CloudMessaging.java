@@ -14,7 +14,7 @@ public class CloudMessaging extends FirebaseMessagingService {
     private static final String TAG = "CloudMessaging";
     private Database db = new Database();
     private Authentication auth = new Authentication();
-    private Notification notif = new Notification(App.getContext());
+    private Notification notif = new Notification(App.getContext(), db);
 
     /**
      * Called when message is received.
@@ -36,24 +36,20 @@ public class CloudMessaging extends FirebaseMessagingService {
         // and data payloads are treated as notification messages. The Firebase console always
         // sends notification
         // messages. For more see: https://firebase.google.com/docs/cloud-messaging/concept-options
-
-        // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+            String eventId = remoteMessage.getData().get("body");
+            notif.sendNotificationForEvent(eventId);
         }
 
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
-            String title = getResources().getString(R.string.new_event_notification_title);
-            String body = remoteMessage.getNotification().getBody();
-            Log.d(TAG, "Message Notification Body: " + body);
-            int notificationId = body.hashCode(); // TODO Uniqueness not guaranteed
-
-            notif.sendNotification(title, body, notificationId);
+            String eventId = remoteMessage.getNotification().getBody();
+            notif.sendNotificationForEvent(eventId);
         }
     }
 
