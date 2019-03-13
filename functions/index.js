@@ -76,12 +76,17 @@ exports.sendNotificationsForEventAdded = functions.database.ref('/events/{eventI
       const eventId = context.params.eventId;
       console.log('New event added', eventId, event);
 
-      // TODO Get the list of device notification tokens.
-      const getUsersPromise = admin.database()
-          .ref('/users').once('value');
+      // Get the list of users (with associated device notification tokens) and settings
+      const getUsersPromise = admin.database().ref('/users').once('value');
+      const getSettingsPromise = admin.database().ref('/settings')
+          .orderByChild('receivePushNotifications').equalTo(true)
+          .once('value');
 
-      return Promise.all([getUsersPromise]).then(results => {
+      let tokens = [];
+
+      return Promise.all([getUsersPromise, getSettingsPromise]).then(results => {
         let users = results[0].val();
+        let settings = results[1].val();
 
         // Notification details.
         const payload = {
@@ -91,12 +96,12 @@ exports.sendNotificationsForEventAdded = functions.database.ref('/events/{eventI
           }
         };
 
-        // TODO: Currently sends to all users with a device token for Firebase Cloud Messaging
-        // Once we implement preferences we should only send to users with preferences that
-        // match the event
-        let tokens = [];
-        for (let userId in users) {
-          if (users.hasOwnProperty(userId)) {
+        // Currently sends to all users with a device token for Firebase Cloud Messaging
+        // and push notifications enabled within settings.
+        // TODO: Once we implement settings we should only send to users with preferences
+        // that match the event
+        for (let userId in settings) {
+          if (settings.hasOwnProperty(userId)) {
             let token = users[userId].instanceId;
             if (token) {
               tokens.push(token);
@@ -114,10 +119,9 @@ exports.sendNotificationsForEventAdded = functions.database.ref('/events/{eventI
           const error = result.error;
           if (error) {
             console.error('Failure sending notification to', tokens[index], error);
-            // Cleanup the tokens who are not registered anymore.
             if (error.code === 'messaging/invalid-registration-token' ||
                 error.code === 'messaging/registration-token-not-registered') {
-              tokensToRemove.push(tokensSnapshot.ref.child(tokens[index]).remove());
+              // TODO Cleanup the tokens who are not registered anymore via tokensToRemove
             }
           }
         });
