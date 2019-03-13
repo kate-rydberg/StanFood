@@ -83,9 +83,9 @@ exports.sendNotificationsForEventAdded = functions.database.ref('/events/{eventI
       return Promise.all([getUsersPromise]).then(results => {
         let users = results[0].val();
 
-        // Notification details.
+        // Notification details
         const payload = {
-          notification: {
+          data: {
             title: 'Free food added in your area!',
             body: eventId
           }

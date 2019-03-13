@@ -42,6 +42,8 @@ public class CloudMessaging extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+            String eventId = remoteMessage.getData().get("body");
+            notif.sendNotificationForEvent(eventId);
         }
 
         // Check if message contains a notification payload.
