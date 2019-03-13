@@ -10,6 +10,10 @@
         android:layout_margin="8dp"
         app:cardElevation="5dp"
         app:cardCornerRadius="8dp">
+        <ImageView
+            android:id="@+id/eventImage"
+            android:layout_width="@dimen/image_thumb"
+            android:layout_height="@dimen/image_thumb"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
