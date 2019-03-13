@@ -49,7 +49,6 @@ public class PopUpFragment extends DialogFragment {
         TextView infoEventTime = popupView.findViewById(R.id.infoEventTime);
         TextView infoEventDescription = popupView.findViewById(R.id.infoEventDescription);
 
-        infoHeader.setText(name);
         String locationText = infoLocationName.getText().toString() + location;
         infoLocationName.setText(locationText);
         String timeText = infoEventTime.getText().toString() + time;
