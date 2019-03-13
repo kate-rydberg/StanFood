@@ -17,7 +17,7 @@
             android:font="@font/gotham_book"/>
         <item
             android:id="@+id/user_settings"
-            android:icon="@drawable/ic_person_black_24dp"
+            android:icon="@drawable/ic_settings_black_24dp"
             android:title="@string/user_settings"
             android:font="@font/gotham_book"/>
         <item
