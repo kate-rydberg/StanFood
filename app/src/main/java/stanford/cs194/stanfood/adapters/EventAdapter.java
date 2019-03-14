@@ -1,7 +1,6 @@
 package stanford.cs194.stanfood.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
@@ -18,7 +17,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 
 import java.util.ArrayList;
 
@@ -59,6 +57,7 @@ public class EventAdapter extends ArrayAdapter {
         this.bottomSheetContentsView = bottomSheetContentsView;
         this.supportFragment = supportFragment;
         this.db = db;
+        this.screen = screen;
         this.url = null;
     }
 
@@ -79,6 +78,7 @@ public class EventAdapter extends ArrayAdapter {
         long time = event.getTimeStart();
         long duration = event.getDuration();
         String description = event.getDescription();
+        loadFoodImages(event.getEventId(),rowView);
 
         // sets the values of the objects to the value from the current event
         // TODO: Remove null check when we clear out data since some events don't have explicit name fields
@@ -109,7 +109,7 @@ public class EventAdapter extends ArrayAdapter {
                 String clickedLocationName = bottomSheetHeader.getText().toString();
 
                 PopUpFragment eventPopUp = new PopUpFragment();
-                eventPopUp.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription, event.getEventId(), bottomSheetContentsView, screen, db).show(supportFragment,null);
+                eventPopUp.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription, event.getEventId(), screen, db).show(supportFragment,null);
             }
         });
 
@@ -129,40 +129,17 @@ public class EventAdapter extends ArrayAdapter {
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
                             Food food = ds.getValue(Food.class);
                             url = food.getImagePath();
-                            if(url!=null) break;
-                        }
-                        Transformation t = new Transformation() {
-                            @Override
-                            public Bitmap transform(Bitmap source) {
-                                //whatever algorithm here to compute size
-                                float ratio = (float) source.getHeight() / (float) source.getWidth();
-                                float heightFloat = ((float) eventImage.getLayoutParams().width) * ratio;
 
-                                final android.view.ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) eventImage.getLayoutParams();
-
-                                layoutParams.height = (int) heightFloat;
-                                layoutParams.width = (int) eventImage.getLayoutParams().width;
-                                eventImage.setLayoutParams(layoutParams);
-                                eventImage.setImageBitmap(source);
-                                return source;
-                            }
-
-                            @Override
-                            public String key() {
-                                return "transformation";
-                            }
-                        };
-
-                        if(url==null){
-                            Drawable drawable = context.getResources().getDrawable(R.drawable.no_picture);
-                            eventImage.setImageDrawable(drawable);
-                        }
-                        else {
                             Picasso.get()
                                     .load(url)
-                                    .transform(t)
+                                    .fit()
                                     .error(R.drawable.no_picture)
                                     .into(eventImage);
+
+                        }
+                        if (url == null) {
+                            Drawable drawable = context.getResources().getDrawable(R.drawable.no_picture);
+                            eventImage.setImageDrawable(drawable);
                         }
                     }
 

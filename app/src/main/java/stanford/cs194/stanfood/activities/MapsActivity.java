@@ -82,6 +82,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         eventStorage = new HashMap<>();
         markerStorage = new HashMap<>();
+        Display screen = getWindowManager().getDefaultDisplay();
+        supportFragment = getSupportFragmentManager();
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -90,7 +92,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             String clickedLocationName = extras.getString("clickedLocationName");
             String clickedTimeRange = extras.getString("clickedTimeRange");
             String clickedEventDescription = extras.getString("clickedEventDescription");
-            PopUpFragment.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription)
+            PopUpFragment.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription, clickedEventId, screen, db)
                     .show(supportFragment, null);
         }
     }
@@ -174,7 +176,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onMarkerClick(Marker marker) {
         LatLng location = marker.getPosition();
-        this.supportFragment = getSupportFragmentManager();
         Display screen = getWindowManager().getDefaultDisplay();
 
         bottomSheet.initExpandedHeight();
