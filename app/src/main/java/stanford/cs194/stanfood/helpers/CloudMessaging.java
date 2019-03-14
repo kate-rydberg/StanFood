@@ -6,7 +6,6 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import stanford.cs194.stanfood.App;
-import stanford.cs194.stanfood.R;
 import stanford.cs194.stanfood.authentication.Authentication;
 import stanford.cs194.stanfood.database.Database;
 
