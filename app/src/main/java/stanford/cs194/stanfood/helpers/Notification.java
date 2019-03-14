@@ -62,7 +62,7 @@ public class Notification {
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d("ERROR",databaseError.toString());
+                        Log.e("ERROR",databaseError.toString());
                     }
                 }
         );
@@ -78,6 +78,7 @@ public class Notification {
         String time = TimeDateUtils.getEventTimeRange(event.getTimeStart(), event.getDuration());
         String location = event.getLocationName();
         String description = event.getDescription();
+        String pinId = event.getPinId();
         String body = String.format("%s at %s, %s", name, time, location);
 
         // Create a new intent that will open the main MapsActivity with the event popup fragment
@@ -86,6 +87,7 @@ public class Notification {
         // Pass in event details to the event popup fragment
         Bundle extras = new Bundle();
         extras.putString("clickedEventId", eventId);
+        extras.putString("clickedPinId", pinId);
         extras.putString("clickedEventName", name);
         extras.putString("clickedLocationName", location);
         extras.putString("clickedTimeRange", time);
