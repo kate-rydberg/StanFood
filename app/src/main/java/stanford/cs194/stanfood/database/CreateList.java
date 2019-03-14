@@ -3,6 +3,7 @@ package stanford.cs194.stanfood.database;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.Display;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.ListAdapter;
@@ -29,24 +30,17 @@ public class CreateList {
     private BottomSheetListView eventListView;
     private ViewGroup bottomSheetContentsView;
     private FragmentManager supportFragment;
+    private Display screen;
 
     private Date startDate;
     private Date endDate;
 
     // without date filtering
-    public CreateList(Database db, BottomSheetListView eventListView,
-                      ViewGroup bottomSheetContentsView, FragmentManager supportFragment) {
-        this.db = db;
-        this.eventListView = eventListView;
-        this.bottomSheetContentsView = bottomSheetContentsView;
-        this.events = new ArrayList<>();
-        this.supportFragment = supportFragment;
-    }
 
     // overloaded constructor for date filtering
     public CreateList(Database db, BottomSheetListView eventListView,
                       ViewGroup bottomSheetContentsView, FragmentManager supportFragment,
-                      Date startDate, Date endDate) {
+                      Date startDate, Date endDate, Display screen) {
         this.db = db;
         this.eventListView = eventListView;
         this.bottomSheetContentsView = bottomSheetContentsView;
@@ -54,6 +48,7 @@ public class CreateList {
         this.supportFragment = supportFragment;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.screen = screen;
     }
 
     /**
@@ -82,7 +77,9 @@ public class CreateList {
                                 events,
                                 eventListView,
                                 bottomSheetContentsView,
-                                supportFragment
+                                supportFragment,
+                                db,
+                                screen
                         );
                         eventListView.setAdapter((ListAdapter) rowCells);
                     }

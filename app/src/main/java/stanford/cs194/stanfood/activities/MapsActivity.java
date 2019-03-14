@@ -17,6 +17,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -240,6 +241,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onMarkerClick(Marker marker) {
         LatLng location = marker.getPosition();
+        this.supportFragment = getSupportFragmentManager();
+        Display screen = getWindowManager().getDefaultDisplay();
 
         bottomSheet.initExpandedHeight();
         bottomSheet.expand();
@@ -251,8 +254,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         ViewCompat.setNestedScrollingEnabled(eventListView, true);
 
         CreateList initRows = new CreateList(
-                db, eventListView, bottomSheetContents, supportFragment, startDate, endDate
-        );
+                db, eventListView, bottomSheetContents, supportFragment, startDate, endDate, screen);
         initRows.createLocationEventList(eventStorage.get(marker.getPosition()));
 
         return true;
