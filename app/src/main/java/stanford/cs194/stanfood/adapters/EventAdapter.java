@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,8 @@ public class EventAdapter extends ArrayAdapter {
     private BottomSheetListView eventListView;
     private ViewGroup bottomSheetContentsView;
     private Database db;
+    private Display screen;
+
     private String url;
 
     public EventAdapter(
@@ -46,7 +49,8 @@ public class EventAdapter extends ArrayAdapter {
             BottomSheetListView eventListView,
             ViewGroup bottomSheetContentsView,
             FragmentManager supportFragment,
-            Database db
+            Database db,
+            Display screen
     ) {
         super(context, R.layout.list_view, events);
         this.context = context;
@@ -69,7 +73,7 @@ public class EventAdapter extends ArrayAdapter {
         TextView eventTimeStart = rowView.findViewById(R.id.eventTimeStart);
         TextView eventDescription = rowView.findViewById(R.id.eventDescription);
 
-        Event event = events.get(position);
+        final Event event = events.get(position);
         String name = event.getName();
         final String locationName = event.getLocationName();
         long time = event.getTimeStart();
@@ -104,7 +108,8 @@ public class EventAdapter extends ArrayAdapter {
                 TextView bottomSheetHeader = bottomSheetContentsView.findViewById(R.id.bottom_sheet_header);
                 String clickedLocationName = bottomSheetHeader.getText().toString();
 
-                PopUpFragment.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription).show(supportFragment,null);
+                PopUpFragment eventPopUp = new PopUpFragment();
+                eventPopUp.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription, event.getEventId(), bottomSheetContentsView, screen, db).show(supportFragment,null);
             }
         });
 

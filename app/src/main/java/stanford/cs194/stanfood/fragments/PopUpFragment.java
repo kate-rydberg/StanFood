@@ -22,7 +22,8 @@ public class PopUpFragment extends DialogFragment {
     private String time;
     private String description;
 
-    public static PopUpFragment newInstance(String name, String location, String time, String description) {
+    public static PopUpFragment newInstance(String name, String location,
+                                            String time, String description) {
         PopUpFragment p = new PopUpFragment();
         // initiate popup variables.
         p.name = name;
