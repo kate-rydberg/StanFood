@@ -39,37 +39,50 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="@string/receive_push_switch" />
+            android:text="@string/receive_push_switch"
+            android:textSize="@dimen/settings_text_size"/>
 
         <TextView
             android:id="@+id/timeWindowTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/timeWindowTitle"
+            android:textSize="@dimen/settings_text_size"
             android:textColor="#000000"/>
 
-        <com.appyvet.materialrangebar.RangeBar
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/timeWindow"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/selectStartTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:mrb_selectorColor="@color/colorPrimary"
-            app:mrb_selectorBoundaryColor="@color/colorPrimary"
-            app:mrb_rangeBarColor="@color/colorPrimary"
-            app:mrb_pinMaxFont="15sp"
-            app:mrb_pinMinFont="12sp"
-            app:mrb_selectorBoundarySize="2dp"
-            app:mrb_temporaryPins="true"
-            app:mrb_selectorSize="8dp"
-            app:mrb_tickTopLabels="@array/time_ticks"
-            app:mrb_tickEnd="24"
-            app:mrb_tickInterval="1"
-            app:mrb_tickStart="0"
-            app:mrb_pinRadius="10dp"
-            app:mrb_rangeBar_rounded="true"
-            app:mrb_connectingLineColor="@color/colorPrimary"
-            app:mrb_rangeBar="true"
-            app:mrb_pinColor="@color/colorPrimary"/>
+            android:hint="@string/event_start_time">
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/startTime"
+                android:background="@null"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="false"
+                android:onClick="getTime"
+                android:gravity="center_vertical"
+                android:textSize="@dimen/settings_text_size" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/selectEndTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/event_end_time">
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/endTime"
+                android:background="@null"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="false"
+                android:onClick="getTime"
+                android:gravity="center_vertical"
+                android:textSize="@dimen/settings_text_size" />
+        </android.support.design.widget.TextInputLayout>
 
         <Button
             android:id="@+id/saveSettings"

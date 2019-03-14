@@ -2,12 +2,12 @@ package stanford.cs194.stanfood.models;
 
 public class Setting {
     private boolean receivePushNotifications;
-    private int timeWindowStart;
-    private int timeWindowEnd;
+    private String timeWindowStart;
+    private String timeWindowEnd;
 
     public Setting() {}
 
-    public Setting(boolean receivePushNotifications, int timeWindowStart, int timeWindowEnd) {
+    public Setting(boolean receivePushNotifications, String timeWindowStart, String timeWindowEnd) {
         this.receivePushNotifications = receivePushNotifications;
         this.timeWindowStart = timeWindowStart;
         this.timeWindowEnd = timeWindowEnd;
@@ -21,19 +21,19 @@ public class Setting {
         this.receivePushNotifications = receivePushNotifications;
     }
 
-    public int getTimeWindowStart() {
+    public String getTimeWindowStart() {
         return timeWindowStart;
     }
 
-    public void setTimeWindowStart(int timeWindowStart) {
+    public void setTimeWindowStart(String timeWindowStart) {
         this.timeWindowStart = timeWindowStart;
     }
 
-    public int getTimeWindowEnd() {
+    public String getTimeWindowEnd() {
         return timeWindowEnd;
     }
 
-    public void setTimeWindowEnd(int timeWindowEnd) {
+    public void setTimeWindowEnd(String timeWindowEnd) {
         this.timeWindowEnd = timeWindowEnd;
     }
 }

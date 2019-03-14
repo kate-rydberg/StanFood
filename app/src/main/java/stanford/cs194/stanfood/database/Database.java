@@ -64,7 +64,7 @@ public class Database {
     /**
      * Creates a new user setting in the settings table for the given user.
      */
-    public void createSetting(String uid, boolean receivePush, int timeWindowStart, int timeWindowEnd) {
+    public void createSetting(String uid, boolean receivePush, String timeWindowStart, String timeWindowEnd) {
         Setting setting = new Setting(receivePush, timeWindowStart, timeWindowEnd);
         dbRef.child("settings").child(uid).setValue(setting);
     }
@@ -77,7 +77,7 @@ public class Database {
      * timeWindowEnd = 24 (hour)
      */
     public void createDefaultSetting(String uid) {
-        createSetting(uid, true, 0, 24);
+        createSetting(uid, true, "0:00", "23:59");
     }
 
     /**
