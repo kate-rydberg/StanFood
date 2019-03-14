@@ -103,6 +103,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         eventStorage = new HashMap<>();
         markerStorage = new HashMap<>();
+        Display screen = getWindowManager().getDefaultDisplay();
+        supportFragment = getSupportFragmentManager();
 
         // set calendar to midnight of current day
         Calendar cal = new GregorianCalendar();
@@ -241,7 +243,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onMarkerClick(Marker marker) {
         LatLng location = marker.getPosition();
-        this.supportFragment = getSupportFragmentManager();
         Display screen = getWindowManager().getDefaultDisplay();
 
         bottomSheet.initExpandedHeight();
@@ -321,6 +322,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     private void loadPreviousIntent() {
         Bundle extras = getIntent().getExtras();
+        Display screen = getWindowManager().getDefaultDisplay();
+
         if (extras != null) {
             clickedPinId = extras.getString("clickedPinId");
             String clickedEventName = extras.getString("clickedEventName");
@@ -328,7 +331,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             String clickedTimeRange = extras.getString("clickedTimeRange");
             String clickedEventDescription = extras.getString("clickedEventDescription");
 
-            PopUpFragment.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription)
+            PopUpFragment.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription, clickedPinId, screen, db)
                     .show(supportFragment, null);
         }
     }
