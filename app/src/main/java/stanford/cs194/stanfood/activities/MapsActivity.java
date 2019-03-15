@@ -82,8 +82,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         eventStorage = new HashMap<>();
         markerStorage = new HashMap<>();
-
-        loadPreviousIntent();
     }
 
     @Override
@@ -128,6 +126,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Log.e("styled_map", "Can't find style. Error: ", e);
         }
         enableMyLocation();
+
+        loadPreviousIntent();
 
         if (clickedPinId != null) { // Center on a given pin
             db.dbRef.child("pins").child(clickedPinId).addListenerForSingleValueEvent(
