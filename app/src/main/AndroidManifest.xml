@@ -76,6 +76,9 @@
         <activity
             android:name=".activities.LoginActivity"
             android:parentActivityName=".activities.MapsActivity" />
+        <activity
+            android:name=".activities.UserSettingsActivity"
+            android:parentActivityName=".activities.MapsActivity"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"

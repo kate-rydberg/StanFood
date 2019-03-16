@@ -22,6 +22,13 @@
     <string name="title_activity_splash">SplashActivity</string>
     <string name="default_notification_channel_id">DefaultNotificationChannel</string>
     <string name="new_event_notification_title">Free food added in your area!</string>
+    <string name="saveSettingsText">Save</string>
+    <string name="userSettingsTitle">User Settings</string>
+    <string name="receive_push_switch">Receive Push Notifications?</string>
+    <string name="user_settings">Settings</string>
+    <string name="timeWindowTitle">Only Receive Notifications for Events Starting Between These Times:</string>
+    <string name="event_start_time">Event Start Time</string>
+    <string name="event_end_time">Event End Time</string>
     <string-array name="location_list">
         <item>Allen Center for Integrated Systems (CIS)</item>
         <item>Applied Physics Building</item>
@@ -270,7 +277,7 @@
         <item>Larkin</item>
         <item>Serra</item>
         <item>Twain</item>
-        <item>Storey Suites</item>
+        <item>Storey House</item>
         <item>Anderson</item>
         <item>Griffen</item>
         <item>Jenkins</item>

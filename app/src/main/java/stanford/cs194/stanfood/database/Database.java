@@ -21,6 +21,7 @@ import stanford.cs194.stanfood.helpers.LatLngWrapper;
 import stanford.cs194.stanfood.models.Event;
 import stanford.cs194.stanfood.models.Food;
 import stanford.cs194.stanfood.models.Pin;
+import stanford.cs194.stanfood.models.Setting;
 import stanford.cs194.stanfood.models.User;
 
 public class Database {
@@ -53,6 +54,30 @@ public class Database {
         User user = new User(email, name);
         dbRef.child("users").child(uid).setValue(user);
         return uid;
+    }
+
+    // Updates the instance id of the specified user
+    public void updateUserInstanceId(String userId, String instanceId) {
+        dbRef.child("users").child(userId).child("instanceId").setValue(instanceId);
+    }
+
+    /**
+     * Creates a new user setting in the settings table for the given user.
+     */
+    public void createSetting(String uid, boolean receivePush, String timeWindowStart, String timeWindowEnd) {
+        Setting setting = new Setting(receivePush, timeWindowStart, timeWindowEnd);
+        dbRef.child("settings").child(uid).setValue(setting);
+    }
+
+    /**
+     * Creates a new default user setting in the settings table for the given user.
+     * Default settings are:
+     * receivePush = true
+     * timeWindowStart = 0 (hour)
+     * timeWindowEnd = 24 (hour)
+     */
+    public void createDefaultSetting(String uid) {
+        createSetting(uid, true, "0:00", "23:59");
     }
 
     /**
@@ -111,10 +136,6 @@ public class Database {
      */
     public void createFood(String eventId, String description, String imagePath){
         createEntry("food", new Food(eventId, description, imagePath));
-    }
-
-    public void updateUserInstanceId(String userId, String instanceId) {
-        dbRef.child("users").child(userId).child("instanceId").setValue(instanceId);
     }
 
     /**
