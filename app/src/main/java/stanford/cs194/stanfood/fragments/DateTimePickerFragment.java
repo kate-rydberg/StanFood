@@ -29,10 +29,6 @@ public class DateTimePickerFragment extends DialogFragment {
         return f;
     }
 
-    public void setTextView(TextView textView){
-        mTextView = textView;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
