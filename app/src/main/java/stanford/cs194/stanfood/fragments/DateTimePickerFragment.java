@@ -12,21 +12,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.TextView;
 import android.widget.TimePicker;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import stanford.cs194.stanfood.R;
 
 public class DateTimePickerFragment extends DialogFragment {
-    private TextView mTextView;
-    public static DateTimePickerFragment newInstance(TextView textView) {
+    private OnDateTimePickerSuccessListener callback;
+
+    public static DateTimePickerFragment newInstance() {
         DateTimePickerFragment f = new DateTimePickerFragment();
-        f.mTextView = textView;
         return f;
+    }
+
+    public interface OnDateTimePickerSuccessListener {
+        void onSuccess(Calendar dateCal);
+    }
+
+    public void setOnSuccessListener(OnDateTimePickerSuccessListener listener){
+        callback = listener;
     }
 
     @Override
@@ -102,10 +108,7 @@ public class DateTimePickerFragment extends DialogFragment {
         int minute = timePicker.getMinute();
 
         Calendar dateCal = new GregorianCalendar(year, month, day, hourOfDay, minute);
-
-        String datePattern = "EEE, MMM d hh:mm aaa";
-        SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
-        mTextView.setText(sdf.format(dateCal.getTime()));
+        callback.onSuccess(dateCal);
         getFragmentManager().popBackStack();
     }
 

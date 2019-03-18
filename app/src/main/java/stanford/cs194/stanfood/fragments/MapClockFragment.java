@@ -22,12 +22,23 @@ import java.util.GregorianCalendar;
 import stanford.cs194.stanfood.R;
 
 public class MapClockFragment extends DialogFragment {
+    private OnMapClockSuccessListener callback;
     private static DateTimePickerFragment startDateTimeFrag;
     private static DateTimePickerFragment endDateTimeFrag;
 
     public static MapClockFragment newInstance() {
         MapClockFragment f = new MapClockFragment();
+        startDateTimeFrag = DateTimePickerFragment.newInstance();
+        endDateTimeFrag = DateTimePickerFragment.newInstance();
         return f;
+    }
+
+    public interface OnMapClockSuccessListener {
+        void onSuccess(Date start, Date end);
+    }
+
+    public void setOnSuccessListener(OnMapClockSuccessListener listener){
+        callback = listener;
     }
 
     @Override
@@ -42,8 +53,20 @@ public class MapClockFragment extends DialogFragment {
         final TextView startDateTime = view.findViewById(R.id.startDateTime);
         final TextView endDateTime = view.findViewById(R.id.endDateTime);
         Button done_button = view.findViewById(R.id.button_done);
-        startDateTimeFrag = DateTimePickerFragment.newInstance(startDateTime);
-        endDateTimeFrag = DateTimePickerFragment.newInstance(endDateTime);
+
+        startDateTimeFrag.setOnSuccessListener(new DateTimePickerFragment.OnDateTimePickerSuccessListener() {
+            @Override
+            public void onSuccess(Calendar dateCal) {
+                setText(startDateTime, dateCal);
+            }
+        });
+
+        endDateTimeFrag.setOnSuccessListener(new DateTimePickerFragment.OnDateTimePickerSuccessListener() {
+            @Override
+            public void onSuccess(Calendar dateCal) {
+                setText(endDateTime, dateCal);
+            }
+        });
 
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
@@ -78,7 +101,6 @@ public class MapClockFragment extends DialogFragment {
                 doneButtonListener(v, start, end);
             }
         });
-
         return view;
     }
 
@@ -101,16 +123,25 @@ public class MapClockFragment extends DialogFragment {
             Date startDate = sdf.parse(startDateTime);
             Date endDate = sdf.parse(endDateTime);
             if(startDate.after(endDate)){
-                Toast toast = Toast.makeText(getContext(), "Start time must precede end time", Toast.LENGTH_SHORT);
-                final int BOTTOM_SHEET_PEEK_HEIGHT = (int)getContext().getResources().getDimension(R.dimen.bottom_sheet_peek_height);
+                String toastMessage = "Start time must precede end time";
+                Toast toast = Toast.makeText(getContext(), toastMessage, Toast.LENGTH_SHORT);
+                final int BOTTOM_SHEET_PEEK_HEIGHT = (int)getContext().getResources().
+                        getDimension(R.dimen.bottom_sheet_peek_height);
                 toast.setGravity(Gravity.BOTTOM, 0, BOTTOM_SHEET_PEEK_HEIGHT);
                 toast.show();
             }
             else {
+                callback.onSuccess(startDate, endDate);
                 dismiss();
             }
         } catch (ParseException e) {
             Log.d("ERRROR", e.toString());
         }
+    }
+
+    private void setText(TextView textView, Calendar cal){
+        String datePattern = "EEE, MMM d hh:mm aaa";
+        SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
+        textView.setText(sdf.format(cal.getTime()));
     }
 }

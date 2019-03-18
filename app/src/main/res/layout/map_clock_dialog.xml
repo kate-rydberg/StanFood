@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/container">
@@ -18,6 +18,7 @@
             android:layout_alignParentTop="true"
             android:padding="5dp"
             android:text="Event Time Filter"
+            android:layout_marginBottom="10dp"
             android:textStyle="bold"
             android:textSize="20sp" />
         <TextView
@@ -82,6 +83,4 @@
                 android:text="Ok" />
         </RelativeLayout>
     </RelativeLayout>
-
-
-</RelativeLayout>
+</FrameLayout>

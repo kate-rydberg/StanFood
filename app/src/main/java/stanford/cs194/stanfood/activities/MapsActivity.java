@@ -38,6 +38,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Date;
 import java.util.HashMap;
 
 import stanford.cs194.stanfood.R;
@@ -171,14 +172,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setOnCameraMoveStartedListener(this);
 
         ImageButton clock_button = findViewById(R.id.map_clock_image_button);
+        final MapClockFragment mapClockFragment = MapClockFragment.newInstance();
+        mapClockFragment.setOnSuccessListener(new MapClockFragment.OnMapClockSuccessListener() {
+            @Override
+            public void onSuccess(Date start, Date end) {
+                //TODO: redraw pins and events
+            }
+        });
         clock_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MapClockFragment.newInstance().
-                        show(getSupportFragmentManager(), null);
+                mapClockFragment.show(getSupportFragmentManager(), null);
             }
         });
-
         // Get the bottom sheet view
         View bottomSheetView = findViewById(R.id.bottom_sheet);
         bottomSheet = new BottomSheet(bottomSheetView.getContext(), bottomSheetView, mMap);
