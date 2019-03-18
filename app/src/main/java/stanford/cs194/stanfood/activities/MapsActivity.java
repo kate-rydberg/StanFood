@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -45,6 +46,7 @@ import stanford.cs194.stanfood.database.CreateList;
 import stanford.cs194.stanfood.database.Database;
 import stanford.cs194.stanfood.fragments.BottomSheet;
 import stanford.cs194.stanfood.fragments.BottomSheetListView;
+import stanford.cs194.stanfood.fragments.MapClockFragment;
 import stanford.cs194.stanfood.fragments.NavigationDrawer;
 import stanford.cs194.stanfood.fragments.PopUpFragment;
 import stanford.cs194.stanfood.helpers.FirebaseInstanceIdAccessor;
@@ -167,6 +169,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMapClickListener(this);
         mMap.setOnCameraMoveStartedListener(this);
+
+        ImageButton clock_button = findViewById(R.id.map_clock_image_button);
+        clock_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MapClockFragment.newInstance().
+                        show(getSupportFragmentManager(), null);
+            }
+        });
 
         // Get the bottom sheet view
         View bottomSheetView = findViewById(R.id.bottom_sheet);
