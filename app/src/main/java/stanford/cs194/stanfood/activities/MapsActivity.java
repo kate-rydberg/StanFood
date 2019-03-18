@@ -193,6 +193,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapClockFragment.setOnSuccessListener(new MapClockFragment.OnMapClockSuccessListener() {
             @Override
             public void onSuccess(Date start, Date end) {
+                startDate = start;
+                endDate = end;
                 //TODO: redraw pins and events
             }
         });

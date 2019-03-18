@@ -74,7 +74,7 @@ public class MapClockFragment extends DialogFragment {
             }
         });
 
-        String datePattern = "EEE, MMM d hh:mm aaa";
+        String datePattern = "EEE, MMM d hh:mm aaa, ''yy";
         SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
         startDateTime.setText(sdf.format(startDate));
         endDateTime.setText(sdf.format(endDate));
@@ -111,11 +111,7 @@ public class MapClockFragment extends DialogFragment {
     }
 
     private void doneButtonListener(View v, String startDateTime, String endDateTime){
-        /**
-         * note years are not accounted for in datePattern format, which can
-         * lead to unexpected behavior
-         */
-        String datePattern = "EEE, MMM d hh:mm aaa";
+        String datePattern = "EEE, MMM d hh:mm aaa, ''yy";
         SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
         try {
             Date startDate = sdf.parse(startDateTime);
@@ -138,7 +134,7 @@ public class MapClockFragment extends DialogFragment {
     }
 
     private void setText(TextView textView, Calendar cal){
-        String datePattern = "EEE, MMM d hh:mm aaa";
+        String datePattern = "EEE, MMM d hh:mm aaa, ''yy";
         SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
         textView.setText(sdf.format(cal.getTime()));
     }
