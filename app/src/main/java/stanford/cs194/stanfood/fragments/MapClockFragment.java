@@ -17,7 +17,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 import stanford.cs194.stanfood.R;
 
@@ -25,6 +24,8 @@ public class MapClockFragment extends DialogFragment {
     private OnMapClockSuccessListener callback;
     private static DateTimePickerFragment startDateTimeFrag;
     private static DateTimePickerFragment endDateTimeFrag;
+    private Date startDate;
+    private Date endDate;
 
     public static MapClockFragment newInstance() {
         MapClockFragment f = new MapClockFragment();
@@ -35,6 +36,11 @@ public class MapClockFragment extends DialogFragment {
 
     public interface OnMapClockSuccessListener {
         void onSuccess(Date start, Date end);
+    }
+
+    public void setDateRange(Date start, Date end){
+        this.startDate = start;
+        this.endDate = end;
     }
 
     public void setOnSuccessListener(OnMapClockSuccessListener listener){
@@ -68,18 +74,10 @@ public class MapClockFragment extends DialogFragment {
             }
         });
 
-        Calendar cal = Calendar.getInstance();
-        int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH);
-        int day = cal.get(Calendar.DAY_OF_MONTH);
-        Calendar dateCal = new GregorianCalendar(year, month, day);
-
         String datePattern = "EEE, MMM d hh:mm aaa";
         SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
-        startDateTime.setText(sdf.format(dateCal.getTime()));
-
-        dateCal.add(Calendar.DATE, 7);
-        endDateTime.setText(sdf.format(dateCal.getTime()));
+        startDateTime.setText(sdf.format(startDate));
+        endDateTime.setText(sdf.format(endDate));
 
         startDateTime.setOnClickListener(new View.OnClickListener() {
             @Override

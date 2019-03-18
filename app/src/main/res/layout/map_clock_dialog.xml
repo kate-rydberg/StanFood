@@ -16,11 +16,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:padding="5dp"
-            android:text="Event Time Filter"
+            android:padding="@dimen/map_clock_dialog_padding"
+            android:text="@string/map_clock_dialog_title"
             android:layout_marginBottom="10dp"
             android:textStyle="bold"
-            android:textSize="20sp" />
+            android:textSize="@dimen/map_clock_dialog_title_size" />
         <TextView
             android:id="@+id/header"
             android:layout_width="wrap_content"
@@ -29,8 +29,8 @@
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
             android:gravity="center"
-            android:padding="5dp"
-            android:text="Currently showing events between"
+            android:padding="@dimen/map_clock_dialog_padding"
+            android:text="@string/map_clock_dialog_header"
             android:textSize="@dimen/text_size" />
 
         <TextView
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/header"
             android:layout_centerHorizontal="true"
-            android:padding="5dp"
+            android:padding="@dimen/map_clock_dialog_padding"
             android:text=""
             android:textSize="@dimen/text_size"
             android:textStyle="bold"/>
@@ -50,8 +50,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/startDateTime"
             android:layout_centerHorizontal="true"
-            android:padding="5dp"
-            android:text="and"
+            android:padding="@dimen/map_clock_dialog_padding"
+            android:text="@string/map_clock_dialog_break"
             android:textSize="@dimen/text_size" />
 
         <TextView
@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/and"
             android:layout_centerHorizontal="true"
-            android:padding="5dp"
+            android:padding="@dimen/map_clock_dialog_padding"
             android:text=""
             android:textSize="@dimen/text_size"
             android:textStyle="bold" />
@@ -79,8 +79,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginBottom="5dp"
-                android:text="Ok" />
+                android:layout_marginBottom="@dimen/map_clock_dialog_padding"
+                android:text="@string/map_clock_dialog_done" />
         </RelativeLayout>
     </RelativeLayout>
 </FrameLayout>

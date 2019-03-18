@@ -38,7 +38,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 import stanford.cs194.stanfood.R;
@@ -69,6 +71,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FragmentManager supportFragment;
     private String clickedPinId;
 
+    private Date startDate;
+    private Date endDate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +91,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         eventStorage = new HashMap<>();
         markerStorage = new HashMap<>();
+
+        // set calendar to midnight of current day
+        Calendar cal = new GregorianCalendar();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        startDate = cal.getTime();
+        // default 1 week event range
+        cal.add(Calendar.DATE, 7);
+        endDate = cal.getTime();
     }
 
     @Override
@@ -182,6 +199,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         clock_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // populate date range with currently defined range
+                mapClockFragment.setDateRange(startDate, endDate);
                 mapClockFragment.show(getSupportFragmentManager(), null);
             }
         });
@@ -214,7 +233,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         ViewGroup bottomSheetContents = findViewById(R.id.bottom_sheet_contents);
         ViewCompat.setNestedScrollingEnabled(eventListView, true);
 
-        CreateList initRows = new CreateList(db, marker, eventStorage, eventListView, bottomSheetContents, supportFragment);
+
+        CreateList initRows = new CreateList(
+                db, marker, eventStorage,
+                eventListView, bottomSheetContents,
+                supportFragment, startDate, endDate);
         initRows.createEventList();
 
         return true;

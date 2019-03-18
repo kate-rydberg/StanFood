@@ -15,6 +15,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 
 import stanford.cs194.stanfood.adapters.EventAdapter;
@@ -32,9 +33,13 @@ public class CreateList {
     private ViewGroup bottomSheetContentsView;
     private FragmentManager supportFragment;
 
+    private Date startDate;
+    private Date endDate;
+
     public CreateList(Database db, Marker marker,
                       HashMap<LatLng, String> eventStorage, BottomSheetListView eventListView,
-                      ViewGroup bottomSheetContentsView, FragmentManager supportFragment) {
+                      ViewGroup bottomSheetContentsView, FragmentManager supportFragment,
+                      Date startDate, Date endDate) {
         this.db = db;
         this.markerLocation = marker.getPosition();
         this.eventStorage = eventStorage;
@@ -42,6 +47,8 @@ public class CreateList {
         this.bottomSheetContentsView = bottomSheetContentsView;
         this.events = new ArrayList<>();
         this.supportFragment = supportFragment;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public void createEventList(){
@@ -52,7 +59,10 @@ public class CreateList {
                         for(DataSnapshot ds : dataSnapshot.getChildren()){
                             if(ds.hasChildren()){
                                 Event event = ds.getValue(Event.class);
-                                if(event.getPinId().equals(eventStorage.get(markerLocation))){
+                                Date d = new Date(event.getTimeStart());
+                                Log.d("CONSOLE", d.toString() + startDate.toString() + endDate.toString());
+                                if(event.getPinId().equals(eventStorage.get(markerLocation))
+                                        && (d.after(startDate) || d.equals(startDate)) && d.before(endDate)){
                                     event.setEventId(ds.getKey());
                                     events.add(event);
                                 }
