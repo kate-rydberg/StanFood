@@ -4,6 +4,25 @@ const moment = require('moment');
 
 admin.initializeApp(functions.config().firebase);
 
+/**
+ * Compares two times of format h:mm
+ * Returns -1 if a < b, 0 if a = b, and 1 if a > b
+ */
+function compare(a, b) {
+  let a_hour = Number(a.split(':')[0]);
+  let a_min = Number(a.split(':')[1]);
+  let b_hour = Number(b.split(':')[0]);
+  let b_min = Number(b.split(':')[1]);
+
+  if (a_hour === b_hour && a_min === b_min) {
+    return 0; // a = b
+  }
+  if (a_hour > b_hour || (a_hour === b_hour && a_min > b_min)) {
+    return 1; // a > b
+  }
+  return -1; // a < b
+}
+
 exports.checkPinEvents = functions.https.onRequest((req, res) => {
 
   //create database refs
