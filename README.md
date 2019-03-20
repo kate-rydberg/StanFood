@@ -42,4 +42,4 @@ Tofe | Systems programming, dev-ops, backend development | Abstract thinker, pos
 5. [SGM Worksheet](https://docs.google.com/forms/d/e/1FAIpQLSc9CVv1vRhA3Gd6R-AKCnXIshWq6vFBQLPXn8Nv4aW3mCHn3w/viewform?usp=sf_link)
 
 ## Attributions
-Special thanks to Noun Project: Geovani Almeida, Shashank Singh, Eagle Eye, Gregor Cresnar, Icon Lauk
+Special thanks to Noun Project: Geovani Almeida, Shashank Singh, Eagle Eye, Gregor Cresnar, Icon Lauk, Taylan Sentürk
