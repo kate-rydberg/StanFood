@@ -1,6 +1,7 @@
-const functions = require('firebase-functions');
-
 const admin = require('firebase-admin');
+const functions = require('firebase-functions');
+const moment = require('moment');
+
 admin.initializeApp(functions.config().firebase);
 
 exports.checkPinEvents = functions.https.onRequest((req, res) => {
