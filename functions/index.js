@@ -124,8 +124,8 @@ exports.sendNotificationsForEventAdded = functions.database.ref('/events/{eventI
         // that match the event
         for (let userId in settings) {
           if (settings.hasOwnProperty(userId)) {
-            let timeWindowStart = moment(settings[userId].timeWindowStart).format('H:mm');
-            let timeWindowEnd = moment(settings[userId].timeWindowEnd).format('H:mm');
+            let timeWindowStart = moment(settings[userId].timeWindowStart, 'HH:mm').format('H:mm');
+            let timeWindowEnd = moment(settings[userId].timeWindowEnd, 'HH:mm').format('H:mm');
 
             if (compare(timeWindowStart, eventTimeStart) <= 0 && compare(timeWindowEnd, eventTimeEnd) >= 0) {
               // Event occurs within user's preferred time range in settings
