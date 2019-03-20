@@ -24,6 +24,7 @@ import stanford.cs194.stanfood.R;
 import stanford.cs194.stanfood.activities.CreateEventActivity;
 import stanford.cs194.stanfood.activities.LoginActivity;
 import stanford.cs194.stanfood.activities.UserSettingsActivity;
+import stanford.cs194.stanfood.helpers.FirebaseInstanceIdAccessor;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -33,11 +34,14 @@ public class NavigationDrawer {
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
     private SharedPreferences prefs;
+    private FirebaseInstanceIdAccessor instanceIdAccessor;
 
-    public NavigationDrawer(Context context, DrawerLayout drawerLayout, final NavigationView navigationView) {
+    public NavigationDrawer(Context context, DrawerLayout drawerLayout, final NavigationView navigationView,
+                            FirebaseInstanceIdAccessor instanceIdAccessor) {
         mContext = context;
         mDrawerLayout = drawerLayout;
         mNavigationView = navigationView;
+        this.instanceIdAccessor = instanceIdAccessor;
 
         // Get SharedPreferences for login data
         prefs = context.getSharedPreferences("loginData", MODE_PRIVATE);
@@ -123,6 +127,7 @@ public class NavigationDrawer {
      * Only visible if the user is logged in.
      */
     private void startLogOut() {
+        instanceIdAccessor.removeInstanceId();
         AuthUI.getInstance()
                 .signOut(App.getContext())
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
