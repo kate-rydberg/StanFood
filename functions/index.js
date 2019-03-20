@@ -94,6 +94,8 @@ exports.sendNotificationsForEventAdded = functions.database.ref('/events/{eventI
       // Grab the current value of what was written to the Realtime Database.
       const event = snapshot.val();
       const eventId = context.params.eventId;
+      const eventTimeStart = moment(event.timeStart).format('H:mm');
+      const eventTimeEnd = moment(event.timeStart + event.duration).format('H:mm');
       console.log('New event added', eventId, event);
 
       // Get the list of users (with associated device notification tokens) and settings
@@ -122,9 +124,15 @@ exports.sendNotificationsForEventAdded = functions.database.ref('/events/{eventI
         // that match the event
         for (let userId in settings) {
           if (settings.hasOwnProperty(userId)) {
-            let token = users[userId].instanceId;
-            if (token) {
-              tokens.push(token);
+            let timeWindowStart = moment(settings[userId].timeWindowStart, 'HH:mm').format('H:mm');
+            let timeWindowEnd = moment(settings[userId].timeWindowEnd, 'HH:mm').format('H:mm');
+
+            if (compare(timeWindowStart, eventTimeStart) <= 0 && compare(timeWindowEnd, eventTimeEnd) >= 0) {
+              // Event occurs within user's preferred time range in settings
+              let token = users[userId].instanceId;
+              if (token) {
+                tokens.push(token);
+              }
             }
           }
         }
