@@ -5,6 +5,10 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -29,6 +33,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
@@ -80,22 +85,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         db = new Database();
         FirebaseInstanceIdAccessor instanceIdAccessor = new FirebaseInstanceIdAccessor(db, auth);
         instanceIdAccessor.uploadInstanceId();
-
         eventStorage = new HashMap<>();
         markerStorage = new HashMap<>();
-        Display screen = getWindowManager().getDefaultDisplay();
-        supportFragment = getSupportFragmentManager();
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            String clickedEventId = extras.getString("clickedEventId");
-            String clickedEventName = extras.getString("clickedEventName");
-            String clickedLocationName = extras.getString("clickedLocationName");
-            String clickedTimeRange = extras.getString("clickedTimeRange");
-            String clickedEventDescription = extras.getString("clickedEventDescription");
-            PopUpFragment.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription, clickedEventId, screen, db)
-                    .show(supportFragment, null);
-        }
     }
 
     @Override
@@ -278,6 +270,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     private void loadPreviousIntent() {
         Bundle extras = getIntent().getExtras();
+        Display screen = getWindowManager().getDefaultDisplay();
+        supportFragment = getSupportFragmentManager();
         if (extras != null) {
             clickedPinId = extras.getString("clickedPinId");
             String clickedEventName = extras.getString("clickedEventName");
@@ -285,7 +279,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             String clickedTimeRange = extras.getString("clickedTimeRange");
             String clickedEventDescription = extras.getString("clickedEventDescription");
 
-            PopUpFragment.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription)
+            PopUpFragment.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription, clickedPinId, screen, db)
                     .show(supportFragment, null);
         }
     }
