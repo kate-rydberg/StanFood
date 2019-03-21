@@ -56,10 +56,25 @@ public class Database {
         return uid;
     }
 
-    // Updates the instance id of the specified user
+    /**
+     * Updates the instance id of the specified user
+     *
+     * @param userId - userId of user associated with the instance id (device token)
+     * @param instanceId - instance id of the Android device (aka device token)
+     */
     public void updateUserInstanceId(String userId, String instanceId) {
         dbRef.child("users").child(userId).child("instanceId").setValue(instanceId);
     }
+
+    /**
+     * Removes the instance id of the specified user
+     *
+     * @param userId - userId of user associated with the instance id (device token)
+     * @param instanceId - instance id of the Android device (aka device token)
+     */
+     public void removeUserInstanceId(String userId, String instanceId) {
+         dbRef.child("users").child(userId).child("instanceId").removeValue();
+     }
 
     /**
      * Creates a new user setting in the settings table for the given user.

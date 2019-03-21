@@ -68,6 +68,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private float distanceRange = 10000;
     private Authentication auth;
     private Database db;
+    private FirebaseInstanceIdAccessor instanceIdAccessor;
     private FragmentManager supportFragment;
     private String clickedPinId;
 
@@ -83,7 +84,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         auth = new Authentication();
         db = new Database();
-        FirebaseInstanceIdAccessor instanceIdAccessor = new FirebaseInstanceIdAccessor(db, auth);
+        instanceIdAccessor = new FirebaseInstanceIdAccessor(db, auth);
         instanceIdAccessor.uploadInstanceId();
         eventStorage = new HashMap<>();
         markerStorage = new HashMap<>();
@@ -333,7 +334,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void setupNavigationMenu() {
         DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
         final NavigationView navigationView = findViewById(R.id.nav_view);
-        drawerLayout = new NavigationDrawer(this, mDrawerLayout, navigationView);
+        drawerLayout = new NavigationDrawer(this, mDrawerLayout, navigationView, instanceIdAccessor);
         drawerLayout.addMenuIconListener();
         drawerLayout.addNavigationListener();
         drawerLayout.setAuthenticationMenuOptions();

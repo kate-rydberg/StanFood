@@ -39,4 +39,23 @@ public class FirebaseInstanceIdAccessor {
                     }
                 });
     }
+
+    public void removeInstanceId() {
+        if (auth.getCurrentUser() == null) return;
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e(TAG, "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+                        String userId = auth.getCurrentUser().getUid();
+                        db.removeUserInstanceId(userId, token);
+                    }
+                });
+    }
 }
