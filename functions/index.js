@@ -118,10 +118,8 @@ exports.sendNotificationsForEventAdded = functions.database.ref('/events/{eventI
           }
         };
 
-        // Currently sends to all users with a device token for Firebase Cloud Messaging
-        // and push notifications enabled within settings.
-        // TODO: Once we implement settings we should only send to users with preferences
-        // that match the event
+        // Sends to all users with a device token for Firebase Cloud Messaging,
+        // push notifications enabled, and preference settings matching event details
         for (let userId in settings) {
           if (settings.hasOwnProperty(userId)) {
             let timeWindowStart = moment(settings[userId].timeWindowStart, 'HH:mm').format('H:mm');
