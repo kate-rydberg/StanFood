@@ -16,14 +16,14 @@
             android:title="@string/create_event"
             android:font="@font/gotham_book"/>
         <item
-            android:id="@+id/user_settings"
-            android:icon="@drawable/ic_settings_black_24dp"
-            android:title="@string/user_settings"
-            android:font="@font/gotham_book"/>
-        <item
             android:id="@+id/edit_event"
             android:icon="@drawable/ic_edit_location_black_24dp"
             android:title="@string/edit_event"
+            android:font="@font/gotham_book"/>
+        <item
+            android:id="@+id/user_settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/user_settings"
             android:font="@font/gotham_book"/>
         <item
             android:id="@+id/logout"

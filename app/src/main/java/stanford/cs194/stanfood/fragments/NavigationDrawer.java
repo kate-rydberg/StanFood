@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.Task;
 import stanford.cs194.stanfood.App;
 import stanford.cs194.stanfood.R;
 import stanford.cs194.stanfood.activities.CreateEventActivity;
+import stanford.cs194.stanfood.activities.EditEventActivity;
 import stanford.cs194.stanfood.activities.LoginActivity;
 import stanford.cs194.stanfood.activities.UserSettingsActivity;
 import stanford.cs194.stanfood.helpers.FirebaseInstanceIdAccessor;
@@ -174,30 +175,12 @@ public class NavigationDrawer {
     }
 
     /**
-     * Checks if user is logged in and displays the corresponding authentication option in menu
-     * - User is logged in -> display "Log Out" and "Edit/Delete an Event"
-     * - User is not logged in -> display "Log In or Sign Up"
+     * Starts the intent for users to edit/delete their events.
      */
-    public void setAuthenticationMenuOptions() {
-        boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
-        final Menu menu = mNavigationView.getMenu();
-        menu.findItem(R.id.login_signup).setVisible(!isLoggedIn);
-        menu.findItem(R.id.user_settings).setVisible(isLoggedIn);
-        menu.findItem(R.id.logout).setVisible(isLoggedIn);
+    private void startEditEvent() {
+        Intent intent = new Intent(mContext, EditEventActivity.class);
+        mContext.startActivity(intent);
     }
-
-    /**
-     * Saves the result of logging out in preferences since we log out
-     * without starting LoginActivity.
-     */
-    @SuppressLint("ApplySharedPref")
-    private void setLogOutPrefs() {
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean("isLoggedIn", false);
-        editor.putString("userId", "");
-        editor.commit();
-    }
-}
 
     /**
      * Checks if user is logged in and displays the corresponding authentication option in menu
@@ -208,6 +191,7 @@ public class NavigationDrawer {
         boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
         final Menu menu = mNavigationView.getMenu();
         menu.findItem(R.id.login_signup).setVisible(!isLoggedIn);
+        menu.findItem(R.id.user_settings).setVisible(isLoggedIn);
         menu.findItem(R.id.edit_event).setVisible(isLoggedIn);
         menu.findItem(R.id.logout).setVisible(isLoggedIn);
     }
