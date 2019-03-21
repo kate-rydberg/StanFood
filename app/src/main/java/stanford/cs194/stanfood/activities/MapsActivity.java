@@ -5,6 +5,10 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -30,6 +34,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
@@ -100,11 +105,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         db = new Database();
         instanceIdAccessor = new FirebaseInstanceIdAccessor(db, auth);
         instanceIdAccessor.uploadInstanceId();
-
         eventStorage = new HashMap<>();
         markerStorage = new HashMap<>();
-        Display screen = getWindowManager().getDefaultDisplay();
-        supportFragment = getSupportFragmentManager();
 
         // set calendar to midnight of current day
         Calendar cal = new GregorianCalendar();
@@ -323,7 +325,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void loadPreviousIntent() {
         Bundle extras = getIntent().getExtras();
         Display screen = getWindowManager().getDefaultDisplay();
+<<<<<<< HEAD
 
+=======
+        supportFragment = getSupportFragmentManager();
+>>>>>>> circular thumbnail image
         if (extras != null) {
             clickedPinId = extras.getString("clickedPinId");
             String clickedEventName = extras.getString("clickedEventName");

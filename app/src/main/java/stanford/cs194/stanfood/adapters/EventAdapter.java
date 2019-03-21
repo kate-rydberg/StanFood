@@ -132,7 +132,7 @@ public class EventAdapter extends ArrayAdapter {
 
                             Picasso.get()
                                     .load(url)
-                                    .fit()
+                                    .resize(R.dimen.image_thumb, R.dimen.image_thumb)
                                     .error(R.drawable.no_picture)
                                     .into(eventImage);
 
