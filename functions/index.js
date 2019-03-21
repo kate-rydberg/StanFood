@@ -23,6 +23,14 @@ function compare(a, b) {
   return -1; // a < b
 }
 
+/**
+ * Given three times of format h:mm, where lowerLimit < upperLimit,
+ * returns true if value is in [lowerLimit, upperLimit] inclusive, false otherwise
+ */
+function isBetween(value, lowerLimit, upperLimit) {
+  return compare(value, lowerLimit) >= 0 && compare(value, upperLimit) <= 0;
+}
+
 exports.checkPinEvents = functions.https.onRequest((req, res) => {
 
   //create database refs
@@ -125,8 +133,8 @@ exports.sendNotificationsForEventAdded = functions.database.ref('/events/{eventI
             let timeWindowStart = moment(settings[userId].timeWindowStart, 'HH:mm').format('H:mm');
             let timeWindowEnd = moment(settings[userId].timeWindowEnd, 'HH:mm').format('H:mm');
 
-            if (compare(timeWindowStart, eventTimeStart) <= 0 && compare(timeWindowEnd, eventTimeEnd) >= 0) {
-              // Event occurs within user's preferred time range in settings
+            if (isBetween(eventTimeStart, timeWindowStart, timeWindowEnd) || isBetween(eventTimeEnd, timeWindowStart, timeWindowEnd)) {
+              // Event overlaps with user's preferred time range in settings
               let token = users[userId].instanceId;
               if (token) {
                 tokens.push(token);
