@@ -32,8 +32,7 @@ public class CreateList {
     private Display screen;
   
   
-    public CreateList(Database db, Marker marker,
-                      HashMap<LatLng, String> eventStorage, BottomSheetListView eventListView,
+    public CreateList(Database db, BottomSheetListView eventListView,
                       ViewGroup bottomSheetContentsView, FragmentManager supportFragment, Display screen) {
         this.db = db;
         this.eventListView = eventListView;
