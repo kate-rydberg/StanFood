@@ -125,8 +125,8 @@ public class MapClockFragment extends DialogFragment {
                 toast.show();
             }
             else {
-                callback.onSuccess(startDate, endDate);
                 dismiss();
+                callback.onSuccess(startDate, endDate);
             }
         } catch (ParseException e) {
             Log.d("ERRROR", e.toString());

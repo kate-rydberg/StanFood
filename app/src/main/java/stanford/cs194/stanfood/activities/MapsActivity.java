@@ -470,7 +470,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 for(LatLng loc : events.keySet()){
                     String pinId = eventStorage.get(loc);
                     int numEvents = sendPostPinNumEventsInRange(start, end, pinId);
-                    Log.d("CONSOLE", numEvents + " " + pinId);
                     if(numEvents == 0){
                         Marker m = markerStorage.get(loc);
                         markersForRemoval.add(m);
