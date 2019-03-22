@@ -147,6 +147,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         //adds location marker
+
         try {
             // Customise the styling of the base map using a JSON object defined
             // in a raw resource file.
