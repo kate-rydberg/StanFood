@@ -85,6 +85,11 @@
             android:parentActivityName=".activities.MapsActivity"
             android:screenOrientation="portrait"/>
 
+        <activity
+            android:name=".activities.DeleteEventActivity"
+            android:parentActivityName=".activities.MapsActivity"
+            android:screenOrientation="portrait" />
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="stanford.cs194.stanfood.fileprovider"

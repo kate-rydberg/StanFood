@@ -3,13 +3,17 @@ package stanford.cs194.stanfood.database;
 import android.location.Address;
 import android.location.Geocoder;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
@@ -113,7 +117,6 @@ public class Database {
                             final long timeStart, final long duration, final String foodDescription,
                             final String userId, final String imagePath){
         final LatLng loc = getLocationFromName(locationName);
-        // TODO: Insert check for null location in case the corresponding location name doesn't exist
         dbRef.child("pins").addListenerForSingleValueEvent(
             new ValueEventListener() {
                 @Override
@@ -151,6 +154,71 @@ public class Database {
      */
     public void createFood(String eventId, String description, String imagePath){
         createEntry("food", new Food(eventId, description, imagePath));
+    }
+
+    /**
+     * Deletes an event in the events/ table,
+     * Decrements the number of events in the corresponding pin by 1, and
+     * Deletes all corresponding food items in the food/ table.
+     */
+    public void deleteEvent(final Event event){
+        final String eventId = event.getEventId();
+        final String pinId = event.getPinId();
+        dbRef.child("pins").child(pinId).child("numEvents").runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                // Set new event number value and report transaction success
+                Integer numEvents = mutableData.getValue(Integer.class);
+                if (numEvents != null) {
+                    mutableData.setValue(numEvents - 1);
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b,
+                                   @Nullable DataSnapshot dataSnapshot) {
+                Log.d("deleteEvent", "deleteEvent:" + databaseError);
+            }
+        });
+
+        dbRef.child("events").child(eventId).removeValue();
+        deleteEventFood(eventId);
+    }
+
+    /**
+     * Deletes all food items associated with an event.
+     */
+    private void deleteEventFood(final String eventId) {
+        // Delete all food items associated with this event
+        dbRef.child("food").orderByChild("eventId").equalTo(eventId)
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        dataSnapshot.getRef().removeValue();
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.d("deleteFood", databaseError.toString());
+                    }
+                });
     }
 
     /**
