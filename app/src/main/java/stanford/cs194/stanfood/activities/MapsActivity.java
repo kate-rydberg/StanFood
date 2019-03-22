@@ -325,11 +325,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void loadPreviousIntent() {
         Bundle extras = getIntent().getExtras();
         Display screen = getWindowManager().getDefaultDisplay();
-<<<<<<< HEAD
 
-=======
-        supportFragment = getSupportFragmentManager();
->>>>>>> circular thumbnail image
         if (extras != null) {
             clickedPinId = extras.getString("clickedPinId");
             String clickedEventName = extras.getString("clickedEventName");

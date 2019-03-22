@@ -17,7 +17,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 
 import stanford.cs194.stanfood.adapters.DeleteEventAdapter;
 import stanford.cs194.stanfood.adapters.EventAdapter;

@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -44,12 +45,13 @@ public class DeleteEventActivity extends AppCompatActivity {
     private void getUserEventList() {
         // Get User ID to link to event
         String userId = prefs.getString("userId", "");
+        Display screen = getWindowManager().getDefaultDisplay();
 
         FragmentManager supportFragment = getSupportFragmentManager();
         BottomSheetListView eventListView = findViewById(R.id.eventList);
         ViewGroup userEventsContent = findViewById(R.id.userEventsContent);
 
-        CreateList eventRows = new CreateList(db, eventListView, userEventsContent, supportFragment);
+        CreateList eventRows = new CreateList(db, eventListView, userEventsContent, supportFragment, screen);
         eventRows.createUserEventList(userId);
     }
 }

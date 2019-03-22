@@ -89,7 +89,6 @@ public class PopUpFragment extends DialogFragment {
 
     /**
      * @param eventId
-     * TODO: Retrieves images from Storage and loads into Picasso adapter
      */
     private void loadFoodImages(final String eventId, final View popupView){
         final ImageView eventImage = popupView.findViewById(R.id.infoEventImage);
@@ -107,6 +106,7 @@ public class PopUpFragment extends DialogFragment {
                                 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                                 @Override
                                 public Bitmap transform(Bitmap source) {
+                                    Log.d("ERROR", "resizing images");
                                     float ratio = (float)source.getHeight() / (float) source.getWidth();
                                     float heightFloat = ((float) size.x - 10) * ratio;
                                     Bitmap newBitmap = Bitmap.createScaledBitmap(source, size.x-10,
@@ -129,7 +129,6 @@ public class PopUpFragment extends DialogFragment {
                                     .into(eventImage);
                         }
                     }
-
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {

@@ -1,20 +1,14 @@
 package stanford.cs194.stanfood.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -23,15 +17,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
-
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import stanford.cs194.stanfood.App;
 import stanford.cs194.stanfood.R;
 import stanford.cs194.stanfood.database.Database;
 import stanford.cs194.stanfood.fragments.BottomSheetListView;
@@ -53,7 +41,7 @@ public class EventAdapter extends ArrayAdapter {
     private Database db;
     private Display screen;
 
-    private String url;
+    //private String url;
 
     public EventAdapter(
             Context context,
@@ -72,7 +60,6 @@ public class EventAdapter extends ArrayAdapter {
         this.supportFragment = supportFragment;
         this.db = db;
         this.screen = screen;
-        this.url = null;
     }
 
     @NonNull
@@ -139,6 +126,7 @@ public class EventAdapter extends ArrayAdapter {
                 addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String url = "";
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
                             Food food = ds.getValue(Food.class);
                             url = food.getImagePath();
@@ -153,12 +141,18 @@ public class EventAdapter extends ArrayAdapter {
                                         public void onSuccess() {
                                             loaded.set(true);
                                             Log.d("debug007", "on success called");
+                                            eventImage.requestLayout();
+                                            eventImage.getLayoutParams().height = 300;
+                                            eventImage.getLayoutParams().width = 300;
                                         }
 
                                         @Override
                                         public void onError(Exception e) {
                                             super.onError(e);
                                             Log.d("debug007", "error");
+                                            eventImage.requestLayout();
+                                            eventImage.getLayoutParams().height = 0;
+                                            eventImage.getLayoutParams().width = 0;
                                         }
                                     });
 
