@@ -22,7 +22,6 @@ import stanford.cs194.stanfood.adapters.DeleteEventAdapter;
 import stanford.cs194.stanfood.adapters.EventAdapter;
 import stanford.cs194.stanfood.fragments.BottomSheetListView;
 import stanford.cs194.stanfood.models.Event;
-import stanford.cs194.stanfood.models.Food;
 
 public class CreateList {
     private Database db;
@@ -81,9 +80,9 @@ public class CreateList {
                         }
                         Collections.sort(events);
                         Adapter rowCells = new EventAdapter(
+                                db,
                                 eventListView.getContext(),
                                 events,
-                                foodDescriptions,
                                 bottomSheetContentsView,
                                 supportFragment
                         );
