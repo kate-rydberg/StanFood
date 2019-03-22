@@ -174,6 +174,17 @@ public class EventAdapter extends ArrayAdapter {
                                 eventImage.getLayoutParams().width = 0;
                             }
                         }
+//                        if(url != null){
+//                            eventImage.requestLayout();
+//                            eventImage.getLayoutParams().height = 200;
+//                            eventImage.getLayoutParams().width = 200;
+//                        }
+//                        else{
+//                            Log.d("debug007", "loaded not true");
+//                            eventImage.requestLayout();
+//                            eventImage.getLayoutParams().height = 0;
+//                            eventImage.getLayoutParams().width = 0;
+//                        }
 
                     }
 
