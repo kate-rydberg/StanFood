@@ -70,6 +70,7 @@ public class DeleteEventActivity extends AppCompatActivity {
         ViewGroup userEventsContent = findViewById(R.id.userEventsContent);
 
         CreateList eventRows = new CreateList(db, eventListView, userEventsContent, supportFragment, startDate, endDate, screen);
+
         eventRows.createUserEventList(userId);
     }
 }

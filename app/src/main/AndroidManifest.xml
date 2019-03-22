@@ -83,13 +83,20 @@
         <activity
             android:name=".activities.UserSettingsActivity"
             android:parentActivityName=".activities.MapsActivity"
+<<<<<<< HEAD
             android:screenOrientation="portrait" />
+=======
+            android:screenOrientation="portrait"/>
+>>>>>>> 837b8fab7db1827deb8d56075f43d246452363a9
 
         <activity
             android:name=".activities.DeleteEventActivity"
             android:parentActivityName=".activities.MapsActivity"
             android:screenOrientation="portrait" />
+<<<<<<< HEAD
 
+=======
+>>>>>>> 837b8fab7db1827deb8d56075f43d246452363a9
 
         <provider
             android:name="android.support.v4.content.FileProvider"

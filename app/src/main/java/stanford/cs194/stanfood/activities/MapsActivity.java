@@ -5,10 +5,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -325,7 +321,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void loadPreviousIntent() {
         Bundle extras = getIntent().getExtras();
         Display screen = getWindowManager().getDefaultDisplay();
-
         if (extras != null) {
             clickedPinId = extras.getString("clickedPinId");
             String clickedEventName = extras.getString("clickedEventName");
