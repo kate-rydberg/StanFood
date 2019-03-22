@@ -1,6 +1,7 @@
 package stanford.cs194.stanfood.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
@@ -9,6 +10,7 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,10 +18,12 @@ import android.widget.TextView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import stanford.cs194.stanfood.App;
 import stanford.cs194.stanfood.R;
 import stanford.cs194.stanfood.database.Database;
 import stanford.cs194.stanfood.fragments.BottomSheetListView;
@@ -121,7 +125,7 @@ public class EventAdapter extends ArrayAdapter {
      * TODO: Retrieves images from Storage and loads into Picasso adapter
      */
     private void loadFoodImages(final String eventId, final View rowView){
-        final ImageView eventImage = rowView.findViewById(R.id.eventImage);
+        final CircularImageView eventImage = rowView.findViewById(R.id.eventImage);
         db.dbRef.child("food").orderByChild("eventId").equalTo(eventId).
                 addValueEventListener(new ValueEventListener() {
                     @Override
@@ -132,15 +136,16 @@ public class EventAdapter extends ArrayAdapter {
 
                             Picasso.get()
                                     .load(url)
-                                    .resize(R.dimen.image_thumb, R.dimen.image_thumb)
+                                    .fit()
                                     .error(R.drawable.no_picture)
                                     .into(eventImage);
-
                         }
                         if (url == null) {
-                            Drawable drawable = context.getResources().getDrawable(R.drawable.no_picture);
-                            eventImage.setImageDrawable(drawable);
+                            eventImage.requestLayout();
+                            eventImage.getLayoutParams().height = 0;
+                            eventImage.getLayoutParams().width = 0;
                         }
+                        url = null;
                     }
 
                     @Override

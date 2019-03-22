@@ -28,7 +28,8 @@
 
         <activity
             android:name=".activities.SplashActivity"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/SplashTheme"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -64,7 +65,8 @@
 
         <activity
             android:name=".activities.MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps"
+            android:screenOrientation="portrait"></activity>
 
         <uses-library
             android:name="org.apache.http.legacy"
@@ -72,13 +74,16 @@
 
         <activity
             android:name=".activities.CreateEventActivity"
-            android:parentActivityName=".activities.MapsActivity" />
+            android:parentActivityName=".activities.MapsActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.LoginActivity"
-            android:parentActivityName=".activities.MapsActivity" />
+            android:parentActivityName=".activities.MapsActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.UserSettingsActivity"
-            android:parentActivityName=".activities.MapsActivity"/>
+            android:parentActivityName=".activities.MapsActivity"
+            android:screenOrientation="portrait"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
