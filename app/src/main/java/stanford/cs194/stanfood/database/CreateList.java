@@ -26,7 +26,6 @@ import stanford.cs194.stanfood.models.Event;
 public class CreateList {
     private Database db;
     private ArrayList<Event> events;
-    private ArrayList<String> foodDescriptions;
     private BottomSheetListView eventListView;
     private ViewGroup bottomSheetContentsView;
     private FragmentManager supportFragment;
@@ -41,7 +40,6 @@ public class CreateList {
         this.eventListView = eventListView;
         this.bottomSheetContentsView = bottomSheetContentsView;
         this.events = new ArrayList<>();
-        this.foodDescriptions = new ArrayList<>();
         this.supportFragment = supportFragment;
     }
 
