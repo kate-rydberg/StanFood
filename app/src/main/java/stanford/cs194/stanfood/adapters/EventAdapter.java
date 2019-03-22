@@ -3,7 +3,9 @@ package stanford.cs194.stanfood.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Display;
@@ -19,9 +21,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.mikhaellopez.circularimageview.CircularImageView;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
+import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import stanford.cs194.stanfood.App;
 import stanford.cs194.stanfood.R;
@@ -31,6 +39,8 @@ import stanford.cs194.stanfood.fragments.PopUpFragment;
 import stanford.cs194.stanfood.helpers.TimeDateUtils;
 import stanford.cs194.stanfood.models.Event;
 import stanford.cs194.stanfood.models.Food;
+
+import static com.firebase.ui.auth.AuthUI.TAG;
 
 public class EventAdapter extends ArrayAdapter {
 
@@ -68,7 +78,7 @@ public class EventAdapter extends ArrayAdapter {
     @NonNull
     public View getView(int position, final View view, @NonNull final ViewGroup parent) {
         final LayoutInflater inflater = LayoutInflater.from(context);
-        final View rowView = inflater.inflate(R.layout.list_view, null, true);
+        final View rowView= inflater.inflate(R.layout.list_view, null, true);
 
         // gets references to objects in the list_view.xml file
         TextView eventLocation = bottomSheetContentsView.findViewById(R.id.bottom_sheet_header);
@@ -116,7 +126,6 @@ public class EventAdapter extends ArrayAdapter {
                 eventPopUp.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription, event.getEventId(), screen, db).show(supportFragment,null);
             }
         });
-
         return rowView;
     }
 
@@ -134,18 +143,38 @@ public class EventAdapter extends ArrayAdapter {
                             Food food = ds.getValue(Food.class);
                             url = food.getImagePath();
 
+                            final AtomicBoolean loaded  = new AtomicBoolean();
+
                             Picasso.get()
                                     .load(url)
                                     .fit()
-                                    .error(R.drawable.no_picture)
-                                    .into(eventImage);
+                                    .into(eventImage,  new Callback.EmptyCallback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            loaded.set(true);
+                                            Log.d("debug007", "on success called");
+                                        }
+
+                                        @Override
+                                        public void onError(Exception e) {
+                                            super.onError(e);
+                                            Log.d("debug007", "error");
+                                        }
+                                    });
+
+                            if(loaded.get()){
+                                eventImage.requestLayout();
+                                eventImage.getLayoutParams().height = 300;
+                                eventImage.getLayoutParams().width = 300;
+                            }
+                            else{
+                                Log.d("debug007", "loaded not true");
+                                eventImage.requestLayout();
+                                eventImage.getLayoutParams().height = 0;
+                                eventImage.getLayoutParams().width = 0;
+                            }
                         }
-                        if (url == null) {
-                            eventImage.requestLayout();
-                            eventImage.getLayoutParams().height = 0;
-                            eventImage.getLayoutParams().width = 0;
-                        }
-                        url = null;
+
                     }
 
                     @Override

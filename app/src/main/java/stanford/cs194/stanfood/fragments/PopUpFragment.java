@@ -107,8 +107,7 @@ public class PopUpFragment extends DialogFragment {
                                 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                                 @Override
                                 public Bitmap transform(Bitmap source) {
-                                    //whatever algorithm here to compute size
-                                    float ratio = (float) source.getHeight() / (float) source.getWidth();
+                                    float ratio = (float)source.getHeight() / (float) source.getWidth();
                                     float heightFloat = ((float) size.x - 10) * ratio;
                                     Bitmap newBitmap = Bitmap.createScaledBitmap(source, size.x-10,
                                             (int)heightFloat, true);
@@ -128,10 +127,6 @@ public class PopUpFragment extends DialogFragment {
                                     .transform(t)
                                     .error(R.drawable.no_picture)
                                     .into(eventImage);
-                        }
-                        if (url == null) {
-                            Drawable drawable = getContext().getResources().getDrawable(R.drawable.no_picture);
-                            eventImage.setImageDrawable(drawable);
                         }
                     }
 
