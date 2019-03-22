@@ -18,16 +18,13 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 
+import stanford.cs194.stanfood.adapters.DeleteEventAdapter;
 import stanford.cs194.stanfood.adapters.EventAdapter;
 import stanford.cs194.stanfood.fragments.BottomSheetListView;
 import stanford.cs194.stanfood.models.Event;
 
 public class CreateList {
-
     private Database db;
-    private LatLng markerLocation;
-    private HashMap<LatLng,String> eventStorage;
-
     private ArrayList<Event> events;
     private BottomSheetListView eventListView;
     private ViewGroup bottomSheetContentsView;
@@ -41,8 +38,6 @@ public class CreateList {
                       ViewGroup bottomSheetContentsView, FragmentManager supportFragment,
                       Date startDate, Date endDate) {
         this.db = db;
-        this.markerLocation = marker.getPosition();
-        this.eventStorage = eventStorage;
         this.eventListView = eventListView;
         this.bottomSheetContentsView = bottomSheetContentsView;
         this.events = new ArrayList<>();
@@ -51,7 +46,11 @@ public class CreateList {
         this.endDate = endDate;
     }
 
-    public void createEventList(){
+    /**
+     * Creates a list of all events with Pin Ids corresponding to the current marker location.
+     * Creates an EventAdapter with this list to make a list view with all events
+     */
+    public void createLocationEventList(final Marker marker, final HashMap<LatLng, String> eventStorage){
         db.dbRef.child("events").addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
@@ -60,7 +59,7 @@ public class CreateList {
                             if(ds.hasChildren()){
                                 Event event = ds.getValue(Event.class);
                                 Date d = new Date(event.getTimeStart());
-                                if(event.getPinId().equals(eventStorage.get(markerLocation))
+                                if(event != null && event.getPinId().equals(eventStorage.get(markerLocation))
                                         && (d.after(startDate) || d.equals(startDate)) && d.before(endDate)){
                                     event.setEventId(ds.getKey());
                                     events.add(event);
@@ -86,5 +85,39 @@ public class CreateList {
         );
     }
 
+    /**
+     * Creates a list of all events with User Ids corresponding to the current logged-in user.
+     * Creates a DeleteEventAdapter with this list to make a list view with all events
+     */
+    public void createUserEventList(final String userId){
+        db.dbRef.child("events").addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for(DataSnapshot ds : dataSnapshot.getChildren()){
+                            if(ds.hasChildren()){
+                                Event event = ds.getValue(Event.class);
+                                if (event != null && event.getUserId() != null && event.getUserId().equals(userId)) {
+                                    event.setEventId(ds.getKey());
+                                    events.add(event);
+                                }
+                            }
+                        }
+                        Collections.sort(events);
+                        ListAdapter rowCells = new DeleteEventAdapter(
+                                eventListView.getContext(),
+                                events,
+                                db
+                        );
+                        eventListView.setAdapter(rowCells);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.d("ERROR", databaseError.toString());
+                    }
+                }
+        );
+    }
 }
 
