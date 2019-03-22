@@ -7,11 +7,11 @@
     <string name="login_signup">Log In or Sign Up</string>
     <string name="logout">Log Out</string>
     <string name="create_event">Create an Event</string>
-    <string name="edit_event">Edit/Delete an Event</string>
+    <string name="delete_event">Delete an Event</string>
     <string name="channel_name">Channel Name</string>
     <string name="channel_description">Channel Description</string>
     <string name="createEventTitle">Create Your Event!</string>
-    <string name="editEventTitle">Tap an Event to Edit/Delete!</string>
+    <string name="editEventTitle">Tap an Event to Delete It!</string>
     <string name="event_name">Event Name</string>
     <string name="food_description">Food Description</string>
     <string name="event_location">Event Location</string>
@@ -20,7 +20,7 @@
     <string name="event_location_header">Location:&#160;</string>
     <string name="event_time_header">Time:&#160;</string>
     <string name="createButtonText">Create</string>
-    <string name="editButtonText">Save Changes</string>
+    <string name="refreshViewText">Refresh Events</string>
     <string name="use_current_location">Use Current Location?</string>
     <string name="title_activity_splash">SplashActivity</string>
     <string name="default_notification_channel_id">DefaultNotificationChannel</string>

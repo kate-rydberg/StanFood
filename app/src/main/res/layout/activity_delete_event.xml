@@ -4,7 +4,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
-tools:context=".activities.EditEventActivity">
+tools:context=".activities.DeleteEventActivity">
 
 <LinearLayout
     android:layout_width="0dp"
@@ -32,7 +32,7 @@ tools:context=".activities.EditEventActivity">
         android:textSize="30sp" />
 
     <Button
-        android:id="@+id/editEvent"
+        android:id="@+id/refreshView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -41,21 +41,31 @@ tools:context=".activities.EditEventActivity">
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        android:onClick="saveChanges"
-        android:text="@string/editButtonText"
+        android:onClick="refreshView"
+        android:text="@string/refreshViewText"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/userEventsContent"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:background="@drawable/rounded_corners"
+        android:clipToPadding="true"
+        android:fillViewport="true">
 
-        <include layout="@layout/list_info" />
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/userEventsContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include layout="@layout/list_info" />
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
 
 </LinearLayout>
 

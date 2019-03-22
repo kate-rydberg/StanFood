@@ -22,7 +22,7 @@ import com.google.android.gms.tasks.Task;
 import stanford.cs194.stanfood.App;
 import stanford.cs194.stanfood.R;
 import stanford.cs194.stanfood.activities.CreateEventActivity;
-import stanford.cs194.stanfood.activities.EditEventActivity;
+import stanford.cs194.stanfood.activities.DeleteEventActivity;
 import stanford.cs194.stanfood.activities.LoginActivity;
 import stanford.cs194.stanfood.activities.UserSettingsActivity;
 import stanford.cs194.stanfood.helpers.FirebaseInstanceIdAccessor;
@@ -106,8 +106,8 @@ public class NavigationDrawer {
                             case R.id.user_settings:
                                 startUserSettings();
                                 break;
-                            case R.id.edit_event:
-                                startEditEvent();
+                            case R.id.delete_event:
+                                startDeleteEvent();
                                 break;
                             default:
                                 Log.w("navigation", "Invalid Item Selected.");
@@ -177,8 +177,8 @@ public class NavigationDrawer {
     /**
      * Starts the intent for users to edit/delete their events.
      */
-    private void startEditEvent() {
-        Intent intent = new Intent(mContext, EditEventActivity.class);
+    private void startDeleteEvent() {
+        Intent intent = new Intent(mContext, DeleteEventActivity.class);
         mContext.startActivity(intent);
     }
 
@@ -192,7 +192,7 @@ public class NavigationDrawer {
         final Menu menu = mNavigationView.getMenu();
         menu.findItem(R.id.login_signup).setVisible(!isLoggedIn);
         menu.findItem(R.id.user_settings).setVisible(isLoggedIn);
-        menu.findItem(R.id.edit_event).setVisible(isLoggedIn);
+        menu.findItem(R.id.delete_event).setVisible(isLoggedIn);
         menu.findItem(R.id.logout).setVisible(isLoggedIn);
     }
 

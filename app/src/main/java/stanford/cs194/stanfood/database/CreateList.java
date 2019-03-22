@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import stanford.cs194.stanfood.adapters.DeleteEventAdapter;
 import stanford.cs194.stanfood.adapters.EventAdapter;
 import stanford.cs194.stanfood.fragments.BottomSheetListView;
 import stanford.cs194.stanfood.models.Event;
@@ -76,7 +77,7 @@ public class CreateList {
 
     /**
      * Creates a list of all events with User Ids corresponding to the current logged-in user.
-     * Creates an EventAdapter with this list to make a list view with all events
+     * Creates a DeleteEventAdapter with this list to make a list view with all events
      */
     public void createUserEventList(final String userId){
         db.dbRef.child("events").addListenerForSingleValueEvent(
@@ -86,30 +87,27 @@ public class CreateList {
                         for(DataSnapshot ds : dataSnapshot.getChildren()){
                             if(ds.hasChildren()){
                                 Event event = ds.getValue(Event.class);
-                                if(event.getUserId() != null && event.getUserId().equals(userId)){
+                                if (event != null && event.getUserId() != null && event.getUserId().equals(userId)) {
                                     event.setEventId(ds.getKey());
                                     events.add(event);
                                 }
                             }
                         }
                         Collections.sort(events);
-                        Adapter rowCells = new EventAdapter(
+                        ListAdapter rowCells = new DeleteEventAdapter(
                                 eventListView.getContext(),
                                 events,
-                                eventListView,
-                                bottomSheetContentsView,
-                                supportFragment
+                                db
                         );
-                        eventListView.setAdapter((ListAdapter) rowCells);
+                        eventListView.setAdapter(rowCells);
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d("ERROR",databaseError.toString());
+                        Log.d("ERROR", databaseError.toString());
                     }
                 }
         );
     }
-
 }
 
