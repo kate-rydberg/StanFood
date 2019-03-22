@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -37,7 +38,18 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import stanford.cs194.stanfood.R;
 import stanford.cs194.stanfood.authentication.Authentication;
@@ -45,6 +57,7 @@ import stanford.cs194.stanfood.database.CreateList;
 import stanford.cs194.stanfood.database.Database;
 import stanford.cs194.stanfood.fragments.BottomSheet;
 import stanford.cs194.stanfood.fragments.BottomSheetListView;
+import stanford.cs194.stanfood.fragments.MapClockFragment;
 import stanford.cs194.stanfood.fragments.NavigationDrawer;
 import stanford.cs194.stanfood.fragments.PopUpFragment;
 import stanford.cs194.stanfood.helpers.FirebaseInstanceIdAccessor;
@@ -66,6 +79,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FragmentManager supportFragment;
     private String clickedPinId;
 
+    private Location myLoc;
+    private Date startDate;
+    private Date endDate;
+    private ArrayList<Marker> markersForRemoval;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +102,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         eventStorage = new HashMap<>();
         markerStorage = new HashMap<>();
+
+        // set calendar to midnight of current day
+        Calendar cal = new GregorianCalendar();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        startDate = cal.getTime();
+        // default 1 week event range
+        cal.add(Calendar.DATE, 7);
+        endDate = cal.getTime();
+
+        markersForRemoval = new ArrayList<>();
     }
 
     @Override
@@ -141,6 +174,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             Location location = new Location(LocationManager.GPS_PROVIDER);
                             location.setLatitude(coordinate.latitude);
                             location.setLongitude(coordinate.longitude);
+                            myLoc = location;
                             populatePins(location);
                         }
                         @Override
@@ -156,6 +190,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 public void onSuccess(Location location) {
                     // Got last known location. In some rare situations this can be null.
                     if (location != null) {
+                        myLoc = location;
                         LatLng current = new LatLng(location.getLatitude(),location.getLongitude());
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current,16));
                         populatePins(location);
@@ -168,6 +203,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setOnMapClickListener(this);
         mMap.setOnCameraMoveStartedListener(this);
 
+        ImageButton clock_button = findViewById(R.id.map_clock_image_button);
+        final MapClockFragment mapClockFragment = MapClockFragment.newInstance();
+        mapClockFragment.setOnSuccessListener(new MapClockFragment.OnMapClockSuccessListener() {
+            @Override
+            public void onSuccess(Date start, Date end) {
+                startDate = start;
+                endDate = end;
+                populatePins(myLoc);
+            }
+        });
+        clock_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // populate date range with currently defined range
+                mapClockFragment.setDateRange(startDate, endDate);
+                mapClockFragment.show(getSupportFragmentManager(), null);
+            }
+        });
         // Get the bottom sheet view
         View bottomSheetView = findViewById(R.id.bottom_sheet);
         bottomSheet = new BottomSheet(bottomSheetView.getContext(), bottomSheetView, mMap);
@@ -197,8 +250,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         ViewGroup bottomSheetContents = findViewById(R.id.bottom_sheet_contents);
         ViewCompat.setNestedScrollingEnabled(eventListView, true);
 
-        CreateList initRows = new CreateList(db, eventListView, bottomSheetContents, supportFragment);
-        initRows.createLocationEventList(marker, eventStorage);
+        CreateList initRows = new CreateList(
+                db, eventListView, bottomSheetContents, supportFragment, startDate, endDate
+        );
+        initRows.createLocationEventList(eventStorage.get(marker.getPosition()));
 
         return true;
     }
@@ -310,6 +365,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 }
                             }
                         }
+                        removePinsOutsideDateRange();
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -359,5 +415,68 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         rlp.rightMargin = rlp.leftMargin;
         rlp.bottomMargin = 25;
+    }
+
+    private void removePinsOutsideDateRange(){
+        Thread t = new Thread(updatePinNumEventsRunnable(startDate, endDate));
+        t.start();
+        try {
+            t.join();
+            for(Marker m : markersForRemoval){
+                m.remove();
+            }
+            markersForRemoval.clear();
+        } catch (InterruptedException e) {
+            Log.d("ERROR", e.toString());
+        }
+    }
+    private int sendPostPinNumEventsInRange(Date start, Date end, String pinId){
+        String function_url = "https://us-central1-stanfood-e7255.cloudfunctions.net/getNumEvents";
+        try {
+            String params = "?";
+            params += "start="+String.valueOf(start.getTime());
+            params += "&end="+String.valueOf(end.getTime());
+            params += "&pinId="+pinId;
+            function_url += params;
+
+            URL url = new URL(function_url);
+            HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+            con.setRequestMethod("POST");
+            con.setDoOutput(true);
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+            JSONObject jsonResp = new JSONObject(response.toString());
+            return (int)jsonResp.get("count");
+        } catch (Exception e) {
+            Log.d("ERROR", e.toString());
+        }
+        return 0;
+    }
+
+    private Runnable updatePinNumEventsRunnable(final Date start, final Date end){
+        return new Runnable() {
+            @Override
+            public void run() {
+                HashMap<LatLng,String> events = (HashMap) eventStorage.clone();
+                for(LatLng loc : events.keySet()){
+                    String pinId = eventStorage.get(loc);
+                    int numEvents = sendPostPinNumEventsInRange(start, end, pinId);
+                    if(numEvents == 0){
+                        Marker m = markerStorage.get(loc);
+                        markersForRemoval.add(m);
+                        markerStorage.remove(loc);
+                        eventStorage.remove(loc);
+                    }
+                }
+
+            }
+        };
     }
 }

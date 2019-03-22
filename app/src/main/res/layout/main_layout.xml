@@ -23,6 +23,17 @@
             android:layout_marginTop="@dimen/margin_padding"
             android:src="@drawable/ic_menu" />
 
+        <ImageButton
+            android:id="@+id/map_clock_image_button"
+            android:layout_width="47dp"
+            android:layout_height="47dp"
+            android:layout_marginRight="7dp"
+            android:layout_marginTop="55dp"
+            android:alpha="0.6"
+            android:src="@mipmap/map_clock"
+            android:layout_gravity="end"
+            android:elevation="5dp" />
+
     </FrameLayout>
 
     <!-- Container for contents of drawer - use NavigationView to make configuration easier -->

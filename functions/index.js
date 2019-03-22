@@ -162,3 +162,30 @@ exports.sendNotificationsForEventAdded = functions.database.ref('/events/{eventI
         return Promise.all(tokensToRemove);
       });
     });
+
+exports.getNumEvents = functions.https.onRequest((req, res) => {
+  var pinsRef = admin.database().ref('/pins');
+  var eventsRef = admin.database().ref('/events');
+
+  var dateStart = req.query.start;
+  var dateEnd = req.query.end;
+  var pinId = req.query.pinId;
+
+  var count = 0;
+
+  eventsRef.orderByChild('pinId').equalTo(pinId).once('value').then((eventSnapshot) =>
+    eventSnapshot.forEach((eventChildSnapshot) => {
+      var eventDate = eventChildSnapshot.val().timeStart
+      if (eventDate >= dateStart && eventDate <= dateEnd) {
+        count++
+      }
+    })
+  ).then(() => {
+    var res_str = 'Pin ' + pinId + ' has ' + count + ' events active between ' + dateStart + ' and ' + dateEnd;
+    console.log(res_str);
+    return res.status(200).send({"count": count});
+  }).catch((err) => {
+    console.log(err);
+    return res.status(404).end();
+  });
+});

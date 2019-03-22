@@ -32,6 +32,12 @@
     <string name="timeWindowTitle">Only Receive Notifications for Events Starting Between These Times:</string>
     <string name="event_start_time">Event Start Time</string>
     <string name="event_end_time">Event End Time</string>
+    <string name="map_clock_dialog_title">Event Time Filter</string>
+    <string name="map_clock_dialog_header">Currently showing events between</string>
+    <string name="map_clock_dialog_break">and</string>
+    <string name="map_clock_dialog_done">Ok</string>
+    <string name="date_time_picker_done">Ok</string>
+    <string name="date_time_picker_cancel">Cancel</string>
     <string-array name="location_list">
         <item>Allen Center for Integrated Systems (CIS)</item>
         <item>Applied Physics Building</item>
