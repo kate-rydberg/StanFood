@@ -251,10 +251,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         ViewCompat.setNestedScrollingEnabled(eventListView, true);
 
         CreateList initRows = new CreateList(
-                db, marker, eventStorage,
-                eventListView, bottomSheetContents,
-                supportFragment, startDate, endDate);
-        initRows.createLocationEventList(marker, eventStorage);
+                db, eventListView, bottomSheetContents, supportFragment, startDate, endDate
+        );
+        initRows.createLocationEventList(eventStorage.get(marker.getPosition()));
 
         return true;
     }

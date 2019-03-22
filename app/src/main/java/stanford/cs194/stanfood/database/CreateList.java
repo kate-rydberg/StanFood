@@ -33,8 +33,18 @@ public class CreateList {
     private Date startDate;
     private Date endDate;
 
-    public CreateList(Database db, Marker marker,
-                      HashMap<LatLng, String> eventStorage, BottomSheetListView eventListView,
+    // without date filtering
+    public CreateList(Database db, BottomSheetListView eventListView,
+                      ViewGroup bottomSheetContentsView, FragmentManager supportFragment) {
+        this.db = db;
+        this.eventListView = eventListView;
+        this.bottomSheetContentsView = bottomSheetContentsView;
+        this.events = new ArrayList<>();
+        this.supportFragment = supportFragment;
+    }
+
+    // overloaded constructor for date filtering
+    public CreateList(Database db, BottomSheetListView eventListView,
                       ViewGroup bottomSheetContentsView, FragmentManager supportFragment,
                       Date startDate, Date endDate) {
         this.db = db;
@@ -50,21 +60,21 @@ public class CreateList {
      * Creates a list of all events with Pin Ids corresponding to the current marker location.
      * Creates an EventAdapter with this list to make a list view with all events
      */
-    public void createLocationEventList(final Marker marker, final HashMap<LatLng, String> eventStorage){
-        db.dbRef.child("events").addListenerForSingleValueEvent(
+    public void createLocationEventList(final String pinId){
+        db.dbRef.child("events").orderByChild("pinId").equalTo(pinId).
+                addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for(DataSnapshot ds : dataSnapshot.getChildren()){
-                            if(ds.hasChildren()){
-                                Event event = ds.getValue(Event.class);
-                                Date d = new Date(event.getTimeStart());
-                                if(event != null && event.getPinId().equals(eventStorage.get(markerLocation))
-                                        && (d.after(startDate) || d.equals(startDate)) && d.before(endDate)){
-                                    event.setEventId(ds.getKey());
-                                    events.add(event);
-                                }
-                            }
+                            Event event = ds.getValue(Event.class);
+                            Date d = new Date(event.getTimeStart());
+                            // if doing date filtering, make sure event date lies within range
+                            if(startDate != null && endDate != null &&
+                                    (d.before(startDate) || d.after(endDate)))
+                                continue;
+                            event.setEventId(ds.getKey());
+                            events.add(event);
                         }
                         Collections.sort(events);
                         Adapter rowCells = new EventAdapter(
