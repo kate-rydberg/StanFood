@@ -60,7 +60,6 @@ public class CreateList {
                             if(ds.hasChildren()){
                                 Event event = ds.getValue(Event.class);
                                 Date d = new Date(event.getTimeStart());
-                                Log.d("CONSOLE", d.toString() + startDate.toString() + endDate.toString());
                                 if(event.getPinId().equals(eventStorage.get(markerLocation))
                                         && (d.after(startDate) || d.equals(startDate)) && d.before(endDate)){
                                     event.setEventId(ds.getKey());

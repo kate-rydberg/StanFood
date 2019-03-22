@@ -38,10 +38,18 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import stanford.cs194.stanfood.R;
 import stanford.cs194.stanfood.authentication.Authentication;
@@ -71,8 +79,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FragmentManager supportFragment;
     private String clickedPinId;
 
+    private Location myLoc;
     private Date startDate;
     private Date endDate;
+    private ArrayList<Marker> markersForRemoval;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +114,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // default 1 week event range
         cal.add(Calendar.DATE, 7);
         endDate = cal.getTime();
+
+        markersForRemoval = new ArrayList<>();
     }
 
     @Override
@@ -161,6 +174,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             Location location = new Location(LocationManager.GPS_PROVIDER);
                             location.setLatitude(coordinate.latitude);
                             location.setLongitude(coordinate.longitude);
+                            myLoc = location;
                             populatePins(location);
                         }
                         @Override
@@ -176,6 +190,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 public void onSuccess(Location location) {
                     // Got last known location. In some rare situations this can be null.
                     if (location != null) {
+                        myLoc = location;
                         LatLng current = new LatLng(location.getLatitude(),location.getLongitude());
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current,16));
                         populatePins(location);
@@ -195,7 +210,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onSuccess(Date start, Date end) {
                 startDate = start;
                 endDate = end;
-                //TODO: redraw pins and events
+                populatePins(myLoc);
             }
         });
         clock_button.setOnClickListener(new View.OnClickListener() {
@@ -352,6 +367,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 }
                             }
                         }
+                        removePinsOutsideDateRange();
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -401,5 +417,69 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         rlp.rightMargin = rlp.leftMargin;
         rlp.bottomMargin = 25;
+    }
+
+    private void removePinsOutsideDateRange(){
+        Thread t = new Thread(updatePinNumEventsRunnable(startDate, endDate));
+        t.start();
+        try {
+            t.join();
+            for(Marker m : markersForRemoval){
+                m.remove();
+            }
+            markersForRemoval.clear();
+        } catch (InterruptedException e) {
+            Log.d("ERROR", e.toString());
+        }
+    }
+    private int sendPostPinNumEventsInRange(Date start, Date end, String pinId){
+        String function_url = "https://us-central1-stanfood-e7255.cloudfunctions.net/getNumEvents";
+        try {
+            String params = "?";
+            params += "start="+String.valueOf(start.getTime());
+            params += "&end="+String.valueOf(end.getTime());
+            params += "&pinId="+pinId;
+            function_url += params;
+
+            URL url = new URL(function_url);
+            HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+            con.setRequestMethod("POST");
+            con.setDoOutput(true);
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+            JSONObject jsonResp = new JSONObject(response.toString());
+            return (int)jsonResp.get("count");
+        } catch (Exception e) {
+            Log.d("ERROR", e.toString());
+        }
+        return 0;
+    }
+
+    private Runnable updatePinNumEventsRunnable(final Date start, final Date end){
+        return new Runnable() {
+            @Override
+            public void run() {
+                HashMap<LatLng,String> events = (HashMap) eventStorage.clone();
+                for(LatLng loc : events.keySet()){
+                    String pinId = eventStorage.get(loc);
+                    int numEvents = sendPostPinNumEventsInRange(start, end, pinId);
+                    Log.d("CONSOLE", numEvents + " " + pinId);
+                    if(numEvents == 0){
+                        Marker m = markerStorage.get(loc);
+                        markersForRemoval.add(m);
+                        markerStorage.remove(loc);
+                        eventStorage.remove(loc);
+                    }
+                }
+
+            }
+        };
     }
 }
