@@ -45,12 +45,18 @@ public class PopUpFragment extends DialogFragment {
         TextView infoLocationName = popupView.findViewById(R.id.infoLocationName);
         TextView infoEventTime = popupView.findViewById(R.id.infoEventTime);
         TextView infoEventDescription = popupView.findViewById(R.id.infoEventDescription);
+        TextView infoEventName = popupView.findViewById(R.id.infoEventName);
 
         String locationText = infoLocationName.getText().toString() + location;
         infoLocationName.setText(locationText);
         String timeText = infoEventTime.getText().toString() + time;
         infoEventTime.setText(timeText);
-        infoEventDescription.setText(description);
+        if (description.equals("N/A") || description.equals("")) {
+            infoEventDescription.setVisibility(View.GONE);
+        } else {
+            infoEventDescription.setText(description);
+        }
+        infoEventName.setText(name);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         popupView.setFocusable(true);

@@ -30,7 +30,7 @@
                 android:textSize="@dimen/text_size"
                 android:font="@font/gotham_book"/>
             <TextView
-                android:id="@+id/eventDescription"
+                android:id="@+id/foodDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/text_size"

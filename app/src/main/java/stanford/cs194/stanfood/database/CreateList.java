@@ -22,10 +22,12 @@ import stanford.cs194.stanfood.adapters.DeleteEventAdapter;
 import stanford.cs194.stanfood.adapters.EventAdapter;
 import stanford.cs194.stanfood.fragments.BottomSheetListView;
 import stanford.cs194.stanfood.models.Event;
+import stanford.cs194.stanfood.models.Food;
 
 public class CreateList {
     private Database db;
     private ArrayList<Event> events;
+    private ArrayList<String> foodDescriptions;
     private BottomSheetListView eventListView;
     private ViewGroup bottomSheetContentsView;
     private FragmentManager supportFragment;
@@ -40,6 +42,7 @@ public class CreateList {
         this.eventListView = eventListView;
         this.bottomSheetContentsView = bottomSheetContentsView;
         this.events = new ArrayList<>();
+        this.foodDescriptions = new ArrayList<>();
         this.supportFragment = supportFragment;
     }
 
@@ -66,7 +69,7 @@ public class CreateList {
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for(DataSnapshot ds : dataSnapshot.getChildren()){
+                        for(DataSnapshot ds : dataSnapshot.getChildren()) {
                             Event event = ds.getValue(Event.class);
                             Date d = new Date(event.getTimeStart());
                             // if doing date filtering, make sure event date lies within range
@@ -80,7 +83,7 @@ public class CreateList {
                         Adapter rowCells = new EventAdapter(
                                 eventListView.getContext(),
                                 events,
-                                eventListView,
+                                foodDescriptions,
                                 bottomSheetContentsView,
                                 supportFragment
                         );

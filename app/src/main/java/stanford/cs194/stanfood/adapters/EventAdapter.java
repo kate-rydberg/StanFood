@@ -23,23 +23,23 @@ import stanford.cs194.stanfood.models.Event;
 public class EventAdapter extends ArrayAdapter {
 
     private ArrayList<Event> events;
+    private ArrayList<String> foodDescriptions;
     private Context context;
 
     private FragmentManager supportFragment;
-    private BottomSheetListView eventListView;
     private ViewGroup bottomSheetContentsView;
 
     public EventAdapter(
             Context context,
             ArrayList<Event> events,
-            BottomSheetListView eventListView,
+            ArrayList<String> foodDescriptions,
             ViewGroup bottomSheetContentsView,
             FragmentManager supportFragment
     ) {
         super(context, R.layout.list_view, events);
         this.context = context;
         this.events = events;
-        this.eventListView = eventListView;
+        this.foodDescriptions = foodDescriptions;
         this.bottomSheetContentsView = bottomSheetContentsView;
         this.supportFragment = supportFragment;
     }
@@ -53,14 +53,15 @@ public class EventAdapter extends ArrayAdapter {
         TextView eventLocation = bottomSheetContentsView.findViewById(R.id.bottom_sheet_header);
         TextView eventName = rowView.findViewById(R.id.eventName);
         TextView eventTimeStart = rowView.findViewById(R.id.eventTimeStart);
-        TextView eventDescription = rowView.findViewById(R.id.eventDescription);
+        TextView eventFoodDescription = rowView.findViewById(R.id.foodDescription);
 
         Event event = events.get(position);
         String name = event.getName();
         final String locationName = event.getLocationName();
         long time = event.getTimeStart();
         long duration = event.getDuration();
-        String description = event.getDescription();
+        //String foodDescription = foodDescriptions.get(position);
+        String foodDescription = "";
 
         // sets the values of the objects to the value from the current event
         // TODO: Remove null check when we clear out data since some events don't have explicit name fields
@@ -73,8 +74,8 @@ public class EventAdapter extends ArrayAdapter {
         if(time != 0) eventTimeStart.setText(TimeDateUtils.getEventTimeRange(time, duration));
         else eventTimeStart.setText("N/A");
 
-        if(!description.equals("")) eventDescription.setText(description);
-        else eventDescription.setText("N/A");
+        if(!foodDescription.equals("")) eventFoodDescription.setText(foodDescription);
+        else eventFoodDescription.setText("N/A");
 
         rowView.setOnClickListener(new View.OnClickListener(){
             /**
@@ -85,7 +86,7 @@ public class EventAdapter extends ArrayAdapter {
             public void onClick(View listItemView) {
                 String clickedEventName = ((TextView)listItemView.findViewById(R.id.eventName)).getText().toString();
                 String clickedTimeRange = ((TextView)listItemView.findViewById(R.id.eventTimeStart)).getText().toString();
-                String clickedEventDescription = ((TextView)listItemView.findViewById(R.id.eventDescription)).getText().toString();
+                String clickedEventDescription = ((TextView)listItemView.findViewById(R.id.foodDescription)).getText().toString();
 
                 TextView bottomSheetHeader = bottomSheetContentsView.findViewById(R.id.bottom_sheet_header);
                 String clickedLocationName = bottomSheetHeader.getText().toString();
