@@ -12,7 +12,7 @@
             android:padding="@dimen/margin_padding">
 
             <TextView
-                android:id="@+id/infoEventDescription"
+                android:id="@+id/infoEventName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
@@ -23,47 +23,76 @@
                 android:textSize="@dimen/text_size"
                 android:textStyle="bold" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <ImageView
-                        android:layout_width="@dimen/icon_width"
-                        android:layout_height="@dimen/icon_height"
-                        android:layout_gravity="center_vertical"
-                        android:src="@mipmap/location_icon_foreground"/>
-                    <TextView
-                        android:id="@+id/infoLocationName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingBottom="@dimen/margin_padding"
-                        android:paddingTop="@dimen/margin_padding"
-                        android:paddingLeft="@dimen/margin_padding"
-                        android:paddingRight="@dimen/margin_padding"
-                        android:text=""
-                        android:textSize="@dimen/text_size" />
-                </LinearLayout>
+            <TextView
+                android:id="@+id/infoEventDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:paddingLeft="@dimen/margin_padding"
+                android:paddingRight="@dimen/margin_padding"
+                android:paddingBottom="@dimen/margin_padding"
+                android:textSize="@dimen/text_size" />
 
-                <LinearLayout
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="@dimen/icon_width"
+                    android:layout_height="@dimen/icon_height"
+                    android:layout_gravity="center_vertical"
+                    android:src="@mipmap/pizza_icon_foreground"/>
+                <TextView
+                    android:id="@+id/infoFoodDescription"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <ImageView
-                        android:layout_width="@dimen/icon_width"
-                        android:layout_height="@dimen/icon_height"
-                        android:layout_gravity="center_vertical"
-                        android:src="@mipmap/clock_icon_foreground"/>
-                    <TextView
-                        android:id="@+id/infoEventTime"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingBottom="@dimen/margin_padding"
-                        android:paddingTop="@dimen/margin_padding"
-                        android:paddingLeft="@dimen/margin_padding"
-                        android:paddingRight="@dimen/margin_padding"
-                        android:text=""
-                        android:textSize="@dimen/text_size" />
-                </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/margin_padding"
+                    android:paddingTop="@dimen/margin_padding"
+                    android:paddingLeft="@dimen/margin_padding"
+                    android:paddingRight="@dimen/margin_padding"
+                    android:text=""
+                    android:textSize="@dimen/text_size" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="@dimen/icon_width"
+                    android:layout_height="@dimen/icon_height"
+                    android:layout_gravity="center_vertical"
+                    android:src="@mipmap/location_icon_foreground"/>
+                <TextView
+                    android:id="@+id/infoLocationName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/margin_padding"
+                    android:paddingTop="@dimen/margin_padding"
+                    android:paddingLeft="@dimen/margin_padding"
+                    android:paddingRight="@dimen/margin_padding"
+                    android:text=""
+                    android:textSize="@dimen/text_size" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="@dimen/icon_width"
+                    android:layout_height="@dimen/icon_height"
+                    android:layout_gravity="center_vertical"
+                    android:src="@mipmap/clock_icon_foreground"/>
+                <TextView
+                    android:id="@+id/infoEventTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/margin_padding"
+                    android:paddingTop="@dimen/margin_padding"
+                    android:paddingLeft="@dimen/margin_padding"
+                    android:paddingRight="@dimen/margin_padding"
+                    android:text=""
+                    android:textSize="@dimen/text_size" />
+            </LinearLayout>
 
         </LinearLayout>
-
 
 </RelativeLayout>

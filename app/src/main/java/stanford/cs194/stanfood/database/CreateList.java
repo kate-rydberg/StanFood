@@ -66,7 +66,7 @@ public class CreateList {
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for(DataSnapshot ds : dataSnapshot.getChildren()){
+                        for(DataSnapshot ds : dataSnapshot.getChildren()) {
                             Event event = ds.getValue(Event.class);
                             Date d = new Date(event.getTimeStart());
                             // if doing date filtering, make sure event date lies within range
@@ -78,9 +78,9 @@ public class CreateList {
                         }
                         Collections.sort(events);
                         Adapter rowCells = new EventAdapter(
+                                db,
                                 eventListView.getContext(),
                                 events,
-                                eventListView,
                                 bottomSheetContentsView,
                                 supportFragment
                         );

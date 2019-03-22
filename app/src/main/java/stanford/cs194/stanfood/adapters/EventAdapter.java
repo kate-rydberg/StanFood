@@ -3,43 +3,46 @@ package stanford.cs194.stanfood.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
 
 import stanford.cs194.stanfood.R;
-import stanford.cs194.stanfood.fragments.BottomSheetListView;
+import stanford.cs194.stanfood.database.Database;
 import stanford.cs194.stanfood.fragments.PopUpFragment;
 import stanford.cs194.stanfood.helpers.TimeDateUtils;
 import stanford.cs194.stanfood.models.Event;
+import stanford.cs194.stanfood.models.Food;
 
 public class EventAdapter extends ArrayAdapter {
 
+    private Database db;
     private ArrayList<Event> events;
     private Context context;
 
     private FragmentManager supportFragment;
-    private BottomSheetListView eventListView;
     private ViewGroup bottomSheetContentsView;
 
     public EventAdapter(
+            Database db,
             Context context,
             ArrayList<Event> events,
-            BottomSheetListView eventListView,
             ViewGroup bottomSheetContentsView,
             FragmentManager supportFragment
     ) {
         super(context, R.layout.list_view, events);
+        this.db = db;
         this.context = context;
         this.events = events;
-        this.eventListView = eventListView;
         this.bottomSheetContentsView = bottomSheetContentsView;
         this.supportFragment = supportFragment;
     }
@@ -57,6 +60,7 @@ public class EventAdapter extends ArrayAdapter {
 
         Event event = events.get(position);
         String name = event.getName();
+        final String eventId = event.getEventId();
         final String locationName = event.getLocationName();
         long time = event.getTimeStart();
         long duration = event.getDuration();
@@ -83,14 +87,33 @@ public class EventAdapter extends ArrayAdapter {
              */
             @Override
             public void onClick(View listItemView) {
-                String clickedEventName = ((TextView)listItemView.findViewById(R.id.eventName)).getText().toString();
-                String clickedTimeRange = ((TextView)listItemView.findViewById(R.id.eventTimeStart)).getText().toString();
-                String clickedEventDescription = ((TextView)listItemView.findViewById(R.id.eventDescription)).getText().toString();
+                final String clickedEventName = ((TextView)listItemView.findViewById(R.id.eventName)).getText().toString();
+                final String clickedTimeRange = ((TextView)listItemView.findViewById(R.id.eventTimeStart)).getText().toString();
+                final String clickedEventDescription = ((TextView)listItemView.findViewById(R.id.eventDescription)).getText().toString();
 
-                TextView bottomSheetHeader = bottomSheetContentsView.findViewById(R.id.bottom_sheet_header);
-                String clickedLocationName = bottomSheetHeader.getText().toString();
+                final TextView bottomSheetHeader = bottomSheetContentsView.findViewById(R.id.bottom_sheet_header);
+                final String clickedLocationName = bottomSheetHeader.getText().toString();
 
-                PopUpFragment.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription).show(supportFragment,null);
+                db.dbRef.child("food").orderByChild("eventId").equalTo(eventId).addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                String foodDescription = "";
+                                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                                    if(ds.hasChildren()){
+                                        Food food = ds.getValue(Food.class);
+                                        foodDescription = food.getDescription();
+                                    }
+                                }
+                                PopUpFragment.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription, foodDescription).show(supportFragment,null);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                Log.d("ERROR",databaseError.toString());
+                            }
+                        }
+                );
             }
         });
 

@@ -61,6 +61,7 @@ import stanford.cs194.stanfood.fragments.MapClockFragment;
 import stanford.cs194.stanfood.fragments.NavigationDrawer;
 import stanford.cs194.stanfood.fragments.PopUpFragment;
 import stanford.cs194.stanfood.helpers.FirebaseInstanceIdAccessor;
+import stanford.cs194.stanfood.models.Food;
 import stanford.cs194.stanfood.models.Pin;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, OnMarkerClickListener, GoogleMap.OnMapClickListener, GoogleMap.OnCameraMoveStartedListener {
@@ -321,13 +322,33 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             clickedPinId = extras.getString("clickedPinId");
-            String clickedEventName = extras.getString("clickedEventName");
-            String clickedLocationName = extras.getString("clickedLocationName");
-            String clickedTimeRange = extras.getString("clickedTimeRange");
-            String clickedEventDescription = extras.getString("clickedEventDescription");
+            final String clickedEventName = extras.getString("clickedEventName");
+            final String clickedLocationName = extras.getString("clickedLocationName");
+            final String clickedTimeRange = extras.getString("clickedTimeRange");
+            final String clickedEventDescription = extras.getString("clickedEventDescription");
+            final String clickedEventId = extras.getString("clickedEventId");
 
-            PopUpFragment.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription)
-                    .show(supportFragment, null);
+            db.dbRef.child("food").orderByChild("eventId").equalTo(clickedEventId).addListenerForSingleValueEvent(
+                    new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String foodDescription = "";
+                            for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                                if(ds.hasChildren()){
+                                    Food food = ds.getValue(Food.class);
+                                    foodDescription = food.getDescription();
+                                }
+                            }
+                            PopUpFragment.newInstance(clickedEventName, clickedLocationName, clickedTimeRange, clickedEventDescription, foodDescription)
+                                    .show(supportFragment, null);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Log.d("ERROR",databaseError.toString());
+                        }
+                    }
+            );
         }
     }
 
