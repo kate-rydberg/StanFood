@@ -37,7 +37,7 @@ Tofe | Systems programming, dev-ops, backend development | Abstract thinker, pos
 
 3. [Github](https://github.com/orgs/StanfordCS194/teams/team-15/)
 
-4. [Google Drive](https://drive.google.com/drive/u/1/folders/0AIla_VYnIjdDUk9PVA)
+4. [Google Drive](https://drive.google.com/drive/u/1/folders/0AIla_VYnIjdDUk9PVA), [Github Wiki](https://github.com/StanfordCS194/StanFood/wiki)
 
 5. [SGM Worksheet](https://docs.google.com/forms/d/e/1FAIpQLSc9CVv1vRhA3Gd6R-AKCnXIshWq6vFBQLPXn8Nv4aW3mCHn3w/viewform?usp=sf_link)
 
