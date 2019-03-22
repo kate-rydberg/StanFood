@@ -1,7 +1,35 @@
-const functions = require('firebase-functions');
-
 const admin = require('firebase-admin');
+const functions = require('firebase-functions');
+const moment = require('moment');
+
 admin.initializeApp(functions.config().firebase);
+
+/**
+ * Compares two times of format h:mm
+ * Returns -1 if a < b, 0 if a = b, and 1 if a > b
+ */
+function compare(a, b) {
+  let a_hour = Number(a.split(':')[0]);
+  let a_min = Number(a.split(':')[1]);
+  let b_hour = Number(b.split(':')[0]);
+  let b_min = Number(b.split(':')[1]);
+
+  if (a_hour === b_hour && a_min === b_min) {
+    return 0; // a = b
+  }
+  if (a_hour > b_hour || (a_hour === b_hour && a_min > b_min)) {
+    return 1; // a > b
+  }
+  return -1; // a < b
+}
+
+/**
+ * Given three times of format h:mm, where lowerLimit < upperLimit,
+ * returns true if value is in [lowerLimit, upperLimit] inclusive, false otherwise
+ */
+function isBetween(value, lowerLimit, upperLimit) {
+  return compare(value, lowerLimit) >= 0 && compare(value, upperLimit) <= 0;
+}
 
 exports.checkPinEvents = functions.https.onRequest((req, res) => {
 
@@ -74,6 +102,8 @@ exports.sendNotificationsForEventAdded = functions.database.ref('/events/{eventI
       // Grab the current value of what was written to the Realtime Database.
       const event = snapshot.val();
       const eventId = context.params.eventId;
+      const eventTimeStart = moment(event.timeStart).utcOffset("-07:00").format('H:mm');
+      const eventTimeEnd = moment(event.timeStart + event.duration).utcOffset("-07:00").format('H:mm');
       console.log('New event added', eventId, event);
 
       // Get the list of users (with associated device notification tokens) and settings
@@ -96,15 +126,19 @@ exports.sendNotificationsForEventAdded = functions.database.ref('/events/{eventI
           }
         };
 
-        // Currently sends to all users with a device token for Firebase Cloud Messaging
-        // and push notifications enabled within settings.
-        // TODO: Once we implement settings we should only send to users with preferences
-        // that match the event
+        // Sends to all users with a device token for Firebase Cloud Messaging,
+        // push notifications enabled, and preference settings matching event details
         for (let userId in settings) {
           if (settings.hasOwnProperty(userId)) {
-            let token = users[userId].instanceId;
-            if (token) {
-              tokens.push(token);
+            let timeWindowStart = moment(settings[userId].timeWindowStart, 'HH:mm').format('H:mm');
+            let timeWindowEnd = moment(settings[userId].timeWindowEnd, 'HH:mm').format('H:mm');
+
+            if (isBetween(eventTimeStart, timeWindowStart, timeWindowEnd) || isBetween(eventTimeEnd, timeWindowStart, timeWindowEnd)) {
+              // Event overlaps with user's preferred time range in settings
+              let token = users[userId].instanceId;
+              if (token) {
+                tokens.push(token);
+              }
             }
           }
         }
