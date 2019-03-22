@@ -2,7 +2,9 @@ package stanford.cs194.stanfood.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
@@ -17,13 +19,25 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
@@ -33,7 +47,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -85,6 +101,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Date endDate;
     private ArrayList<Marker> markersForRemoval;
 
+    private LocationRequest locReq;
+    private GoogleApiClient apiClient;
+    private final int REQUEST_LOCATION = 322;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +137,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         endDate = cal.getTime();
 
         markersForRemoval = new ArrayList<>();
+        apiClient = new GoogleApiClient.Builder(getApplicationContext()).
+                addApi(LocationServices.API).build();
+        apiClient.connect();
     }
 
     @Override
@@ -311,6 +334,77 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             ActivityCompat.requestPermissions(this, new String[]
                             {Manifest.permission.ACCESS_FINE_LOCATION},
                     1);
+            return;
+        }
+
+        locReq = LocationRequest.create();
+        locReq.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locReq);
+        builder.setAlwaysShow(true);
+        Task<LocationSettingsResponse> result =
+                LocationServices.getSettingsClient(this).checkLocationSettings(builder.build());
+        result.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
+            @Override
+            public void onComplete(Task<LocationSettingsResponse> task) {
+                try {
+                    task.getResult(ApiException.class);
+
+                } catch (ApiException exception) {
+                    switch (exception.getStatusCode()) {
+                        case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                            try {
+                                ResolvableApiException resolvable = (ResolvableApiException) exception;
+                                resolvable.startResolutionForResult(
+                                        MapsActivity.this,
+                                        REQUEST_LOCATION);
+                            } catch (IntentSender.SendIntentException e) {
+                                // Ignore the error.
+                            } catch (ClassCastException e) {
+                                // Ignore, should be an impossible error.
+                            }
+                            break;
+                        case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                            // Location settings are not satisfied. However, we have no way to fix the
+                            // settings so we won't show the dialog.
+                            break;
+                    }
+                }
+            }
+        });
+    }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        switch(requestCode){
+            case REQUEST_LOCATION:
+                switch(resultCode){
+                    case Activity.RESULT_OK:
+                        LocationServices.getFusedLocationProviderClient(this).requestLocationUpdates(locReq, new LocationCallback() {
+                            @Override
+                            public void onLocationResult(LocationResult locationResult) {
+                                Location loc = locationResult.getLastLocation();
+                                myLoc = loc;
+                                LatLng coordinate = new LatLng(loc.getLatitude(), loc.getLongitude());
+                                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(coordinate, 16);
+                                mMap.animateCamera(cameraUpdate);
+                                populatePins(loc);
+                            }
+                        }, null);
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        String toastMessage = "Location could not be enabled.";
+                        Toast toast = Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT);
+                        final int BOTTOM_SHEET_PEEK_HEIGHT = (int)getApplicationContext()
+                                .getResources().getDimension(R.dimen.bottom_sheet_peek_height);
+                        toast.setGravity(Gravity.BOTTOM, 0, BOTTOM_SHEET_PEEK_HEIGHT);
+                        toast.show();
+                        break;
+                    default:
+                        break;
+                }
+
         }
     }
 
